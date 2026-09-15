@@ -79,13 +79,17 @@ export default function TechStickyCards() {
                 });
             });
 
+            const isMobile = window.innerWidth <= 768;
+            const scrollDistance = isMobile ? window.innerHeight * 1.6 : window.innerHeight * 2.2;
+
             const trigger = ScrollTrigger.create({
                 trigger: sectionRef.current,
                 start: 'top top',
-                end: `+=${window.innerHeight * (totalCards + 1.2)}px`,
+                end: `+=${scrollDistance}px`,
                 pin: true,
                 pinSpacing: true,
-                scrub: 1.2,
+                scrub: 0.8,
+                anticipatePin: 1,
                 invalidateOnRefresh: true,
                 onUpdate: (self) => {
                     const progress = self.progress;
@@ -98,30 +102,34 @@ export default function TechStickyCards() {
                     cards.forEach((card, i) => {
                         if (i < activeIndex) {
                             gsap.set(card, {
-                                yPercent: -260,
-                                rotationX: 42,
-                                opacity: 0.1,
+                                yPercent: -170,
+                                rotationX: 28,
+                                opacity: 0,
                                 filter: 'blur(4px)',
+                                pointerEvents: 'none'
                             });
                         } else if (i === activeIndex) {
                             gsap.set(card, {
-                                yPercent: gsap.utils.interpolate(-50, -220, segProgress),
-                                rotationX: gsap.utils.interpolate(0, 42, segProgress),
-                                scale: 1,
-                                opacity: gsap.utils.interpolate(1, 0.4, segProgress),
-                                filter: `blur(${gsap.utils.interpolate(0, 3, segProgress)}px)`,
+                                yPercent: gsap.utils.interpolate(-50, -170, segProgress),
+                                rotationX: gsap.utils.interpolate(0, 28, segProgress),
+                                scale: gsap.utils.interpolate(1, 0.96, segProgress),
+                                opacity: gsap.utils.interpolate(1, 0, segProgress),
+                                filter: `blur(${gsap.utils.interpolate(0, 4, segProgress)}px)`,
+                                pointerEvents: segProgress > 0.7 ? 'none' : 'auto'
                             });
                         } else {
                             const behindIndex = i - activeIndex;
                             const currentYOffset = (behindIndex - segProgress) * cardYOffset;
                             const currentScale = 1 - (behindIndex - segProgress) * cardScaleStep;
+                            const currentOpacity = gsap.utils.clamp(0.4, 1, 1 - (behindIndex - segProgress) * 0.15);
 
                             gsap.set(card, {
                                 yPercent: -50 + currentYOffset,
                                 rotationX: 0,
                                 scale: currentScale,
-                                opacity: 1,
+                                opacity: currentOpacity,
                                 filter: 'blur(0px)',
+                                pointerEvents: 'auto'
                             });
                         }
                     });

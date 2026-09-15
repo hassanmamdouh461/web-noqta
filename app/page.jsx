@@ -13,10 +13,12 @@ import TransitionScribble from '@/components/TransitionScribble';
 import CursorBubble from '@/components/CursorBubble';
 import SmoothScroll from '@/components/SmoothScroll';
 import HorizontalWords from '@/components/HorizontalWords';
+import IntroLoader from '@/components/IntroLoader';
 
 export default function Home() {
     return (
         <>
+            <IntroLoader />
             <SvgSymbols />
             <SmoothScroll />
             <CursorBubble />

@@ -14,5 +14,8 @@
     "next": "15.2.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.132.0"
   }
 }

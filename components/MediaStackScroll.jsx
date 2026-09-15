@@ -96,13 +96,17 @@ export default function MediaStackScroll() {
                 });
             });
 
+            const isMobile = window.innerWidth <= 768;
+            const scrollFactor = isMobile ? 0.35 : 0.45;
+
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: stackRef.current,
                     start: 'top top',
-                    end: () => `+=${cards.length * window.innerHeight * 0.95}`,
+                    end: () => `+=${cards.length * window.innerHeight * scrollFactor}`,
                     pin: true,
-                    scrub: 1,
+                    scrub: 0.8,
+                    anticipatePin: 1,
                     invalidateOnRefresh: true,
                 },
             });
@@ -114,31 +118,32 @@ export default function MediaStackScroll() {
                     {
                         ...stackPose(i),
                         ease: 'power3.out',
-                        duration: 1.2,
+                        duration: 1.0,
                     },
-                    i * 0.08
+                    i * 0.06
                 );
             });
 
-            tl.to({}, { duration: 0.3 });
+            tl.to({}, { duration: 0.2 });
 
             // Phase 2: Each card flies away, revealing the card behind it
             const flyAt = tl.duration();
             const flyingCards = cards.slice(0, -1);
 
             flyingCards.forEach((card, i) => {
-                const time = flyAt + i * 1.1;
+                const time = flyAt + i * 0.9;
                 const behindCards = cards.slice(i + 1);
+                const tiltAngle = i % 2 === 0 ? -11 : 11;
 
                 tl.to(
                     card,
                     {
-                        y: () => -window.innerHeight * 1.2,
-                        rotate: -22,
-                        scale: 0.92,
-                        opacity: 0.2,
+                        y: () => -window.innerHeight * 0.9,
+                        rotate: tiltAngle,
+                        scale: 0.95,
+                        opacity: 0,
                         ease: 'power2.inOut',
-                        duration: 1.1,
+                        duration: 0.85,
                     },
                     time
                 );
@@ -149,13 +154,13 @@ export default function MediaStackScroll() {
                         y: (idx) => stackPose(idx).y,
                         scale: (idx) => stackPose(idx).scale,
                         ease: 'power2.out',
-                        duration: 1.1,
+                        duration: 0.85,
                     },
                     time
                 );
             });
 
-            tl.to({}, { duration: 0.3 });
+            tl.to({}, { duration: 0.2 });
         }, stackRef);
 
         return () => ctx.revert();

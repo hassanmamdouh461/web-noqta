@@ -29,47 +29,48 @@ const HorizontalWords = () => {
 
             // ScrollTween for horizontal movement of the text block
             const scrollTween = gsap.fromTo(textRef, {
-                xPercent: 50 // Start far right so it slides in naturally
+                xPercent: 30 // Start slightly right so it slides in naturally
             }, {
-                xPercent: -100, // Make sure the ending frame stops in view for the paragraph
+                xPercent: -85, // Make sure the ending frame stops in view for the paragraph
                 ease: 'none',
                 scrollTrigger: {
                     trigger: container,
-                    start: "top top", // Begin the pinning when the container reaches the top
-                    end: "+=3000", // The scroll duration distance
+                    start: "top top",
+                    end: "+=1100", // Snappy scroll duration
                     scrub: 1,
-                    pin: true
+                    pin: true,
+                    anticipatePin: 1
                 }
             });
 
-            // Bounce each letter randomly
+            // Bounce each letter smoothly
             letters.forEach((letter) => {
                 gsap.from(letter, {
-                    yPercent: (Math.random() - 0.5) * 500,
-                    rotation: (Math.random() - 0.5) * 60,
-                    ease: "elastic.out(1.2, 1)",
+                    yPercent: (Math.random() - 0.5) * 60,
+                    rotation: (Math.random() - 0.5) * 16,
+                    ease: "power2.out",
                     scrollTrigger: {
                         trigger: letter,
                         containerAnimation: scrollTween,
                         start: 'left 90%',
-                        end: 'left 10%',
+                        end: 'left 15%',
                         scrub: 0.5
                     }
                 });
             });
 
-            // Bounce stickers
+            // Bounce stickers smoothly
             stickers.forEach((sticker) => {
                 gsap.from(sticker, {
-                    scale: 0,
-                    yPercent: (Math.random() - 0.5) * 400,
-                    rotation: (Math.random() - 0.5) * 60,
-                    ease: "elastic.out(1.2, 1)",
+                    scale: 0.4,
+                    yPercent: (Math.random() - 0.5) * 45,
+                    rotation: (Math.random() - 0.5) * 20,
+                    ease: "power2.out",
                     scrollTrigger: {
                         trigger: sticker,
                         containerAnimation: scrollTween,
                         start: 'left 90%',
-                        end: 'left 10%',
+                        end: 'left 20%',
                         scrub: 0.5
                     }
                 });
@@ -148,9 +149,10 @@ const HorizontalWords = () => {
 
             <div className="horizontal-words__bottom-text">
                 <div className="horizontal-words__bottom-text-l">
-                    Audiences are more scattered <em>and</em> more reachable<br />
-                    than ever. We help brands become leaders on the<br />
-                    channels of the new mainstream.
+                    Audiences are more scattered <em>and</em> more reachable than ever.<br />
+                    <span style={{ color: '#82a0ff', fontWeight: 700, fontSize: '1.25rem', marginTop: '6px', display: 'inline-block' }}>
+                        نبتكر حلولاً برمجية وحملات ميديا رقمية تجعل علامتك في الصدارة دائماً.
+                    </span>
                 </div>
             </div>
         </section>
