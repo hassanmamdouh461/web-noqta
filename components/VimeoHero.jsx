@@ -194,32 +194,21 @@ export default function VimeoHero() {
             {/* Hero Gradient Overlay */}
             <div className="vimeo-hero__fade" />
 
-            {/* Main Center / Bottom Content */}
+            {/* Main Center Content */}
             <div className="home-header__title" ref={titleRef}>
-                {/* Micro Badges */}
-                <div className="hero-division-pills">
-                    <span className="hero-pill hero-pill--tech">
-                        <span className="pill-dot" /> 01 السوفت وير والحلول التقنية
-                    </span>
-                    <span className="hero-pill hero-pill--media">
-                        <span className="pill-dot" /> 02 الميديا والتسويق الإبداعي
-                    </span>
-                </div>
-
                 <h1 className="vimeo-hero__title" dir="rtl">
-                    <span className="vimeo-hero__word">نحن </span>
                     <span className="vimeo-hero__word is--relative">
-                        <span className="hero-highlight-brand">نُـقـطَـة </span>
+                        <span className="hero-highlight-brand">نُـقـطَـة</span>
                         <div className="home-header__smiley">
                             <img src="/assets/VimeoHero SVG/smiley-face.svg" alt="" className="home-header__smiley-svg" />
                         </div>
                     </span>
                     <br />
-                    <span className="vimeo-hero__word">حيث تُبنى </span>
-                    <span className="vimeo-hero__word"><em>الأفكار </em></span>
-                    <span className="vimeo-hero__word">بأعلى </span>
+                    <span className="vimeo-hero__word">من بداية </span>
+                    <span className="vimeo-hero__word"><em>السطر </em></span>
+                    <span className="vimeo-hero__word">لنهاية </span>
                     <span className="vimeo-hero__word is--relative">
-                        <span className="hero-highlight-word">احترافية</span>
+                        <span className="hero-highlight-word">الإبداع</span>
                         <div className="home-header__star">
                             <div className="home-header__star-inner">
                                 <img src="/assets/VimeoHero SVG/pink-star.svg" alt="" className="home-header__star-svg" />
@@ -228,22 +217,6 @@ export default function VimeoHero() {
                         <img src="/assets/VimeoHero SVG/oval-underline.svg" alt="" className="home-header__title-line-svg" />
                     </span>
                 </h1>
-
-                <p className="hero-lead-text" dir="rtl">
-                    فريق متكامل يجمع بين خبرة <strong>هندسة البرمجيات والأنظمة السحابية</strong>، وبين شغف <strong>صناعة الهوية والميديا والتسويق الرقمي</strong>. نبدأ معك من أول نقطة لنصل بفكرتك إلى أقصى آفاق النجاح.
-                </p>
-
-                {/* Hero Action CTA Buttons */}
-                <div className="hero-cta-group">
-                    <a href="#stack-section" className="hero-cta-btn hero-cta-btn--primary">
-                        استكشف أعمالنا ومشاريعنا
-                        <span className="hero-cta-arrow">↓</span>
-                    </a>
-                    <a href={NOQTA_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hero-cta-btn hero-cta-btn--secondary">
-                        تواصل معنا مباشرة
-                        <span className="hero-cta-dot" />
-                    </a>
-                </div>
             </div>
 
             {/* Bottom Controls Indicator */}

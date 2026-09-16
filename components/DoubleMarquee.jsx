@@ -62,8 +62,9 @@ export default function DoubleMarquee() {
 
     return (
         <section className="Double-marquee" id="tools">
-            {/* Right Column in RTL: Title & Animated Graphics */}
-            <div className="marquee-left" dir="rtl">
+            <div className="Double-marquee__container">
+                {/* Right Column in RTL: Title & Animated Graphics */}
+                <div className="marquee-left" dir="rtl">
                     <div className="marquee-text-container">
                         <div className="marquee-pill-tag">
                             <span>التقنيات والأدوات الإبداعية</span>
@@ -126,6 +127,7 @@ export default function DoubleMarquee() {
                         </div>
                     ))}
                 </div>
+            </div>
         </section>
     );
 }
