@@ -110,11 +110,7 @@ export default function ProjectStackScroll() {
 
     return (
         <section ref={sectionRef} className="stack-section" id="stack-section" aria-label="Projects">
-            {/* Stack Header */}
             <div className="stack__header">
-                <div className="stack__badge">
-                    <span>معرض الأعمال والمشاريع • Selected Works</span>
-                </div>
                 <h2>أعمال حية تُحقق نتائج ملموسة</h2>
                 <p>
                     تصفّح مجموعة مختارة من مشاريعنا في الهويات البصرية، حملات التسويق، وتطوير السوفت وير. اسحب للأسفل لتفقد كل مشروع.
@@ -153,6 +149,16 @@ export default function ProjectStackScroll() {
                                     {project.body}
                                 </p>
 
+                                {project.tags && project.tags.length > 0 && (
+                                    <div className="stack-card__tags">
+                                        {project.tags.map((tag, tIdx) => (
+                                            <span key={tIdx} className="stack-card__tag-pill">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+
                                 <div className="stack-card__footer">
                                     <span className="stack-card__client-tag">
                                         العميل: {project.client}
@@ -178,9 +184,6 @@ export default function ProjectStackScroll() {
                                         alt={project.titleAr}
                                         loading="lazy"
                                     />
-                                    <div className="stack-card__overlay-tag">
-                                        {project.tag}
-                                    </div>
                                 </div>
                             </div>
                         </article>
