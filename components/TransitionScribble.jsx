@@ -6,24 +6,35 @@ import { ANIMATION_CONFIG } from '@/lib/data';
 
 export default function TransitionScribble() {
     useEffect(() => {
-        const logoClickable = document.querySelector('.logo-noqta-wrap');
+        const logoClickable = document.querySelector('.logo-noqta-wrap') || document.querySelector('.logo-truus');
         const transitionScribblePath = document.querySelector('.transition-scribble path');
         const transitionScribbleSvg = document.querySelector('.transition-scribble');
 
-        if (!logoClickable || !transitionScribblePath || !transitionScribbleSvg) return;
+        if (!transitionScribblePath || !transitionScribbleSvg) return;
 
         const transitionColors = [
-            'var(--color-mint)', 'var(--color-teal)', 'var(--color-violet)',
-            'var(--color-indigo)', 'var(--color-pink)', 'var(--color-orange)'
+            'var(--color-mint)',
+            'var(--color-teal)',
+            'var(--color-violet)',
+            'var(--color-indigo)',
+            '#F5693C', // Orange
+            '#A0325A', // Maroon
+            '#F0BEFA'  // Pink
         ];
 
         const runScribbleAnimation = (e) => {
             if (e) e.preventDefault();
             if (gsap.isTweening(transitionScribblePath) || gsap.isTweening(transitionScribbleSvg) || document.body.classList.contains('is-transitioning')) return;
 
-            const config = ANIMATION_CONFIG.transitionScribble;
-            const durIn = config.durationIn || 0.8;
-            const durOut = config.durationOut || 1.4;
+            const config = ANIMATION_CONFIG.transitionScribble || {
+                strokeWidthStart: "8%",
+                strokeWidthMax: "31%",
+                scale: 0.7,
+                durationIn: 2.2,
+                durationOut: 2.7
+            };
+            const durIn = config.durationIn || 2.2;
+            const durOut = config.durationOut || 2.7;
 
             gsap.set(transitionScribbleSvg, { scale: config.scale });
 
@@ -33,8 +44,33 @@ export default function TransitionScribble() {
             const randomColor = transitionColors[Math.floor(Math.random() * transitionColors.length)];
             transitionScribbleSvg.style.color = randomColor;
 
+            const lightColors = ['var(--color-mint)', '#F0BEFA', '#E6FAB9', '#fff'];
+            const logoColor = lightColors.includes(randomColor) ? '#080B14' : '#FFFFFF';
+
+            let transitionLogo = document.querySelector('.transition-logo');
+            if (!transitionLogo) {
+                transitionLogo = document.createElement('div');
+                transitionLogo.className = 'transition-logo';
+                transitionLogo.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10000; pointer-events:none; opacity:0; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; transition: color 0.1s;';
+
+                // Pure SVG vector mark of Noqta + bold typography
+                transitionLogo.innerHTML = `
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;">
+                        <svg width="140" height="84" viewBox="0 0 700 420" fill="none" style="display:block;">
+                            <circle cx="350" cy="115" r="82.5" fill="currentColor" />
+                            <path d="M 5 125 H 170 A 180 180 0 0 0 530 125 H 695 A 345 345 0 0 1 5 125 Z" fill="currentColor" />
+                        </svg>
+                        <span style="font-family: var(--font-ar, sans-serif); font-size: 46px; font-weight: 900; letter-spacing: 2px;">نُـقـطَـة</span>
+                    </div>
+                `;
+                document.body.appendChild(transitionLogo);
+            }
+
+            transitionLogo.style.color = logoColor;
+
             gsap.set(transitionScribblePath, { strokeDasharray: l, strokeDashoffset: l, strokeWidth: config.strokeWidthStart, opacity: 1 });
             gsap.set(transitionScribbleSvg, { opacity: 1, x: 0, y: 0, rotation: 0 });
+            gsap.set(transitionLogo, { opacity: 0, scale: 1 });
 
             document.body.classList.add('is-transitioning');
             const cursorBubble = document.querySelector('.cursor-bubble');
@@ -44,6 +80,7 @@ export default function TransitionScribble() {
                 onComplete: () => {
                     document.body.classList.remove('is-transitioning');
                     gsap.set(transitionScribblePath, { strokeWidth: '0%' });
+                    gsap.set(transitionLogo, { opacity: 0 });
                 }
             });
 
@@ -58,12 +95,38 @@ export default function TransitionScribble() {
 
             drawTl.to(transitionScribblePath, { strokeDashoffset: -l, duration: durOut, ease: 'power2.inOut' }, durIn);
             drawTl.to(transitionScribblePath, { strokeWidth: config.strokeWidthStart, duration: durOut, ease: 'power2.inOut' }, durIn);
+
+            drawTl.set(transitionLogo, { autoAlpha: 0 }, 0);
+            drawTl.to(transitionLogo, {
+                autoAlpha: 1, duration: durIn * 0.5, ease: 'power2.out',
+                onStart: () => {
+                    gsap.to(transitionLogo.querySelector('svg'), { rotation: 5, duration: 0.15, repeat: -1, yoyo: true, ease: 'steps(1)', overwrite: 'auto' });
+                }
+            }, durIn * 0.5);
+
+            drawTl.set(transitionLogo, {
+                autoAlpha: 0,
+                onComplete: () => {
+                    gsap.killTweensOf(transitionLogo.querySelector('svg'));
+                    gsap.set(transitionLogo.querySelector('svg'), { rotation: 0 });
+                }
+            }, durIn + (durOut * 0.48));
         };
 
-        logoClickable.addEventListener('click', runScribbleAnimation);
+        if (logoClickable) {
+            logoClickable.addEventListener('click', runScribbleAnimation);
+        }
+
+        // Auto-run on load — The signature Truus intro animation!
+        const timer = setTimeout(() => {
+            runScribbleAnimation(null);
+        }, 120);
 
         return () => {
-            logoClickable.removeEventListener('click', runScribbleAnimation);
+            if (logoClickable) {
+                logoClickable.removeEventListener('click', runScribbleAnimation);
+            }
+            clearTimeout(timer);
         };
     }, []);
 

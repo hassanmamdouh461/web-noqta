@@ -289,7 +289,7 @@ export default function Navbar() {
 
                 {/* ─── Center: Noqta Logo Lockup ─── */}
                 <div className="nav-center">
-                    <a href="#" className="logo-noqta-wrap" aria-label="Noqta Creative Solutions">
+                    <a href="#" className="logo-noqta-wrap logo-truus" aria-label="Noqta Creative Solutions">
                         <div className="logo-noqta-flex" data-wiggle-target="true">
                             {/* Noqta Icon Mark */}
                             <svg className="noqta-nav-icon" width="34" height="26" viewBox="0 0 700 420" fill="none">
