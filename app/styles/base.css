@@ -1,0 +1,96 @@
+/* ─── Google Fonts Import ───────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+/* ─── Design Tokens (Noqta Brand Palette) ────────────────────────────── */
+:root {
+    /* Noqta Core Palette from Image 3 & 4 */
+    --color-mint: #43FB9C;
+    --color-teal: #3DA792;
+    --color-violet: #362488;
+    --color-indigo: #323E86;
+
+    /* Theme Accents */
+    --color-green: #43FB9C;
+    --color-lightblue: #82a0ff;
+    --color-darkblue: #323E86;
+    --color-lightgreen: #e6fab9;
+    --color-orange: #f5693c;
+    --color-maroon: #362488;
+    --color-pink: #f0befa;
+
+    /* Backgrounds & Neutrals */
+    --bg-color: #f4f2ec;
+    --bg-dark: #0B0C16;
+    --bg-surface: #121528;
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-dark: #12141d;
+    --color-black-soft: #10121c;
+    --color-black-deep: #07080f;
+
+    /* Typography */
+    --font-ar: 'Cairo', system-ui, -apple-system, sans-serif;
+    --font-en: 'DM Sans', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', Georgia, serif;
+}
+
+/* ─── Reset ──────────────────────────────────────────────────────────── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::selection {
+    background-color: var(--color-mint);
+    color: var(--color-black-deep);
+}
+
+/* Prevent selection on non-text elements */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* ─── Base Elements ──────────────────────────────────────────────────── */
+html {
+    scroll-behavior: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: var(--font-en);
+    color: var(--color-dark);
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: url("/assets/Cursor SVG/cursor-default.svg") 2 0, auto;
+    -webkit-font-smoothing: antialiased;
+}
+
+.ar-font {
+    font-family: var(--font-ar);
+}
+
+.editorial-font {
+    font-family: var(--font-serif);
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}

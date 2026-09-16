@@ -1,0 +1,360 @@
+/* ─── Footer Shell ───────────────────────────────────────────────────────── */
+.main-footer {
+    padding: 12px;
+    background-color: var(--bg-color);
+}
+
+.footer-inner {
+    background: linear-gradient(160deg, #1C153E 0%, #101226 60%, #07080F 100%);
+    border-radius: 28px;
+    padding: 80px 45px 35px;
+    position: relative;
+    overflow: hidden;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Top Row ────────────────────────────────────────────────────────────── */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    position: relative;
+    z-index: 5;
+    text-align: right;
+}
+
+.footer-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: #ffffff;
+}
+
+.footer-badge {
+    display: inline-block;
+    font-family: var(--font-ar);
+    padding: 6px 14px;
+    background: rgba(67, 251, 156, 0.12);
+    color: var(--color-mint);
+    border: 1px solid rgba(67, 251, 156, 0.25);
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    width: fit-content;
+}
+
+.footer-column h3 {
+    font-family: var(--font-ar);
+    font-size: clamp(1.6rem, 2.5vw, 2.3rem);
+    font-weight: 800;
+    line-height: 1.25;
+    color: #ffffff;
+    margin: 0;
+}
+
+.footer-col-desc {
+    font-family: var(--font-ar);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.footer-email {
+    font-family: var(--font-en);
+    font-size: clamp(1.4rem, 2.2vw, 2rem);
+    font-weight: 800;
+    color: var(--color-mint);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    width: fit-content;
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+.footer-email:hover {
+    transform: scale(1.03);
+}
+
+.footer-phones-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-phone-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: var(--font-en);
+    font-size: 1.25rem;
+    font-weight: 700;
+    transition: color 0.2s ease, transform 0.2s ease;
+    width: fit-content;
+}
+
+.footer-phone-item:hover {
+    color: var(--color-mint);
+    transform: translateX(-4px);
+}
+
+.phone-icon {
+    font-size: 1.1rem;
+}
+
+.footer-whatsapp {
+    font-family: var(--font-ar);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #25D366;
+    text-decoration: none;
+    width: fit-content;
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+.footer-whatsapp:hover {
+    transform: translateX(-4px);
+}
+
+/* ─── Social Icons ───────────────────────────────────────────────────────── */
+.footer-socials {
+    display: flex;
+    gap: 16px;
+    margin-top: 6px;
+}
+
+.single-social {
+    color: #ffffff;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.single-social:hover {
+    background: var(--color-mint);
+    color: #07080f;
+    transform: translateY(-3px);
+}
+
+/* ─── Bottom Area ────────────────────────────────────────────────────────── */
+.footer-bottom {
+    position: relative;
+    width: 100%;
+    margin-top: 60px;
+}
+
+.footer-big-text {
+    width: 100%;
+    color: #ffffff;
+    text-align: center;
+    pointer-events: none;
+    user-select: none;
+    margin-bottom: 30px;
+}
+
+.noqta-footer-brand-lockup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.noqta-footer-icon {
+    width: clamp(90px, 14vw, 180px);
+    height: auto;
+    color: var(--color-mint);
+    filter: drop-shadow(0 0 40px rgba(67, 251, 156, 0.4));
+}
+
+.noqta-footer-text-ar {
+    font-family: var(--font-ar);
+    font-weight: 900;
+    font-size: clamp(5rem, 14vw, 13rem);
+    line-height: 0.9;
+    color: #ffffff;
+    letter-spacing: -2px;
+}
+
+.noqta-footer-text-en {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    color: rgba(240, 190, 250, 0.85);
+    letter-spacing: 0.05em;
+}
+
+.footer-bottom-row {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-hashtag {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--color-mint);
+    opacity: 0.9;
+    letter-spacing: 0.05em;
+}
+
+/* ─── Credits Popout ─────────────────────────────────────────────────────── */
+.footer-credits-wrapper {
+    position: relative;
+}
+
+.footer-credits {
+    background: #000000;
+    font-family: var(--font-ar);
+    color: #ffffff;
+    padding: 6px 18px;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-block;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.footer-credits:hover {
+    border-color: var(--color-mint);
+    color: var(--color-mint);
+}
+
+.credits-box {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    left: 0;
+    background: #0B0C16;
+    border-radius: 16px;
+    opacity: 0;
+    visibility: hidden;
+    border: 2px solid var(--color-mint);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.credits-content {
+    display: flex;
+    gap: 30px;
+    padding: 22px 24px;
+    white-space: nowrap;
+    direction: rtl;
+}
+
+.credits-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: right;
+}
+
+.credits-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.78rem;
+    font-family: var(--font-ar);
+}
+
+.credits-name {
+    color: var(--color-mint);
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-family: var(--font-ar);
+}
+
+/* ─── Footer Stickers ────────────────────────────────────────────────────── */
+.footer-stickers {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.footer-sticker {
+    position: absolute;
+    width: clamp(70px, 8vw, 110px);
+    height: auto;
+    pointer-events: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
+}
+
+.sticker-boom {
+    left: 4%;
+    bottom: 25%;
+}
+
+.sticker-smiley {
+    left: 22%;
+    top: 15%;
+}
+
+.sticker-heart {
+    right: 28%;
+    top: 10%;
+}
+
+.sticker-hands {
+    right: 12%;
+    bottom: 25%;
+}
+
+.sticker-100 {
+    left: 45%;
+    bottom: 10%;
+}
+
+.sticker-camera {
+    left: 12%;
+    top: 30%;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+    .footer-top {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .footer-inner {
+        padding: 50px 25px 25px;
+    }
+
+    .noqta-footer-brand-lockup {
+        gap: 15px;
+    }
+
+    .footer-bottom-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+        text-align: center;
+    }
+}

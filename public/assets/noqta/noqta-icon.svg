@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" fill="none">
+  <!-- Noqta Circular Dot -->
+  <circle cx="350" cy="115" r="82.5" fill="currentColor" />
+  <!-- Noqta Crescent Bowl -->
+  <path d="M 5 125 H 170 A 180 180 0 0 0 530 125 H 695 A 345 345 0 0 1 5 125 Z" fill="currentColor" />
+</svg>

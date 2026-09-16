@@ -1,0 +1,390 @@
+/* ─── Navbar & Header ───────────────────────────────────────────────────────── */
+.main-header {
+    width: 100%;
+    position: relative;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 40px;
+    background: transparent;
+    z-index: 1000;
+    transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar.on-dark {
+    color: #ffffff;
+}
+
+.navbar.on-light {
+    color: var(--color-dark);
+}
+
+/* ─── Center: Noqta Logo ─── */
+.logo-noqta-wrap {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.logo-noqta-flex {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.noqta-nav-icon {
+    display: block;
+    color: var(--color-mint);
+    transition: transform 0.3s ease;
+}
+
+.logo-noqta-wrap:hover .noqta-nav-icon {
+    transform: scale(1.1);
+}
+
+.noqta-nav-text {
+    font-family: var(--font-ar);
+    font-weight: 900;
+    font-size: 1.85rem;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    color: inherit;
+}
+
+.noqta-nav-subtext {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--color-mint);
+    opacity: 0.9;
+    margin-top: 4px;
+}
+
+/* ─── Left: Work Popout Trigger ─── */
+.logo-work-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 55px;
+    cursor: pointer;
+}
+
+.nav-bar__work-blob-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.logo-work-text {
+    position: relative;
+    z-index: 2;
+    font-family: var(--font-ar);
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin-left: 62px;
+    color: inherit;
+    white-space: nowrap;
+    transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-left:hover .logo-work-text {
+    color: var(--color-dark) !important;
+}
+
+/* ─── Right: WhatsApp Trigger ─── */
+.logo-whatsapp {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.logo-whatsapp:hover {
+    transform: scale(1.1);
+}
+
+.nav-bar__whatsapp-svg {
+    width: 30px;
+    height: 30px;
+    display: block;
+    color: inherit;
+}
+
+.nav-bar__whatsapp-svg path {
+    fill: currentColor;
+    transition: fill 0.3s ease;
+}
+
+/* ─── Popout Overlay ─── */
+.nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(7, 8, 15, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 99;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.nav-hover-trigger {
+    position: relative;
+}
+
+.nav-popout {
+    position: absolute;
+    background: #FAF8F5;
+    color: var(--color-dark);
+    border-radius: 20px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 100;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.nav-popout-inner {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-hover-trigger:hover .nav-popout {
+    pointer-events: auto;
+}
+
+/* ─── Work Popout Layout ─── */
+.nav-left .nav-popout {
+    top: 8px;
+    left: -8px;
+    width: 360px;
+    max-height: 520px;
+}
+
+.nav-left .nav-popout-inner {
+    width: 100%;
+    padding: 85px 22px 22px 22px;
+    gap: 16px;
+    direction: rtl;
+    text-align: right;
+}
+
+.nav-work-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: inherit;
+    padding: 8px;
+    border-radius: 14px;
+    transition: background 0.25s ease;
+    cursor: pointer;
+}
+
+.nav-work-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.nav-work-item__img-wrap {
+    width: 68px;
+    height: 68px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.nav-work-item__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.nav-work-item:hover .nav-work-item__img {
+    transform: scale(1.12);
+}
+
+.nav-work-item__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.nav-work-badge {
+    font-family: var(--font-ar);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    width: fit-content;
+}
+
+.badge-maroon {
+    background-color: rgba(54, 36, 136, 0.12);
+    color: var(--color-violet);
+}
+
+.badge-pink {
+    background-color: rgba(67, 251, 156, 0.2);
+    color: #128054;
+}
+
+.nav-work-title {
+    font-family: var(--font-ar);
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.nav-work-btn {
+    display: block;
+    text-align: center;
+    background-color: #12141d;
+    color: var(--color-mint);
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-family: var(--font-ar);
+    font-weight: 800;
+    font-size: 1rem;
+    text-decoration: none;
+    margin-top: 8px;
+    transition: transform 0.25s ease, background-color 0.25s ease;
+    cursor: pointer;
+}
+
+.nav-work-btn:hover {
+    background-color: #07080f;
+    transform: translateY(-2px);
+}
+
+/* ─── WhatsApp Popout Layout ─── */
+.nav-right .nav-popout {
+    top: 8px;
+    right: -8px;
+    width: 320px;
+}
+
+.nav-right .nav-popout-inner {
+    width: 100%;
+    padding: 80px 22px 24px 22px;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    direction: rtl;
+}
+
+.nav-wa-icon-glow {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(37, 211, 102, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-wa-title {
+    font-family: var(--font-ar);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #12141d;
+    margin: 0;
+}
+
+.nav-wa-desc {
+    font-family: var(--font-ar);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #555555;
+    margin: 0;
+}
+
+.nav-wa-numbers {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+
+.nav-wa-num-badge {
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #12141d;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    font-family: var(--font-en);
+    transition: all 0.2s ease;
+}
+
+.nav-wa-num-badge:hover {
+    border-color: var(--color-mint);
+    background: rgba(67, 251, 156, 0.1);
+}
+
+.nav-wa-link {
+    display: block;
+    width: 100%;
+    background: #25D366;
+    color: #FFFFFF;
+    font-family: var(--font-ar);
+    font-weight: 800;
+    font-size: 0.95rem;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    margin-top: 4px;
+    transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.nav-wa-link:hover {
+    background: #1EBE5B;
+    transform: translateY(-2px);
+}
+
+/* ─── Responsive Navbar ─── */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 16px 20px;
+    }
+
+    .logo-work-text {
+        display: none;
+    }
+
+    .noqta-nav-text {
+        font-size: 1.5rem;
+    }
+
+    .noqta-nav-subtext {
+        display: none;
+    }
+
+    .nav-left .nav-popout {
+        width: 300px;
+    }
+}

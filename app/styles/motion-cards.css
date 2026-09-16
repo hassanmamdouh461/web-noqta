@@ -1,0 +1,302 @@
+/* ─── MotionCard Section ─────────────────────────────────────────────────── */
+.motion-card-section {
+    position: relative;
+    width: 100%;
+    padding: 110px 40px 90px;
+    text-align: center;
+    overflow: hidden;
+    z-index: 1;
+    background-color: var(--bg-color);
+}
+
+/* ─── Part 1: Heading ────────────────────────────────────────────────────── */
+.motion-card__heading {
+    max-width: 950px;
+    margin: 0 auto 50px;
+    position: relative;
+}
+
+.motion-card__title {
+    font-family: var(--font-ar);
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-dark);
+    margin-bottom: 8px;
+}
+
+.motion-card__subtitle {
+    font-family: var(--font-ar);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 3vw, 2.5rem);
+    line-height: 1.3;
+    color: var(--color-violet);
+    position: relative;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.motion-card__sticker {
+    position: absolute;
+    display: inline-block;
+    pointer-events: none;
+}
+
+.motion-card__sticker--top {
+    top: -30px;
+    left: -40px;
+    width: clamp(70px, 8vw, 110px);
+    transform: rotate(-12deg);
+}
+
+.motion-card__sticker-img {
+    width: 100%;
+    height: auto;
+}
+
+.motion-card__underline-svg {
+    display: block;
+    max-width: 680px;
+    margin: -10px auto 0;
+    color: var(--color-mint);
+    height: auto;
+}
+
+/* ─── Part 2: Cards Area ─────────────────────────────────────────────────── */
+.motion-card__cards-area {
+    position: relative;
+    width: 100%;
+    max-width: 1120px;
+    height: 520px;
+    margin: 40px auto 60px;
+}
+
+.motion-card__blob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(750px, 95vw);
+    height: auto;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.motion-card__blob-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.motion-card__cards {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.motion-card__card {
+    position: relative;
+    width: clamp(170px, 18vw, 240px);
+    height: clamp(230px, 24vw, 320px);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    flex-shrink: 0;
+    transition: box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.motion-card__card:hover {
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.32);
+}
+
+.motion-card__card-image {
+    width: 100%;
+    height: 100%;
+    background-color: #0E1430;
+    overflow: hidden;
+}
+
+.motion-card__card-image .cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Fan arrangement */
+.motion-card__card--1 {
+    transform: rotate(-7deg);
+    margin-right: -2.5vw;
+    z-index: 1;
+}
+
+.motion-card__card--2 {
+    transform: rotate(5deg);
+    margin-right: -2vw;
+    top: 25px;
+    z-index: 2;
+}
+
+.motion-card__card--3 {
+    transform: rotate(-4deg);
+    margin-right: -2vw;
+    top: -15px;
+    z-index: 3;
+}
+
+.motion-card__card--4 {
+    transform: rotate(8deg);
+    z-index: 4;
+    top: 30px;
+}
+
+/* ─── Floating Labels ────────────────────────────────────────────────────── */
+.motion-card__floating-labels {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.motion-card__floating-labels .motion-card__floating-label {
+    pointer-events: auto;
+}
+
+.motion-card__floating-label {
+    position: absolute;
+    padding: 0.45rem 1.1rem;
+    border-radius: 9999px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+    white-space: nowrap;
+    cursor: default;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.motion-card__floating-text {
+    margin: 0;
+    font-family: var(--font-ar);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #07080f;
+}
+
+.motion-card__floating-label--pink {
+    background-color: #43FB9C;
+    top: 25%;
+    left: 24%;
+}
+
+.motion-card__floating-label--orange {
+    background-color: #F0BEFA;
+    top: 72%;
+    left: 48%;
+}
+
+.motion-card__floating-label--red {
+    background-color: #82A0FF;
+    top: 35%;
+    left: 80%;
+}
+
+/* ─── Stats Grid (Proof of Results) ──────────────────────────────────────── */
+.motion-card__stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1050px;
+    margin: 20px auto 55px;
+    padding: 0 20px;
+}
+
+.motion-card__stat-item {
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    padding: 24px 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.motion-card__stat-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(67, 251, 156, 0.2);
+    border-color: var(--color-mint);
+}
+
+.motion-card__stat-num {
+    font-family: var(--font-en);
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 900;
+    color: var(--color-violet);
+    line-height: 1.1;
+    margin-bottom: 6px;
+}
+
+.motion-card__stat-label {
+    font-family: var(--font-ar);
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #12141d;
+    margin-bottom: 4px;
+}
+
+.motion-card__stat-sub {
+    font-family: var(--font-en);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #777777;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ─── Part 3: Bottom Text ────────────────────────────────────────────────── */
+.motion-card__footer-text {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.motion-card__description {
+    font-family: var(--font-ar);
+    font-size: clamp(1.05rem, 1.4vw, 1.28rem);
+    font-weight: 600;
+    line-height: 1.85;
+    color: var(--color-dark);
+}
+
+.motion-card__description strong {
+    color: var(--color-violet);
+    font-weight: 800;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+    .motion-card-section {
+        padding: 70px 20px 60px;
+    }
+
+    .motion-card__cards-area {
+        height: 400px;
+    }
+
+    .motion-card__stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .motion-card__floating-label {
+        padding: 0.35rem 0.8rem;
+    }
+
+    .motion-card__floating-text {
+        font-size: 0.78rem;
+    }
+}
