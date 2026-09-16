@@ -61,68 +61,71 @@ export default function DoubleMarquee() {
     }, []);
 
     return (
-        <section className="Double-marquee">
-            {/* Left Column: Title & Animated Graphics */}
+        <section className="Double-marquee" id="tools">
+            {/* Right Column in RTL: Title & Animated Graphics */}
             <div className="marquee-left" dir="rtl">
-                <div className="marquee-text-container">
-                    <div className="marquee-pill-tag">
-                        <span>التقنيات والأدوات الإبداعية</span>
+                    <div className="marquee-text-container">
+                        <div className="marquee-pill-tag">
+                            <span>التقنيات والأدوات الإبداعية</span>
+                        </div>
+                        <h2>
+                            تقنيات حديثة<br />
+                            وأدوات{' '}
+                            <span className="text-with">
+                                عالمية:
+                                <svg xmlns="http://www.w3.org/2000/svg" className="marquee-underline" viewBox="0 0 132 5" fill="none">
+                                    <path d="M1 2.08377C44.3458 3.90451 87.9791 5.71442 131 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </span>
+                        </h2>
+                        <p className="marquee-left-subtext">
+                            نستخدم أحدث أطر العمل في البرمجة والأنظمة السحابية وأقوى أدوات الإنتاج الفني والمونتاج.
+                        </p>
                     </div>
-                    <h2>
-                        تقنيات حديثة<br />
-                        وأدوات <span className="text-with">عالمية:</span>
-                    </h2>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="marquee-underline" viewBox="0 0 132 5" fill="none">
-                        <path d="M1 2.08377C44.3458 3.90451 87.9791 5.71442 131 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    <p className="marquee-left-subtext">
-                        نستخدم أحدث أطر العمل في البرمجة والأنظمة السحابية وأقوى أدوات الإنتاج الفني والمونتاج.
-                    </p>
+
+                    <div className="marquee-blob-container" aria-hidden="true">
+                        <img src="/assets/Marquee-blob SVG/marquee-blob.svg" className="marquee-blob" alt="" />
+                        <div className="marquee-svg-container">
+                            <div className="marquee-svg-item">
+                                <img src="/assets/Marquee-blob SVG/marquee-hand.svg" width="100%" alt="" />
+                            </div>
+                            <div className="marquee-svg-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 386 127" fill="none">
+                                    <path d="M2 123C9 35.9999 84.5 17 124 25.9999C217.764 47.3635 207 115 177.5 123C105.777 142.45 110.737 1.99991 232.5 2C310.5 2.00006 366.5 79 376 118L356.5 105.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M2 123C9 35.9999 84.5 17 124 25.9999C217.764 47.3635 207 115 177.5 123C105.777 142.45 110.737 1.99991 232.5 2C310.5 2.00006 366.5 79 376 118L384 97" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="marquee-blob-container">
-                    <img src="/assets/Marquee-blob SVG/marquee-blob.svg" className="marquee-blob" alt="" aria-hidden="true" />
-                    <div className="marquee-svg-container">
-                        <div className="marquee-svg-item">
-                            <img src="/assets/Marquee-blob SVG/marquee-hand.svg" width="100%" alt="" aria-hidden="true" />
-                        </div>
-                        <div className="marquee-svg-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 386 127" fill="none">
-                                <path d="M2 123C9 35.9999 84.5 17 124 25.9999C217.764 47.3635 207 115 177.5 123C105.777 142.45 110.737 1.99991 232.5 2C310.5 2.00006 366.5 79 376 118L356.5 105.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M2 123C9 35.9999 84.5 17 124 25.9999C217.764 47.3635 207 115 177.5 123C105.777 142.45 110.737 1.99991 232.5 2C310.5 2.00006 366.5 79 376 118L384 97" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Right: Two Vertical Scrolling Columns */}
-            <div className="marquee-right">
-                {tracks.map((trackItems, colIndex) => (
-                    <div key={colIndex} className={`marquee-column marquee-column--${colIndex}`}>
-                        <div className="marquee-track">
-                            {trackItems.map((item, i) => (
-                                <div
-                                    key={i}
-                                    className="marquee-item"
-                                    style={{
-                                        backgroundColor: item.color,
-                                        color: item.isDark ? '#FFFFFF' : '#07080F'
-                                    }}
-                                >
-                                    <div className="marquee-badge-content">
-                                        <span className="marquee-badge-cat">
-                                            {item.brand.category === 'tech' ? '⚡ CODE' : '🎨 MEDIA'}
-                                        </span>
-                                        <h4 className="marquee-badge-name">{item.brand.name}</h4>
-                                        <span className="marquee-badge-label">{item.brand.label}</span>
+                {/* Left Column in RTL: Two Vertical Scrolling Columns */}
+                <div className="marquee-right" dir="ltr">
+                    {tracks.map((trackItems, colIndex) => (
+                        <div key={colIndex} className={`marquee-column marquee-column--${colIndex}`}>
+                            <div className="marquee-track">
+                                {trackItems.map((item, i) => (
+                                    <div
+                                        key={i}
+                                        className="marquee-item"
+                                        style={{
+                                            backgroundColor: item.color,
+                                            color: item.isDark ? '#FFFFFF' : '#07080F'
+                                        }}
+                                    >
+                                        <div className="marquee-badge-content">
+                                            <span className="marquee-badge-cat">
+                                                {item.brand.category === 'tech' ? '⚡ CODE' : '🎨 MEDIA'}
+                                            </span>
+                                            <h4 className="marquee-badge-name">{item.brand.name}</h4>
+                                            <span className="marquee-badge-label">{item.brand.label}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
         </section>
     );
 }

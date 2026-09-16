@@ -338,4 +338,14 @@
         justify-content: center;
         padding: 12px 20px;
     }
+
+    .vimeo-mute-bubble {
+        display: none !important;
+    }
+}
+
+@media (pointer: coarse) {
+    .vimeo-mute-bubble {
+        display: none !important;
+    }
 }

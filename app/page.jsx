@@ -49,9 +49,7 @@ export default function Home() {
             </main>
 
             {/* Dual Vertical Marquee with Tech & Media Tools */}
-            <section className="Double-marquee">
-                <DoubleMarquee />
-            </section>
+            <DoubleMarquee />
 
             {/* Footer with Contact Links, WhatsApp, Socials & Stickers */}
             <footer className="main-footer">

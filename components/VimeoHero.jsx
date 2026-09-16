@@ -75,32 +75,106 @@ export default function VimeoHero() {
         const hero = heroRef.current;
         if (!bubble || !hero) return;
 
-        const xTo = gsap.quickTo(bubble, 'x', { duration: 0.5, ease: 'power3' });
-        const yTo = gsap.quickTo(bubble, 'y', { duration: 0.5, ease: 'power3' });
+        // Skip on coarse pointers (touch devices)
+        if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+            return;
+        }
+
+        const xTo = gsap.quickTo(bubble, 'x', { duration: 0.45, ease: 'power3' });
+        const yTo = gsap.quickTo(bubble, 'y', { duration: 0.45, ease: 'power3' });
+
+        let isVisible = false;
+        let lastX = -1000;
+        let lastY = -1000;
+
+        const showBubble = () => {
+            if (isVisible) return;
+            isVisible = true;
+            gsap.killTweensOf(bubble);
+            gsap.to(bubble, {
+                opacity: 1,
+                scale: 1,
+                rotation: 0,
+                duration: 0.9,
+                ease: 'elastic.out(1, 0.4)',
+            });
+        };
+
+        const hideBubble = () => {
+            if (!isVisible) return;
+            isVisible = false;
+            gsap.killTweensOf(bubble);
+            gsap.to(bubble, {
+                opacity: 0,
+                scale: 0,
+                rotation: -25,
+                duration: 0.25,
+                ease: 'power2.in',
+            });
+        };
+
+        const checkInside = (x, y) => {
+            if (x < 0 || y < 0) return false;
+            const rect = hero.getBoundingClientRect();
+            return (
+                x >= rect.left &&
+                x <= rect.right &&
+                y >= rect.top &&
+                y <= rect.bottom
+            );
+        };
+
+        const isInteractiveHover = (el) => {
+            if (!el || !el.closest) return false;
+            return Boolean(el.closest('.hero-cta-btn, .navbar'));
+        };
 
         const onMove = (e) => {
-            xTo(e.clientX + 14);
-            yTo(e.clientY - 45);
+            lastX = e.clientX;
+            lastY = e.clientY;
+
+            const isInside = checkInside(lastX, lastY);
+            const isOverBtn = isInteractiveHover(e.target);
+
+            if (isInside && !isOverBtn) {
+                xTo(lastX + 14);
+                yTo(lastY - 45);
+                showBubble();
+            } else {
+                hideBubble();
+            }
         };
 
-        const onEnter = () => {
-            gsap.killTweensOf(bubble);
-            gsap.to(bubble, { opacity: 1, scale: 1, rotation: 0, duration: 1.2, ease: 'elastic.out(1, 0.4)' });
+        const onScrollOrUpdate = () => {
+            if (lastX === -1000 || lastY === -1000) return;
+            const el = document.elementFromPoint(lastX, lastY);
+            const isInside = checkInside(lastX, lastY);
+            const isOverBtn = isInteractiveHover(el);
+
+            if (isInside && !isOverBtn) {
+                xTo(lastX + 14);
+                yTo(lastY - 45);
+                showBubble();
+            } else {
+                hideBubble();
+            }
         };
 
-        const onLeave = () => {
-            gsap.killTweensOf(bubble);
-            gsap.to(bubble, { opacity: 0, scale: 0, rotation: -25, duration: 0.3, ease: 'power2.in' });
+        const onWindowMouseLeave = () => {
+            lastX = -1000;
+            lastY = -1000;
+            hideBubble();
         };
 
-        window.addEventListener('mousemove', onMove);
-        hero.addEventListener('mouseenter', onEnter);
-        hero.addEventListener('mouseleave', onLeave);
+        window.addEventListener('mousemove', onMove, { passive: true });
+        window.addEventListener('scroll', onScrollOrUpdate, { passive: true });
+        document.addEventListener('mouseleave', onWindowMouseLeave);
 
         return () => {
             window.removeEventListener('mousemove', onMove);
-            hero.removeEventListener('mouseenter', onEnter);
-            hero.removeEventListener('mouseleave', onLeave);
+            window.removeEventListener('scroll', onScrollOrUpdate);
+            document.removeEventListener('mouseleave', onWindowMouseLeave);
+            gsap.killTweensOf(bubble);
         };
     }, []);
 
