@@ -156,7 +156,7 @@
 .footer-bottom {
     position: relative;
     width: 100%;
-    margin-top: 60px;
+    margin-top: 50px;
 }
 
 .footer-big-text {
@@ -165,51 +165,26 @@
     text-align: center;
     pointer-events: none;
     user-select: none;
-    margin-bottom: 30px;
+    margin-bottom: -70px;
 }
 
-.noqta-footer-brand-lockup {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-}
-
-.noqta-footer-icon {
-    width: clamp(90px, 14vw, 180px);
+.footer-logo__svg {
+    width: 104.9%;
     height: auto;
-    color: var(--color-mint);
-    filter: drop-shadow(0 0 40px rgba(67, 251, 156, 0.4));
-}
-
-.noqta-footer-text-ar {
-    font-family: var(--font-ar);
-    font-weight: 900;
-    font-size: clamp(5rem, 14vw, 13rem);
-    line-height: 0.9;
-    color: #ffffff;
-    letter-spacing: -2px;
-}
-
-.noqta-footer-text-en {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(3.5rem, 9vw, 8rem);
-    color: rgba(240, 190, 250, 0.85);
-    letter-spacing: 0.05em;
+    margin-left: -2.5%;
 }
 
 .footer-bottom-row {
-    position: relative;
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
+    pointer-events: none;
     z-index: 10;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-hashtag {
@@ -300,40 +275,51 @@
 
 .footer-sticker {
     position: absolute;
-    width: clamp(70px, 8vw, 110px);
+    width: 100px;
     height: auto;
     pointer-events: auto;
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
 }
 
 .sticker-boom {
-    left: 4%;
-    bottom: 25%;
+    left: -1%;
+    bottom: 15%;
+    width: 150px;
+    transform: rotate(-10deg);
 }
 
 .sticker-smiley {
-    left: 22%;
-    top: 15%;
+    left: 20%;
+    bottom: 45%;
+    width: 130px;
+    transform: rotate(-20deg);
 }
 
 .sticker-heart {
-    right: 28%;
-    top: 10%;
-}
-
-.sticker-hands {
-    right: 12%;
-    bottom: 25%;
-}
-
-.sticker-100 {
     left: 45%;
-    bottom: 10%;
+    bottom: 30%;
+    width: 130px;
+    transform: rotate(-15deg);
 }
 
-.sticker-camera {
-    left: 12%;
-    top: 30%;
+.footer-sticker.sticker-hands {
+    left: 55%;
+    bottom: 0%;
+    width: 130px;
+    transform: rotate(10deg);
+}
+
+.footer-sticker.sticker-100 {
+    left: 60%;
+    bottom: 55%;
+    width: 130px;
+    transform: rotate(-0deg);
+}
+
+.footer-sticker.sticker-camera {
+    right: 8%;
+    bottom: 15%;
+    width: 130px;
+    transform: rotate(5deg);
 }
 
 /* ─── Responsive ─── */
