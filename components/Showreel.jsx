@@ -10,9 +10,6 @@ export default function Showreel() {
         <section className="showreel-section" id="showreel-section">
             <div className="showreel__container" dir="rtl">
                 <div className="showreel__header">
-                    <div className="showreel__badge">
-                        <span>الإنتاج الفني والميديا • Media & Reels</span>
-                    </div>
                     <h2 className="showreel__title">شاهد كيف نحوّل الأفكار إلى واقع بصري مبهر</h2>
                     <p className="showreel__desc">
                         مونتاج سينمائي، موشن جرافيكس 2D/3D، وتصاميم سوشيال ميديا تكسر رتابة التايم لاين.
