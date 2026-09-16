@@ -2,13 +2,13 @@
 
 .vimeo-hero {
     position: relative;
-    width: calc(100% - 24px);
-    height: calc(100vh - 24px);
-    min-height: 640px;
-    margin: 12px auto;
+    width: 100%;
+    margin: 0;
+    border-radius: 0 0 20px 20px;
+    min-height: 100svh;
+    height: 100svh;
     overflow: hidden;
     background-color: var(--bg-dark);
-    border-radius: 28px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
@@ -33,11 +33,9 @@
 /* ─── Center / Hero Content Layout ─── */
 .home-header__title {
     position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
-    padding: 0 clamp(1rem, 4vw, 40px);
+    bottom: 36px;
+    inset-inline: 0;
+    padding: 0 20px;
     z-index: 3;
     display: flex;
     flex-direction: column;
@@ -49,18 +47,18 @@
 .hero-division-pills {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
     justify-content: center;
-    margin-bottom: 22px;
+    margin-bottom: 16px;
 }
 
 .hero-pill {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 14px;
+    padding: 5px 10px;
     border-radius: 9999px;
-    font-size: 0.82rem;
+    font-size: 0.74rem;
     font-weight: 700;
     font-family: var(--font-ar);
     letter-spacing: 0.02em;
@@ -90,7 +88,7 @@
 .vimeo-hero__title {
     font-family: var(--font-ar);
     font-weight: 900;
-    font-size: clamp(2.8rem, 6.8vw, 6.4rem);
+    font-size: clamp(2rem, 8.5vw, 2.4rem);
     line-height: 1.25;
     letter-spacing: -0.02em;
     color: #ffffff;
@@ -132,7 +130,7 @@
 .home-header__smiley {
     position: absolute;
     top: -24px;
-    left: -20px;
+    inset-inline-start: -20px;
     width: clamp(35px, 4vw, 55px);
     pointer-events: none;
 }
@@ -145,7 +143,7 @@
 .home-header__star {
     position: absolute;
     top: -28px;
-    right: -16px;
+    inset-inline-end: -16px;
     width: clamp(28px, 3.5vw, 45px);
     pointer-events: none;
 }
@@ -158,7 +156,7 @@
 .home-header__title-line-svg {
     position: absolute;
     bottom: -14px;
-    left: 0;
+    inset-inline-start: 0;
     width: 100%;
     pointer-events: none;
 }
@@ -166,11 +164,11 @@
 /* Hero Lead Text */
 .hero-lead-text {
     font-family: var(--font-ar);
-    font-size: clamp(0.95rem, 1.35vw, 1.2rem);
+    font-size: 0.92rem;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.8);
     max-width: 58ch;
-    margin-bottom: 26px;
+    margin-bottom: 18px;
 }
 
 .hero-lead-text strong {
@@ -195,7 +193,9 @@
     font-family: var(--font-ar);
     font-weight: 800;
     font-size: 1rem;
-    padding: 13px 28px;
+    padding: 12px 20px;
+    width: 100%;
+    justify-content: center;
     border-radius: 9999px;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
@@ -266,12 +266,15 @@
 /* ─── Elastic Mute / Follower Bubble ─── */
 .vimeo-mute-bubble {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: -300px;
+    left: -300px;
     z-index: 999;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0);
+    will-change: transform, opacity;
+    display: none;
 }
 
 .vimeo-mute-bubble__blob {
@@ -302,46 +305,49 @@
 }
 
 /* ─── Responsive ─── */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
     .vimeo-hero {
-        width: 100%;
-        margin: 0;
-        border-radius: 0 0 24px 24px;
-        min-height: 560px;
+        width: calc(100% - 24px);
+        height: calc(100vh - 24px);
+        margin: 12px auto;
+        border-radius: 28px;
+        min-height: 640px;
     }
 
     .home-header__title {
-        bottom: 36px;
-        padding: 0 20px;
+        bottom: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 0 clamp(1rem, 4vw, 40px);
     }
 
     .hero-division-pills {
-        gap: 8px;
-        margin-bottom: 16px;
+        gap: 12px;
+        margin-bottom: 22px;
     }
 
     .hero-pill {
-        font-size: 0.74rem;
-        padding: 5px 10px;
+        font-size: 0.82rem;
+        padding: 6px 14px;
     }
 
     .vimeo-hero__title {
-        font-size: 2.3rem;
+        font-size: clamp(2.8rem, 6.8vw, 6.4rem);
     }
 
     .hero-lead-text {
-        font-size: 0.92rem;
-        margin-bottom: 18px;
+        font-size: clamp(0.95rem, 1.35vw, 1.2rem);
+        margin-bottom: 26px;
     }
 
     .hero-cta-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 12px 20px;
+        width: auto;
+        justify-content: flex-start;
+        padding: 13px 28px;
     }
 
     .vimeo-mute-bubble {
-        display: none !important;
+        display: block;
     }
 }
 

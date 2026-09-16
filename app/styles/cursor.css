@@ -40,6 +40,12 @@ body.is-transitioning .cursor-bubble {
     display: none !important;
 }
 
+body.is-transitioning .vimeo-mute-bubble {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: scale(0) !important;
+}
+
 /* ─── Initial Brand Preloader (Instant 0ms Splash Screen) ────────────────── */
 .initial-loader {
     position: fixed;
@@ -77,12 +83,14 @@ body.is-transitioning .cursor-bubble {
 
 .initial-loader-icon {
     display: block;
+    max-width: 140px;
+    width: clamp(80px, 20vw, 140px);
     animation: initialLoaderWiggle 0.35s ease-in-out infinite alternate;
 }
 
 .initial-loader-text {
     font-family: var(--font-ar, sans-serif);
-    font-size: 46px;
+    font-size: clamp(32px, 8vw, 46px);
     font-weight: 900;
     letter-spacing: 2px;
     line-height: 1.1;

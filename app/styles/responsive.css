@@ -1,347 +1,363 @@
-/* ─── Tablet (769px – 1200px) ────────────────────────────────────────────── */
-@media (min-width: 769px) and (max-width: 1200px) {
-    .cards-wrapper {
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 50px;
-        padding-bottom: 50px;
-        gap: 30px;
-        overflow: visible;
-    }
-
-    .card {
-        position: relative;
-        left: auto !important;
-        top: auto !important;
-        transform: none !important;
-        width: 90%;
-        max-width: 400px;
-        height: auto;
-        min-height: 400px;
-        margin-bottom: 20px;
-    }
-}
-
-/* ─── Medium screens (≤ 900px) ───────────────────────────────────────────── */
-@media (max-width: 900px) {
-    .footer-top {
-        flex-direction: column;
-        gap: 60px;
-    }
-
-    .footer-column h3,
-    .footer-column address,
-    .footer-email {
-        font-size: 1.5rem;
-    }
-
-    .footer-big-text {
-        font-size: 40vw;
-    }
-}
-
-/* ─── Mobile (≤ 768px) ───────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-
-    /* ── Navbar ─────────────────────── */
-    .navbar {
-        padding: 14px 16px;
-    }
-
-    .logo-truus {
-        width: 100px;
-    }
-
-    .logo-work-container {
-        width: 48px;
-        height: 44px;
-    }
-
-    .logo-work-text {
-        font-size: 1.4rem;
-        margin-left: 52px;
-    }
-
-    .nav-bar__whatsapp-svg {
-        width: 26px;
-    }
-
-    /* ── Header Hero ────────────────── */
-    .header-content {
-        height: 100svh;
-        padding: 0 24px;
-        text-align: center;
-    }
-
-    .header-content h1 {
-        font-size: 2rem;
-    }
-
-    /* ── Content / Hero Title ───────── */
-    .content-section {
-        padding: 80px 0 0;
-        overflow: visible;
-    }
-
-    .main-title {
-        font-size: 3rem;
-        letter-spacing: -2px;
-    }
-
-    .title-underline-svg {
-        width: 100px;
-        bottom: -10px;
-    }
-
-    .title-container {
-        margin-bottom: 50px;
-    }
-
-    /* ── Cards (GSAP-controlled) ─────── */
-    .cards-wrapper {
-        position: relative !important;
-        display: block !important;
-        width: 100% !important;
-        margin: 0 auto !important;
-        overflow: visible !important;
-    }
-
-    .card {
-        width: 82vw;
-        max-width: 340px;
-        min-height: 420px;
-        height: auto;
-    }
-
-    .card-sticker {
-        pointer-events: none;
-    }
-
-    /* ── Double Marquee ─────────────── */
-    .Double-marquee {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 60px 24px 0;
-        gap: 0;
-        min-height: unset;
-    }
-
-    .marquee-left {
-        max-width: 100%;
-        width: 100%;
-        justify-content: flex-start;
-        align-items: flex-start;
-        min-height: 340px;
-    }
-
-    .marquee-text-container {
-        text-align: left;
-    }
-
-    .marquee-left h2 {
-        font-size: 2.6rem;
-        letter-spacing: -1.5px;
-        margin-bottom: 0;
-        margin-right: 0;
-    }
-
-    .marquee-blob-container {
-        width: 240px;
-        height: 280px;
-        top: 45%;
-        left: 20%;
-    }
-
-    .marquee-svg-item:nth-child(1) {
-        width: 60px;
-        bottom: 10%;
-        left: 55%;
-    }
-
-    .marquee-svg-item:nth-child(2) {
-        width: 220px;
-        bottom: -5%;
-        left: 55%;
-    }
-
-    .marquee-underline {
-        top: 5rem;
-        right: auto;
-        left: 9.5rem;
-        width: 70px;
-    }
-
-    /* ── Logo columns → 2-row horizontal scroll grid ── */
-    .marquee-right {
-        display: grid;
-        grid-template-rows: 130px 130px;
-        grid-auto-flow: column;
-        grid-auto-columns: 130px;
-        gap: 8px;
-        width: 100%;
-        height: auto;
-        margin-right: 0;
-        padding: 20px 24px 32px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-
-    .marquee-right::-webkit-scrollbar {
-        display: none;
-    }
-
-    .marquee-column {
-        display: contents;
-    }
-
-    .marquee-column::before,
-    .marquee-column::after {
-        display: none;
-    }
-
-    .marquee-column:nth-child(1) .marquee-track,
-    .marquee-column:nth-child(2) .marquee-track {
-        display: contents;
-        animation: none;
-    }
-
-    .marquee-item {
-        width: 130px;
-        height: 130px;
-        flex-shrink: 0;
-    }
-
-    /* ── Footer ─────────────────────── */
-    .main-footer {
-        padding: 6px;
-    }
-
-    .footer-inner {
-        padding: 50px 20px 30px;
-        border-radius: 14px;
-        min-height: 100svh;
-    }
-
-    .footer-top {
-        flex-direction: column;
-        gap: 36px;
-    }
-
-    .footer-column h3 {
-        font-size: 1.4rem;
-        letter-spacing: -0.5px;
-    }
-
-    .footer-column address {
-        font-size: 1.25rem;
-    }
-
-    .footer-email {
-        font-size: 1.3rem;
-    }
-
-    .footer-whatsapp {
-        font-size: 1.1rem;
-        margin-top: -6px;
-    }
-
-    .footer-map-link {
-        font-size: 0.95rem;
-    }
-
-    /* ── Footer Stickers (mobile) ──── */
-    .sticker-boom {
-        left: 2%;
-        bottom: 10%;
-        width: 90px;
-    }
-
-    .sticker-smiley {
-        left: 30%;
-        bottom: 5%;
-        width: 90px;
-    }
-
-    .sticker-heart {
-        left: 50%;
-        bottom: 18%;
-        width: 85px;
-    }
-
-    .footer-sticker.sticker-hands {
-        left: 60%;
-        bottom: 2%;
-        width: 90px;
-    }
-
-    .footer-sticker.sticker-100 {
-        left: 72%;
-        bottom: 20%;
-        width: 80px;
-    }
-
-    .footer-sticker.sticker-camera {
-        right: 2%;
-        bottom: 8%;
-        width: 85px;
-    }
-
-    /* ── Footer wordmark ────────────── */
-    .footer-bottom {
-        margin-top: 200px;
-    }
-
-    .footer-logo__svg {
-        width: 110%;
-        margin-left: -5%;
-    }
-
-    /* ── Credits badge ──────────────── */
-    .footer-credits-wrapper {
-        margin-right: -15px;
-        margin-bottom: -15px;
-    }
-
-    .footer-credits {
-        font-size: 0.75rem;
-    }
-
-    .credits-box {
-        padding: 16px 20px;
-        gap: 20px;
-    }
-
-    .credits-label {
-        font-size: 0.85rem;
-    }
-
-    .credits-name {
-        font-size: 0.95rem;
-    }
-}
-
 /* ═══════════════════════════════════════════════════════════════════════════
-   RESPONSIVE HARDENING — added to close breakpoint gaps across all devices.
-   Desktop layout (>1200px up to 1600px) is intentionally left untouched.
+   RESPONSIVE — Mobile-First Consolidated Overrides
+   
+   All component-level responsive rules are in their own CSS files.
+   This file handles CROSS-CUTTING refinements and fine-tuning that
+   span multiple components at specific breakpoints.
+   
+   Breakpoints (mobile-first, min-width):
+   ── Base ─── 0–639px   (small phones, default styles)
+   ── sm ───── ≥640px    (large phones)
+   ── md ───── ≥768px    (tablets)
+   ── lg ───── ≥1024px   (small laptops)
+   ── xl ───── ≥1280px   (desktops)
+   ── 2xl ──── ≥1536px   (large desktops / 2K+)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ─── Global overflow guard (prevents horizontal scroll on every device) ──── */
+/* ─── Global Overflow Guard ──────────────────────────────────────────────── */
 html,
 body {
     max-width: 100%;
     overflow-x: hidden;
 }
 
-/* ─── Large desktops / 2K+ screens (>1600px) : cap content width ──────────── */
-@media (min-width: 1601px) {
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE (0–639px) — Default small phone styles
+   Most mobile defaults are set in individual component CSS files.
+   These are cross-cutting refinements only.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Navbar extras ─── */
+.logo-work-container {
+    width: 48px;
+    height: 44px;
+}
+
+.nav-bar__whatsapp-svg {
+    width: 26px;
+}
+
+/* ── Content sections ─── */
+.content-section {
+    overflow: visible;
+}
+
+/* ── Cards mobile stacking (GSAP override) ─── */
+.card-sticker {
+    pointer-events: none;
+}
+
+/* ── Marquee mobile: horizontal scroll grid ─── */
+.marquee-right {
+    display: grid;
+    grid-template-rows: 130px 130px;
+    grid-auto-flow: column;
+    grid-auto-columns: 130px;
+    gap: 8px;
+    width: 100%;
+    height: auto;
+    margin-inline-end: 0;
+    padding: 20px 24px 32px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.marquee-right::-webkit-scrollbar {
+    display: none;
+}
+
+.marquee-column {
+    display: contents;
+}
+
+.marquee-column::before,
+.marquee-column::after {
+    display: none;
+}
+
+.marquee-column:nth-child(1) .marquee-track,
+.marquee-column:nth-child(2) .marquee-track {
+    display: contents;
+    animation: none;
+}
+
+.marquee-item {
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+}
+
+/* ── Marquee text (mobile) ─── */
+.marquee-left h2 {
+    font-size: clamp(1.8rem, 10vw, 2.6rem);
+    letter-spacing: -1.5px;
+    margin-bottom: 0;
+    margin-inline-end: 0;
+}
+
+.marquee-underline {
+    top: 5rem;
+    inset-inline-end: auto;
+    inset-inline-start: 9.5rem;
+    width: 70px;
+}
+
+/* ── Footer extras (mobile) ─── */
+.footer-bottom {
+    margin-top: 200px;
+}
+
+.footer-logo__svg {
+    width: 110%;
+    margin-inline-start: -5%;
+}
+
+.footer-credits-wrapper {
+    margin-inline-end: -15px;
+    margin-bottom: -15px;
+}
+
+.footer-credits {
+    font-size: 0.75rem;
+}
+
+.credits-box {
+    padding: 16px 20px;
+    gap: 20px;
+}
+
+.credits-label {
+    font-size: 0.85rem;
+}
+
+.credits-name {
+    font-size: 0.95rem;
+}
+
+/* ── Footer stickers (mobile positions) ─── */
+.sticker-boom {
+    left: 2%;
+    bottom: 10%;
+    width: 90px;
+}
+
+.sticker-smiley {
+    left: 30%;
+    bottom: 5%;
+    width: 90px;
+}
+
+.sticker-heart {
+    left: 50%;
+    bottom: 18%;
+    width: 85px;
+}
+
+.footer-sticker.sticker-hands {
+    left: 60%;
+    bottom: 2%;
+    width: 90px;
+}
+
+.footer-sticker.sticker-100 {
+    left: 72%;
+    bottom: 20%;
+    width: 80px;
+}
+
+.footer-sticker.sticker-camera {
+    right: 2%;
+    bottom: 8%;
+    width: 85px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SM (≥640px) — Large phones
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 640px) {
+    .marquee-left h2 {
+        font-size: clamp(2rem, 9vw, 2.6rem);
+    }
+
+    .footer-bottom {
+        margin-top: 200px;
+    }
+
+    .footer-credits-wrapper {
+        margin-inline-end: 0;
+        margin-bottom: 0;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MD (≥768px) — Tablets
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 768px) {
+    /* ── Navbar ─── */
+    .logo-work-container {
+        width: 60px;
+        height: 55px;
+    }
+
+    .nav-bar__whatsapp-svg {
+        width: 30px;
+    }
+
+    /* ── Footer ─── */
+    .footer-bottom {
+        margin-top: 50px;
+    }
+
+    .footer-logo__svg {
+        width: 104.9%;
+        margin-inline-start: -2.5%;
+    }
+
+    .footer-credits {
+        font-size: 0.9rem;
+    }
+
+    .credits-box {
+        padding: 22px 24px;
+        gap: 30px;
+    }
+
+    .credits-label {
+        font-size: 0.78rem;
+    }
+
+    .credits-name {
+        font-size: 1.05rem;
+    }
+
+    /* ── Footer stickers (tablet+ positions) ─── */
+    .sticker-boom {
+        left: -1%;
+        bottom: 15%;
+        width: 150px;
+    }
+
+    .sticker-smiley {
+        left: 20%;
+        bottom: 45%;
+        width: 130px;
+    }
+
+    .sticker-heart {
+        left: 45%;
+        bottom: 30%;
+        width: 130px;
+    }
+
+    .footer-sticker.sticker-hands {
+        left: 55%;
+        bottom: 0%;
+        width: 130px;
+    }
+
+    .footer-sticker.sticker-100 {
+        left: 60%;
+        bottom: 55%;
+        width: 130px;
+    }
+
+    .footer-sticker.sticker-camera {
+        right: 8%;
+        bottom: 15%;
+        width: 130px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LG (≥1024px) — Small laptops
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+    /* ── Marquee: restore vertical columns ─── */
+    .marquee-right {
+        display: flex;
+        grid-template-rows: unset;
+        grid-auto-flow: unset;
+        grid-auto-columns: unset;
+        gap: 14px;
+        width: 520px;
+        height: 850px;
+        margin-inline-end: 0;
+        padding: 0;
+        overflow-x: visible;
+        overflow-y: hidden;
+    }
+
+    .marquee-column {
+        display: block;
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .marquee-column::before,
+    .marquee-column::after {
+        display: block;
+    }
+
+    .marquee-column:nth-child(1) .marquee-track {
+        display: flex;
+        animation: marqueeUp 22s linear infinite;
+    }
+
+    .marquee-column:nth-child(2) .marquee-track {
+        display: flex;
+        animation: marqueeDown 22s linear infinite;
+    }
+
+    .marquee-item {
+        width: 100%;
+        height: 240px;
+        flex-shrink: unset;
+    }
+
+    .marquee-left h2 {
+        font-size: clamp(2.4rem, 4vw, 3.8rem);
+        letter-spacing: -1px;
+        margin-bottom: 20px;
+    }
+
+    .marquee-underline {
+        top: auto;
+        bottom: -6px;
+        inset-inline-start: auto;
+        inset-inline-end: 0;
+        width: 100%;
+        max-width: 132px;
+    }
+
+    .content-section {
+        overflow: hidden;
+    }
+
+    .card-sticker {
+        pointer-events: auto;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   XL (≥1280px) — Desktops
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1280px) {
+    .marquee-right {
+        width: 520px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2XL (≥1536px) — Large desktops / 2K+ screens
+   Cap content width to prevent overly wide layouts.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1536px) {
     .content-section {
         max-width: 1600px;
-        margin-left: auto;
-        margin-right: auto;
+        margin-inline: auto;
     }
 
     .Double-marquee {
@@ -350,8 +366,7 @@ body {
 
     .footer-inner {
         max-width: 1800px;
-        margin-left: auto;
-        margin-right: auto;
+        margin-inline: auto;
     }
 
     .vimeo-hero__title {
@@ -359,204 +374,10 @@ body {
     }
 }
 
-/* ─── Mid-range / small laptops & landscape tablets (961px – 1200px) ──────── */
-/* The cards already stack here (see top of file); fix the marquee + hero so   */
-/* the fixed-width marquee panel and large SVGs don't cause overflow.          */
-@media (min-width: 961px) and (max-width: 1200px) {
-    .double-marquee-section {
-        min-height: auto;
-        padding: clamp(3rem, 6vh, 5rem) clamp(1.5rem, 4vw, 3rem);
-    }
-
-    .Double-marquee {
-        gap: clamp(2rem, 4vw, 4rem);
-    }
-
-    .marquee-left {
-        max-width: 50%;
-    }
-
-    .marquee-right {
-        width: clamp(360px, 42vw, 480px);
-        height: clamp(520px, 60vh, 640px);
-    }
-
-    .marquee-blob-container {
-        width: clamp(300px, 32vw, 400px);
-        height: clamp(340px, 36vw, 460px);
-    }
-}
-
-/* ─── Small tablets & large phones (≤600px refinements) ───────────────────── */
-@media (max-width: 600px) {
-    .content-section {
-        padding: 70px 16px 0;
-    }
-
-    .main-title {
-        font-size: clamp(2.2rem, 11vw, 3rem);
-        letter-spacing: -1.5px;
-    }
-
-    .vimeo-hero__title {
-        font-size: clamp(1.9rem, 8.5vw, 2.4rem);
-    }
-
-    .hero-lead-text {
-        font-size: 0.9rem;
-    }
-
-    .marquee-left h2 {
-        font-size: clamp(2rem, 9vw, 2.6rem);
-    }
-
-    .footer-inner {
-        padding: 40px 16px 24px;
-    }
-}
-
-/* ─── Small phones (≤480px) ───────────────────────────────────────────────── */
-@media (max-width: 480px) {
-    .navbar {
-        padding: 12px 14px;
-    }
-
-    .noqta-nav-text {
-        font-size: 1.5rem;
-    }
-
-    .noqta-nav-subtext {
-        font-size: 0.95rem;
-    }
-
-    .header-content h1 {
-        font-size: 1.7rem;
-    }
-
-    .main-title {
-        font-size: clamp(1.9rem, 12vw, 2.5rem);
-        letter-spacing: -1px;
-    }
-
-    .title-underline-svg {
-        width: 80px;
-    }
-
-    .vimeo-hero__title {
-        font-size: clamp(1.7rem, 9vw, 2.1rem);
-    }
-
-    .hero-cta-group {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .hero-cta-btn {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .card {
-        width: 88vw;
-        max-width: 320px;
-        min-height: 380px;
-    }
-
-    .marquee-left h2 {
-        font-size: clamp(1.8rem, 10vw, 2.3rem);
-    }
-
-    .marquee-blob-container {
-        width: 200px;
-        height: 240px;
-    }
-
-    /* keep the logo scroll-grid tighter on tiny screens */
-    .marquee-right {
-        grid-template-rows: 110px 110px;
-        grid-auto-columns: 110px;
-    }
-
-    .marquee-item {
-        width: 110px;
-        height: 110px;
-    }
-
-    .footer-inner {
-        padding: 36px 14px 22px;
-    }
-
-    .footer-column h3 {
-        font-size: 1.25rem;
-    }
-
-    .footer-email {
-        font-size: 1.15rem;
-        word-break: break-word;
-    }
-
-    .footer-bottom {
-        margin-top: 140px;
-    }
-
-    /* fewer/smaller stickers so they don't overlap the wordmark */
-    .footer-sticker.sticker-100,
-    .footer-sticker.sticker-camera {
-        width: 60px;
-    }
-
-    .sticker-boom,
-    .sticker-smiley,
-    .sticker-heart,
-    .footer-sticker.sticker-hands {
-        width: 64px;
-    }
-
-    .credits-box {
-        padding: 12px 14px;
-        gap: 12px;
-    }
-}
-
-/* ─── Very small phones (≤380px) : final tightening ───────────────────────── */
-@media (max-width: 380px) {
-    .noqta-nav-text {
-        font-size: 1.3rem;
-    }
-
-    .noqta-nav-subtext {
-        display: none;
-    }
-
-    .main-title {
-        font-size: 1.9rem;
-    }
-
-    .vimeo-hero__title {
-        font-size: 1.6rem;
-    }
-
-    .card {
-        width: 90vw;
-        max-width: 300px;
-    }
-
-    .marquee-right {
-        grid-template-rows: 96px 96px;
-        grid-auto-columns: 96px;
-    }
-
-    .marquee-item {
-        width: 96px;
-        height: 96px;
-    }
-
-    .footer-email {
-        font-size: 1rem;
-    }
-}
-
-/* ─── Landscape phones (short height) : avoid clipped hero content ────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   SPECIAL: Landscape phones (short viewport height)
+   Prevents clipped hero content on landscape-oriented phones.
+   ═══════════════════════════════════════════════════════════════════════════ */
 @media (max-height: 500px) and (orientation: landscape) {
     .vimeo-hero,
     .header-content {

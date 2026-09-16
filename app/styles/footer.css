@@ -1,16 +1,22 @@
 /* ─── Footer Shell ───────────────────────────────────────────────────────── */
 .main-footer {
-    padding: 12px;
+    padding: 6px;
     background-color: var(--bg-color);
+}
+
+@media (min-width: 768px) {
+    .main-footer {
+        padding: 12px;
+    }
 }
 
 .footer-inner {
     background: linear-gradient(160deg, #1C153E 0%, #101226 60%, #07080F 100%);
-    border-radius: 28px;
-    padding: 80px 45px 35px;
+    border-radius: 14px;
+    padding: clamp(36px, 6vh, 50px) clamp(14px, 4vw, 25px) clamp(22px, 4vh, 35px);
     position: relative;
     overflow: hidden;
-    min-height: 90vh;
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -18,14 +24,30 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+@media (min-width: 768px) {
+    .footer-inner {
+        padding: 80px 45px 35px;
+        border-radius: 28px;
+        min-height: 90vh;
+    }
+}
+
 /* ─── Top Row ────────────────────────────────────────────────────────────── */
 .footer-top {
     display: flex;
-    justify-content: space-between;
-    gap: 40px;
+    flex-direction: column;
+    gap: 30px;
     position: relative;
     z-index: 5;
-    text-align: right;
+    text-align: start;
+}
+
+@media (min-width: 768px) {
+    .footer-top {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 40px;
+    }
 }
 
 .footer-column {
@@ -103,7 +125,7 @@
 
 .footer-phone-item:hover {
     color: var(--color-mint);
-    transform: translateX(-4px);
+    transform: translateX(4px);
 }
 
 .phone-icon {
@@ -122,7 +144,7 @@
 }
 
 .footer-whatsapp:hover {
-    transform: translateX(-4px);
+    transform: translateX(4px);
 }
 
 /* ─── Social Icons ───────────────────────────────────────────────────────── */
@@ -169,22 +191,39 @@
 }
 
 .footer-logo__svg {
-    width: 104.9%;
+    width: 110%;
     height: auto;
-    margin-left: -2.5%;
+    margin-inline-start: -5%;
+}
+
+@media (min-width: 768px) {
+    .footer-logo__svg {
+        width: 104.9%;
+        margin-inline-start: -2.5%;
+    }
 }
 
 .footer-bottom-row {
     position: absolute;
     bottom: 0;
-    left: 0;
+    inset-inline-start: 0;
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    text-align: center;
     pointer-events: none;
     z-index: 10;
     padding-top: 20px;
+}
+
+@media (min-width: 768px) {
+    .footer-bottom-row {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
 }
 
 .footer-hashtag {
@@ -224,7 +263,7 @@
 .credits-box {
     position: absolute;
     bottom: calc(100% + 14px);
-    left: 0;
+    inset-inline-start: 0;
     background: #0B0C16;
     border-radius: 16px;
     opacity: 0;
@@ -246,7 +285,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    text-align: right;
+    text-align: start;
 }
 
 .credits-label {
@@ -275,72 +314,52 @@
 
 .footer-sticker {
     position: absolute;
-    width: 100px;
+    width: 90px;
     height: auto;
     pointer-events: auto;
+}
+
+@media (min-width: 768px) {
+    .footer-sticker {
+        width: 130px;
+    }
+    .sticker-boom {
+        width: 150px;
+    }
 }
 
 .sticker-boom {
     left: -1%;
     bottom: 15%;
-    width: 150px;
     transform: rotate(-10deg);
 }
 
 .sticker-smiley {
     left: 20%;
     bottom: 45%;
-    width: 130px;
     transform: rotate(-20deg);
 }
 
 .sticker-heart {
     left: 45%;
     bottom: 30%;
-    width: 130px;
     transform: rotate(-15deg);
 }
 
 .footer-sticker.sticker-hands {
     left: 55%;
     bottom: 0%;
-    width: 130px;
     transform: rotate(10deg);
 }
 
 .footer-sticker.sticker-100 {
     left: 60%;
     bottom: 55%;
-    width: 130px;
     transform: rotate(-0deg);
 }
 
 .footer-sticker.sticker-camera {
     right: 8%;
     bottom: 15%;
-    width: 130px;
     transform: rotate(5deg);
-}
-
-/* ─── Responsive ─── */
-@media (max-width: 900px) {
-    .footer-top {
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .footer-inner {
-        padding: 50px 25px 25px;
-    }
-
-    .noqta-footer-brand-lockup {
-        gap: 15px;
-    }
-
-    .footer-bottom-row {
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
-        text-align: center;
-    }
 }

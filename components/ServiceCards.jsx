@@ -92,7 +92,7 @@ function initCardAnimations() {
         { rotation: 5 }
     ];
 
-    const isMobile = window.matchMedia('(max-width: 900px)').matches;
+    const isMobile = window.matchMedia('(max-width: 1200px)').matches;
     let leaveTimeout = null;
 
     if (!isMobile) {

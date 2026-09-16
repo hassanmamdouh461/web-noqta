@@ -82,23 +82,28 @@ export default function Navbar() {
         if (logoNoqta) cleanups.push(initWiggle(logoNoqta, WIGGLE_CONFIG.logoTruus));
 
         const overlay = document.querySelector('.nav-overlay');
+        // Detect if device supports hover (desktop) vs touch-only
+        const hasHover = window.matchMedia('(hover: hover)').matches;
+
         if (overlay) {
             gsap.set(overlay, { opacity: 0, visibility: 'hidden' });
         }
         const showOverlay = () => {
             if (overlay) {
-                gsap.set(overlay, { visibility: 'visible' });
+                gsap.set(overlay, { visibility: 'visible', pointerEvents: 'auto' });
                 gsap.to(overlay, { opacity: 1, duration: 0.35, ease: 'power2.out' });
             }
         };
         const hideOverlay = () => {
             if (overlay) {
-                gsap.to(overlay, { opacity: 0, duration: 0.3, ease: 'power2.in', onComplete: () => gsap.set(overlay, { visibility: 'hidden' }) });
+                gsap.to(overlay, { opacity: 0, duration: 0.3, ease: 'power2.in', onComplete: () => gsap.set(overlay, { visibility: 'hidden', pointerEvents: 'none' }) });
             }
         };
 
         let closeLeft = () => {};
         let closeRight = () => {};
+        let leftOpen = false;
+        let rightOpen = false;
 
         // ─── Navbar Left (Work) Hover Popout ───
         const navLeft = document.querySelector('.nav-left');
@@ -161,12 +166,31 @@ export default function Navbar() {
 
             closeLeft = onLeaveLeft;
 
-            navLeft.addEventListener('mouseenter', onEnterLeft);
-            navLeft.addEventListener('mouseleave', onLeaveLeft);
-            cleanups.push(() => {
-                navLeft.removeEventListener('mouseenter', onEnterLeft);
-                navLeft.removeEventListener('mouseleave', onLeaveLeft);
-            });
+            if (hasHover) {
+                // Desktop: hover to open/close
+                navLeft.addEventListener('mouseenter', onEnterLeft);
+                navLeft.addEventListener('mouseleave', onLeaveLeft);
+                cleanups.push(() => {
+                    navLeft.removeEventListener('mouseenter', onEnterLeft);
+                    navLeft.removeEventListener('mouseleave', onLeaveLeft);
+                });
+            } else {
+                // Touch: click to toggle
+                const onClickLeft = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (leftOpen) {
+                        onLeaveLeft();
+                        leftOpen = false;
+                    } else {
+                        if (rightOpen) { onLeaveRight(); rightOpen = false; }
+                        onEnterLeft();
+                        leftOpen = true;
+                    }
+                };
+                navLeft.addEventListener('click', onClickLeft);
+                cleanups.push(() => navLeft.removeEventListener('click', onClickLeft));
+            }
         }
 
         // ─── Navbar Right (WhatsApp) Hover Popout ───
@@ -227,18 +251,39 @@ export default function Navbar() {
 
             closeRight = onLeaveRight;
 
-            navRight.addEventListener('mouseenter', onEnterRight);
-            navRight.addEventListener('mouseleave', onLeaveRight);
-            cleanups.push(() => {
-                navRight.removeEventListener('mouseenter', onEnterRight);
-                navRight.removeEventListener('mouseleave', onLeaveRight);
-            });
+            if (hasHover) {
+                // Desktop: hover to open/close
+                navRight.addEventListener('mouseenter', onEnterRight);
+                navRight.addEventListener('mouseleave', onLeaveRight);
+                cleanups.push(() => {
+                    navRight.removeEventListener('mouseenter', onEnterRight);
+                    navRight.removeEventListener('mouseleave', onLeaveRight);
+                });
+            } else {
+                // Touch: click to toggle
+                const onClickRight = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (rightOpen) {
+                        onLeaveRight();
+                        rightOpen = false;
+                    } else {
+                        if (leftOpen) { onLeaveLeft(); leftOpen = false; }
+                        onEnterRight();
+                        rightOpen = true;
+                    }
+                };
+                navRight.addEventListener('click', onClickRight);
+                cleanups.push(() => navRight.removeEventListener('click', onClickRight));
+            }
         }
 
         // Close on overlay click
         const closeAllPopouts = () => {
             closeLeft();
             closeRight();
+            leftOpen = false;
+            rightOpen = false;
         };
 
         if (overlay) {

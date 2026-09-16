@@ -80,53 +80,74 @@ export default function VimeoHero() {
             return;
         }
 
-        const xTo = gsap.quickTo(bubble, 'x', { duration: 0.45, ease: 'power3' });
-        const yTo = gsap.quickTo(bubble, 'y', { duration: 0.45, ease: 'power3' });
+        // Initialize bubble completely off-screen and invisible
+        gsap.set(bubble, {
+            x: -500,
+            y: -500,
+            scale: 0,
+            autoAlpha: 0,
+            rotation: -25
+        });
 
         let isVisible = false;
         let lastX = -1000;
         let lastY = -1000;
 
-        const showBubble = () => {
-            if (isVisible) return;
-            isVisible = true;
-            gsap.killTweensOf(bubble);
-            gsap.to(bubble, {
-                opacity: 1,
-                scale: 1,
-                rotation: 0,
-                duration: 0.9,
-                ease: 'elastic.out(1, 0.4)',
-            });
+        const showBubble = (targetX, targetY) => {
+            if (!isVisible) {
+                isVisible = true;
+                // Place at cursor immediately before popping in so it never flies in from corner
+                gsap.set(bubble, { x: targetX, y: targetY });
+                gsap.to(bubble, {
+                    autoAlpha: 1,
+                    scale: 1,
+                    rotation: 0,
+                    duration: 0.8,
+                    ease: 'elastic.out(1, 0.45)',
+                    overwrite: 'auto'
+                });
+            } else {
+                // Follow cursor smoothly with natural fluid inertia
+                gsap.to(bubble, {
+                    x: targetX,
+                    y: targetY,
+                    duration: 0.32,
+                    ease: 'power2.out',
+                    overwrite: 'auto'
+                });
+            }
         };
 
         const hideBubble = () => {
             if (!isVisible) return;
             isVisible = false;
-            gsap.killTweensOf(bubble);
             gsap.to(bubble, {
-                opacity: 0,
+                autoAlpha: 0,
                 scale: 0,
                 rotation: -25,
-                duration: 0.25,
+                duration: 0.22,
                 ease: 'power2.in',
+                overwrite: 'auto',
+                onComplete: () => {
+                    gsap.set(bubble, { x: -500, y: -500 });
+                }
             });
         };
 
         const checkInside = (x, y) => {
-            if (x < 0 || y < 0) return false;
+            if (x <= 0 || y <= 0) return false;
             const rect = hero.getBoundingClientRect();
             return (
-                x >= rect.left &&
-                x <= rect.right &&
-                y >= rect.top &&
-                y <= rect.bottom
+                x >= rect.left + 5 &&
+                x <= rect.right - 5 &&
+                y >= rect.top + 5 &&
+                y <= rect.bottom - 5
             );
         };
 
         const isInteractiveHover = (el) => {
             if (!el || !el.closest) return false;
-            return Boolean(el.closest('.hero-cta-btn, .navbar'));
+            return Boolean(el.closest('.hero-cta-btn, .navbar, .home-header__title a, button'));
         };
 
         const onMove = (e) => {
@@ -137,9 +158,7 @@ export default function VimeoHero() {
             const isOverBtn = isInteractiveHover(e.target);
 
             if (isInside && !isOverBtn) {
-                xTo(lastX + 14);
-                yTo(lastY - 45);
-                showBubble();
+                showBubble(lastX + 14, lastY - 45);
             } else {
                 hideBubble();
             }
@@ -152,9 +171,7 @@ export default function VimeoHero() {
             const isOverBtn = isInteractiveHover(el);
 
             if (isInside && !isOverBtn) {
-                xTo(lastX + 14);
-                yTo(lastY - 45);
-                showBubble();
+                showBubble(lastX + 14, lastY - 45);
             } else {
                 hideBubble();
             }
@@ -184,7 +201,7 @@ export default function VimeoHero() {
             <canvas ref={canvasRef} className="vimeo-hero__canvas" />
 
             {/* Elastic Cursor Follower */}
-            <div ref={bubbleRef} className="vimeo-mute-bubble is--unmuted" style={{ pointerEvents: 'none' }}>
+            <div ref={bubbleRef} className="vimeo-mute-bubble is--unmuted" style={{ pointerEvents: 'none', opacity: 0, visibility: 'hidden' }}>
                 <div className="vimeo-mute-bubble__blob">
                     <img src="/assets/VimeoHero SVG/mute-bubble-blob.svg" alt="" className="vimeo-mute-bubble__blob-svg" />
                     <span className="noqta-bubble-label">NOQTA</span>

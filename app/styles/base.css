@@ -64,6 +64,7 @@ html {
     scroll-behavior: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    overflow-x: hidden;
 }
 
 html.lenis,
@@ -93,4 +94,27 @@ body {
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
     display: none;
+}
+
+/* ─── Responsive Media Defaults ──────────────────────────────────────── */
+img, video, iframe, canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+svg {
+    max-width: 100%;
+}
+
+/* ─── Touch Target Minimum ───────────────────────────────────────────── */
+button, [role="button"], input, select, textarea,
+.hero-cta-btn, .nav-work-btn, .nav-wa-link, .nav-wa-num-badge,
+.showreel__play-btn, .stack-card__cta, .single-social, .footer-credits,
+.logo-whatsapp, .logo-work-container {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+button, [role="button"] {
+    touch-action: manipulation;
 }
