@@ -41,16 +41,6 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
       </head>
       <body>
-        {/* Instant Brand Splash / Preloader (Visible from 0ms first frame) */}
-        <div id="initial-loader" className="initial-loader" aria-hidden="true">
-          <div className="initial-loader-inner">
-            <svg width="140" height="84" viewBox="0 0 700 420" fill="none" className="initial-loader-icon">
-              <circle cx="350" cy="115" r="82.5" fill="currentColor" />
-              <path d="M 5 125 H 170 A 180 180 0 0 0 530 125 H 695 A 345 345 0 0 1 5 125 Z" fill="currentColor" />
-            </svg>
-            <span className="initial-loader-text">نُـقـطَـة</span>
-          </div>
-        </div>
         {children}
       </body>
     </html>

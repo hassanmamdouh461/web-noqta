@@ -20,137 +20,50 @@ export default function TransitionScribble() {
             strokeWidthStart: "8%",
             strokeWidthMax: "31%",
             scale: 0.7,
-            durationIn: 2.2,
-            durationOut: 2.5
+            durationIn: 1.4,
+            durationOut: 1.8
         };
 
         const transitionColors = [
+            'var(--color-indigo)',
             'var(--color-mint)',
             'var(--color-teal)',
             'var(--color-violet)',
-            'var(--color-indigo)',
-            '#F5693C', // Orange
-            '#A0325A', // Maroon
-            '#F0BEFA'  // Pink
+            'var(--color-orange)',
+            'var(--color-lightblue)',
+            'var(--color-pink)'
         ];
 
         const pathLength = transitionScribblePath.getTotalLength();
         const l = pathLength + 5;
 
-        // ─── Initial Page Load Reveal (Instant Brand Loading Screen Exit) ───
-        const initialLoader = document.getElementById('initial-loader');
-
-        const runInitialReveal = () => {
-            if (window.__noqtaInitialRevealed) return;
-            window.__noqtaInitialRevealed = true;
-
-            // Align scribble with the solid brand indigo (#323E86) of initial-loader
-            transitionScribbleSvg.style.color = 'var(--color-indigo)';
-            transitionLogo.style.color = '#FFFFFF';
-
-            gsap.set(transitionScribbleSvg, { scale: config.scale, opacity: 1, x: 0, y: 0, rotation: 0 });
-            gsap.set(transitionScribblePath, {
-                strokeDasharray: l,
-                strokeDashoffset: 0,
-                strokeWidth: config.strokeWidthMax,
-                opacity: 1
-            });
-            gsap.set(transitionLogo, { autoAlpha: 1, scale: 1 });
-
-            document.body.classList.add('is-transitioning');
-
-            // Hide the static HTML initial-loader seamlessly (scribble is active underneath)
-            if (initialLoader) {
-                initialLoader.style.opacity = '0';
-                initialLoader.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    if (initialLoader.parentNode) initialLoader.remove();
-                }, 350);
-            }
-
-            // Start subtle brand wiggle on logo
-            const logoSvg = transitionLogo.querySelector('svg');
-            if (logoSvg) {
-                gsap.to(logoSvg, {
-                    rotation: 5,
-                    duration: 0.15,
-                    repeat: -1,
-                    yoyo: true,
-                    ease: 'steps(1)',
-                    overwrite: 'auto'
-                });
-            }
-
-            // Ensure scroll starts at top of page
-            const lenis = window.__lenis;
-            if (lenis) lenis.scrollTo(0, { immediate: true });
-            else window.scrollTo(0, 0);
-
-            // Hold brand splash momentarily, then smoothly un-draw scribble to reveal site
-            const durOut = 2.0;
-            const revealTl = gsap.timeline({
-                delay: 0.65,
-                onComplete: () => {
-                    document.body.classList.remove('is-transitioning');
-                    gsap.set(transitionScribblePath, { strokeWidth: '0%' });
-                    gsap.set(transitionLogo, { autoAlpha: 0 });
-                    if (logoSvg) {
-                        gsap.killTweensOf(logoSvg);
-                        gsap.set(logoSvg, { rotation: 0 });
-                    }
-                }
-            });
-
-            revealTl.to(transitionScribblePath, {
-                strokeDashoffset: -l,
-                duration: durOut,
-                ease: 'power2.inOut'
-            }, 0);
-
-            revealTl.to(transitionScribblePath, {
-                strokeWidth: config.strokeWidthStart,
-                duration: durOut,
-                ease: 'power2.inOut'
-            }, 0);
-
-            revealTl.to(transitionLogo, {
-                autoAlpha: 0,
-                duration: 0.45,
-                ease: 'power2.out',
-                onComplete: () => {
-                    if (logoSvg) {
-                        gsap.killTweensOf(logoSvg);
-                        gsap.set(logoSvg, { rotation: 0 });
-                    }
-                }
-            }, durOut * 0.38);
-        };
-
-        if (document.readyState === 'complete') {
-            runInitialReveal();
-        } else {
-            window.addEventListener('load', runInitialReveal, { once: true });
-            setTimeout(runInitialReveal, 1200);
-        }
-
-        // ─── Interactive Logo Click Scribble (Signature Truus Transition) ───
         const runScribbleAnimation = (e) => {
             if (e) e.preventDefault();
             if (gsap.isTweening(transitionScribblePath) || gsap.isTweening(transitionScribbleSvg) || document.body.classList.contains('is-transitioning')) return;
 
-            const durIn = config.durationIn || 2.2;
-            const durOut = config.durationOut || 2.5;
+            const durIn = config.durationIn || 1.4;
+            const durOut = config.durationOut || 1.8;
 
             gsap.set(transitionScribbleSvg, { scale: config.scale });
 
-            const randomColor = transitionColors[Math.floor(Math.random() * transitionColors.length)];
-            transitionScribbleSvg.style.color = randomColor;
+            // Signature brand indigo on initial page load; cycling brand colors on interactive clicks
+            const isAutoRun = !e;
+            const chosenColor = isAutoRun
+                ? 'var(--color-indigo)'
+                : transitionColors[Math.floor(Math.random() * transitionColors.length)];
 
-            const lightColors = ['var(--color-mint)', '#F0BEFA', '#E6FAB9', '#fff'];
-            const logoColor = lightColors.includes(randomColor) ? '#080B14' : '#FFFFFF';
+            transitionScribbleSvg.style.color = chosenColor;
+
+            const lightColors = ['var(--color-mint)', 'var(--color-lightgreen)', 'var(--color-pink)', '#f0befa', '#43FB9C', '#e6fab9'];
+            const logoColor = lightColors.includes(chosenColor) ? '#0B0C16' : '#FFFFFF';
             transitionLogo.style.color = logoColor;
 
-            gsap.set(transitionScribblePath, { strokeDasharray: l, strokeDashoffset: l, strokeWidth: config.strokeWidthStart, opacity: 1 });
+            gsap.set(transitionScribblePath, {
+                strokeDasharray: l,
+                strokeDashoffset: l,
+                strokeWidth: config.strokeWidthStart,
+                opacity: 1
+            });
             gsap.set(transitionScribbleSvg, { opacity: 1, x: 0, y: 0, rotation: 0 });
             gsap.set(transitionLogo, { autoAlpha: 0, scale: 1 });
 
@@ -168,38 +81,67 @@ export default function TransitionScribble() {
                 }
             });
 
-            drawTl.to(transitionScribblePath, { strokeDashoffset: 0, duration: durIn, ease: 'power1.inOut' }, 0);
-            drawTl.to(transitionScribblePath, { strokeWidth: config.strokeWidthMax, duration: durIn, ease: 'power2.inOut' }, 0);
+            // Phase 1: Draw in and expand stroke to fully cover the screen
+            drawTl.to(transitionScribblePath, {
+                strokeDashoffset: 0,
+                duration: durIn,
+                ease: 'power1.inOut'
+            }, 0);
+            drawTl.to(transitionScribblePath, {
+                strokeWidth: config.strokeWidthMax,
+                duration: durIn,
+                ease: 'power2.inOut'
+            }, 0);
 
+            // Midpoint: screen is 100% solid, reset scroll to top
             drawTl.call(() => {
                 const lenis = window.__lenis;
                 if (lenis) lenis.scrollTo(0, { immediate: true });
                 else window.scrollTo(0, 0);
             }, null, durIn);
 
-            drawTl.to(transitionScribblePath, { strokeDashoffset: -l, duration: durOut, ease: 'power2.inOut' }, durIn);
-            drawTl.to(transitionScribblePath, { strokeWidth: config.strokeWidthStart, duration: durOut, ease: 'power2.inOut' }, durIn);
+            // Phase 2: Draw out and shrink stroke to reveal content
+            drawTl.to(transitionScribblePath, {
+                strokeDashoffset: -l,
+                duration: durOut,
+                ease: 'power2.inOut'
+            }, durIn);
+            drawTl.to(transitionScribblePath, {
+                strokeWidth: config.strokeWidthStart,
+                duration: durOut,
+                ease: 'power2.inOut'
+            }, durIn);
 
+            // Center Logo: fades in during draw-in and wiggles
+            drawTl.set(transitionLogo, { autoAlpha: 0 }, 0);
             drawTl.to(transitionLogo, {
-                autoAlpha: 1, duration: durIn * 0.5, ease: 'power2.out',
+                autoAlpha: 1,
+                duration: durIn * 0.5,
+                ease: 'power2.out',
                 onStart: () => {
                     if (logoSvg) {
-                        gsap.to(logoSvg, { rotation: 5, duration: 0.15, repeat: -1, yoyo: true, ease: 'steps(1)', overwrite: 'auto' });
+                        gsap.to(logoSvg, {
+                            rotation: 5,
+                            duration: 0.15,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: 'steps(1)',
+                            overwrite: 'auto'
+                        });
                     }
                 }
             }, durIn * 0.5);
 
-            drawTl.to(transitionLogo, {
+            // Center Logo: fades out as draw-out sweeps away
+            drawTl.set(transitionLogo, {
                 autoAlpha: 0,
-                duration: 0.4,
-                ease: 'power2.in',
                 onComplete: () => {
                     if (logoSvg) {
                         gsap.killTweensOf(logoSvg);
                         gsap.set(logoSvg, { rotation: 0 });
                     }
                 }
-            }, durIn + (durOut * 0.45));
+            }, durIn + (durOut * 0.48));
         };
 
         const logoClickable = document.querySelector('.logo-noqta-wrap') || document.querySelector('.logo-truus');
@@ -207,11 +149,14 @@ export default function TransitionScribble() {
             logoClickable.addEventListener('click', runScribbleAnimation);
         }
 
+        // Auto-run on load (exact truus clone architecture)
+        const timer = setTimeout(() => runScribbleAnimation(null), 100);
+
         return () => {
             if (logoClickable) {
                 logoClickable.removeEventListener('click', runScribbleAnimation);
             }
-            window.removeEventListener('load', runInitialReveal);
+            clearTimeout(timer);
         };
     }, []);
 
