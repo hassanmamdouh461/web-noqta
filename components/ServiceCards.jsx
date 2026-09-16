@@ -30,7 +30,7 @@ export default function ServiceCards() {
             {/* Heading */}
             <div className="title-container" dir="rtl">
                 <div className="service-header-pill">
-                    <span>منظومة الخدمات المتكاملة</span>
+                    <span>منظومة الحلول البرمجية المتكاملة</span>
                 </div>
                 <h2 className="main-title">
                     تواصل معنا إذا كنت <span className="italic-text">تحتاج:</span>
