@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
-import { WIGGLE_CONFIG, NOQTA_INFO } from '@/lib/data';
+import { WIGGLE_CONFIG, NOQTA_INFO, PROJECTS_DATA } from '@/lib/data';
 
 function initWiggle(element, intensity) {
     if (!element) return () => {};
@@ -326,37 +326,92 @@ export default function Navbar() {
                         {/* Pop-out Box for Work Preview */}
                         <div className="nav-popout nav-work-box">
                             <div className="nav-popout-inner">
-                                <a href="#stack-section" className="nav-work-item">
-                                    <div className="nav-work-item__img-wrap" style={{ background: '#131A33' }}>
-                                        <img src="/assets/noqta/noqta-portfolio-slide1.png" loading="eager" alt="منصة أبشر" className="nav-work-item__img" />
+                                <a
+                                    href="#stack-section"
+                                    onClick={() => {
+                                        const overlay = document.querySelector('.nav-overlay');
+                                        if (overlay) overlay.click();
+                                    }}
+                                    className="nav-work-item"
+                                >
+                                    <div className="nav-work-item__img-wrap" style={{ background: '#10162A' }}>
+                                        <img
+                                            src="/assets/noqta/noqta-portfolio-slide1.png"
+                                            loading="eager"
+                                            alt="هويات بصرية وشعارات"
+                                            className="nav-work-item__img"
+                                        />
                                     </div>
                                     <div className="nav-work-item__text">
-                                        <span className="nav-work-badge badge-maroon">منصة تعليمية</span>
-                                        <h4 className="nav-work-title">أبشر التعليمية (الكويت)</h4>
+                                        <span className="nav-work-badge badge-violet">
+                                            هويات وشعارات
+                                        </span>
+                                        <h4 className="nav-work-title">
+                                            تصميم الهويات والشعارات
+                                        </h4>
                                     </div>
                                 </a>
 
-                                <a href="#stack-section" className="nav-work-item">
-                                    <div className="nav-work-item__img-wrap" style={{ background: '#F4EFE6' }}>
-                                        <img src="/assets/noqta/noqta-portfolio-slide1.png" loading="eager" alt="براند Baker" className="nav-work-item__img" />
+                                <a
+                                    href="#stack-section"
+                                    onClick={() => {
+                                        const overlay = document.querySelector('.nav-overlay');
+                                        if (overlay) overlay.click();
+                                    }}
+                                    className="nav-work-item"
+                                >
+                                    <div className="nav-work-item__img-wrap" style={{ background: '#1E1B4B' }}>
+                                        <img
+                                            src="/assets/noqta/noqta-marketing-slide10.png"
+                                            loading="eager"
+                                            alt="تسويق رقمي وحملات إعلانية"
+                                            className="nav-work-item__img"
+                                        />
                                     </div>
                                     <div className="nav-work-item__text">
-                                        <span className="nav-work-badge badge-pink">هوية وميديا</span>
-                                        <h4 className="nav-work-title">براند Baker Gourmet</h4>
+                                        <span className="nav-work-badge badge-mint">
+                                            تسويق رقمي
+                                        </span>
+                                        <h4 className="nav-work-title">
+                                            إدارة الحملات الإعلانية
+                                        </h4>
                                     </div>
                                 </a>
 
-                                <a href="#stack-section" className="nav-work-item">
+                                <a
+                                    href="#stack-section"
+                                    onClick={() => {
+                                        const overlay = document.querySelector('.nav-overlay');
+                                        if (overlay) overlay.click();
+                                    }}
+                                    className="nav-work-item"
+                                >
                                     <div className="nav-work-item__img-wrap" style={{ background: '#151B38' }}>
-                                        <img src="/assets/noqta/noqta-logo-square.png" loading="eager" alt="أنظمة سحابية" className="nav-work-item__img" />
+                                        <img
+                                            src="/assets/noqta/noqta-thumbnails-slide9.png"
+                                            loading="eager"
+                                            alt="تصاميم الأغلفة وصناعة الميديا"
+                                            className="nav-work-item__img"
+                                        />
                                     </div>
                                     <div className="nav-work-item__text">
-                                        <span className="nav-work-badge badge-maroon">سوفت وير</span>
-                                        <h4 className="nav-work-title">منظومة Noqta Suite ERP</h4>
+                                        <span className="nav-work-badge badge-blue">
+                                            صناعة ميديا
+                                        </span>
+                                        <h4 className="nav-work-title">
+                                            تصاميم الأغلفة (Thumbnails)
+                                        </h4>
                                     </div>
                                 </a>
 
-                                <a href="#stack-section" className="nav-work-btn">
+                                <a
+                                    href="#stack-section"
+                                    onClick={() => {
+                                        const overlay = document.querySelector('.nav-overlay');
+                                        if (overlay) overlay.click();
+                                    }}
+                                    className="nav-work-btn"
+                                >
                                     <span className="nav-work-btn__text">استكشف كافة المشاريع ←</span>
                                 </a>
                             </div>
