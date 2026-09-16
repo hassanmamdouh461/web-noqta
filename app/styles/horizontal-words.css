@@ -13,16 +13,16 @@
 
 /* User provided CSS */
 .horizontal-words__relative {
-    /* Remove huge margin-left/right so it starts directly at viewport edge */
-    padding-left: 25vw;
-    padding-right: 25vw;
     position: absolute;
-    /* Lock to track */
     top: 50%;
+    left: 0;
     transform: translateY(-50%);
     white-space: nowrap;
     display: flex;
     align-items: center;
+    padding: 0;
+    margin: 0;
+    will-change: transform;
 }
 
 .horizontal-words__arrow-svg {
@@ -36,23 +36,26 @@
 .horizontal-words__bottom-text {
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, 9em);
-    width: max-content;
+    bottom: clamp(24px, 7vh, 60px);
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     z-index: 20;
+    pointer-events: none;
 }
 
 .horizontal-words__bottom-text-l {
-    max-width: 24em;
-    font-size: 1.5rem;
-    line-height: 1.4;
-    font-weight: 400;
+    max-width: 32em;
+    font-size: clamp(0.95rem, 1.5vw, 1.35rem);
+    line-height: 1.5;
+    font-weight: 500;
     margin: 0;
-    /* Removed the hacky centered margin */
+    color: var(--color-black, #111111);
+    opacity: 0.85;
 }
 
 .horizontal-words__sticker-svg {
@@ -108,7 +111,7 @@
 }
 
 .horizontal-words__h2 {
-    font-size: 8vw;
+    font-size: clamp(3.5rem, 8.5vw, 9.5rem);
     line-height: 1;
     font-weight: 800;
     margin: 0;
@@ -116,4 +119,52 @@
     position: relative;
     z-index: 2;
     white-space: nowrap;
+}
+
+/* ─── Responsive Adjustments for Different Screen Sizes ─── */
+@media (max-width: 900px) {
+    .horizontal-words__h2 {
+        font-size: clamp(2.8rem, 11vw, 5.5rem);
+    }
+
+    .horizontal-words__arrow-svg {
+        width: 15em;
+    }
+
+    .horizontal-words__sticker-watch {
+        width: 4.5em;
+    }
+
+    .horizontal-words__sticker-cursor {
+        width: 5em;
+    }
+
+    .horizontal-words__sticker-phone {
+        width: 5.5em;
+    }
+
+    .horizontal-words__arrow-end-svg {
+        width: 6.5em;
+    }
+
+    .horizontal-words__bottom-text {
+        bottom: 20px;
+        width: 92%;
+    }
+
+    .horizontal-words__bottom-text-l {
+        font-size: 0.95rem;
+        line-height: 1.45;
+    }
+}
+
+@media (max-width: 480px) {
+    .horizontal-words__h2 {
+        font-size: clamp(2.4rem, 13vw, 3.8rem);
+    }
+
+    .horizontal-words__bottom-text-l {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
 }

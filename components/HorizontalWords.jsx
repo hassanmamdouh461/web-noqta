@@ -28,22 +28,31 @@ const HorizontalWords = () => {
             // that the querySelectorAll will find nothing and the animation will gracefully skip.
             const arrows = container.querySelectorAll('.horizontal-words__arrow-svg path, .horizontal-words__arrow-end-svg path');
 
-            // ScrollTween for horizontal movement of the text block
+            // ─── Set initial state: completely off-screen in the void (right) ───
+            gsap.set(textRef, {
+                x: () => window.innerWidth + 150,
+                yPercent: -50,
+                top: '50%'
+            });
+
+            // ─── ScrollTween: starts in the void (right) and exits into the void (left) ───
             const scrollTween = gsap.fromTo(textRef, {
-                xPercent: 50 // Start far right so it slides in naturally
+                x: () => window.innerWidth + 150
             }, {
-                xPercent: -100, // Make sure the ending frame stops in view for the paragraph
+                x: () => -(textRef.offsetWidth + 150),
                 ease: 'none',
                 scrollTrigger: {
                     trigger: container,
-                    start: "top top", // Begin the pinning when the container reaches the top
-                    end: "+=3000", // The scroll duration distance
+                    start: "top top",
+                    end: () => `+=${Math.max(2400, textRef.offsetWidth * 0.9)}`,
                     scrub: 1,
-                    pin: true
+                    pin: true,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true
                 }
             });
 
-            // Bounce each letter randomly
+            // Bounce each letter randomly as it passes across the screen
             letters.forEach((letter) => {
                 gsap.from(letter, {
                     yPercent: (Math.random() - 0.5) * 500,
@@ -52,8 +61,8 @@ const HorizontalWords = () => {
                     scrollTrigger: {
                         trigger: letter,
                         containerAnimation: scrollTween,
-                        start: 'left 90%',
-                        end: 'left 10%',
+                        start: 'left 95%',
+                        end: 'left 15%',
                         scrub: 0.5
                     }
                 });
@@ -69,8 +78,8 @@ const HorizontalWords = () => {
                     scrollTrigger: {
                         trigger: sticker,
                         containerAnimation: scrollTween,
-                        start: 'left 90%',
-                        end: 'left 10%',
+                        start: 'left 95%',
+                        end: 'left 15%',
                         scrub: 0.5
                     }
                 });
@@ -96,6 +105,12 @@ const HorizontalWords = () => {
             });
 
         }, sectionRef);
+
+        if (typeof document !== 'undefined' && document.fonts) {
+            document.fonts.ready.then(() => {
+                ScrollTrigger.refresh();
+            });
+        }
 
         return () => ctx.revert();
     }, []);

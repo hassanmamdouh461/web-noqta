@@ -174,8 +174,9 @@
 
 /* ─── Work Popout Layout ─── */
 .nav-left .nav-popout {
-    top: 8px;
-    left: -8px;
+    top: -10px;
+    right: -14px;
+    left: auto;
     width: 360px;
     max-height: 520px;
 }
@@ -281,8 +282,9 @@
 
 /* ─── WhatsApp Popout Layout ─── */
 .nav-right .nav-popout {
-    top: 8px;
-    right: -8px;
+    top: -10px;
+    left: -14px;
+    right: auto;
     width: 320px;
 }
 
@@ -385,6 +387,14 @@
     }
 
     .nav-left .nav-popout {
-        width: 300px;
+        width: min(320px, calc(100vw - 32px));
+        right: -8px;
+        left: auto;
+    }
+
+    .nav-right .nav-popout {
+        width: min(300px, calc(100vw - 32px));
+        left: -8px;
+        right: auto;
     }
 }

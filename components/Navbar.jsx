@@ -97,6 +97,9 @@ export default function Navbar() {
             }
         };
 
+        let closeLeft = () => {};
+        let closeRight = () => {};
+
         // ─── Navbar Left (Work) Hover Popout ───
         const navLeft = document.querySelector('.nav-left');
         const workBox = document.querySelector('.nav-work-box');
@@ -155,6 +158,8 @@ export default function Navbar() {
                     onComplete: () => gsap.set(workBox, { visibility: 'hidden' })
                 });
             };
+
+            closeLeft = onLeaveLeft;
 
             navLeft.addEventListener('mouseenter', onEnterLeft);
             navLeft.addEventListener('mouseleave', onLeaveLeft);
@@ -220,6 +225,8 @@ export default function Navbar() {
                 });
             };
 
+            closeRight = onLeaveRight;
+
             navRight.addEventListener('mouseenter', onEnterRight);
             navRight.addEventListener('mouseleave', onLeaveRight);
             cleanups.push(() => {
@@ -227,6 +234,31 @@ export default function Navbar() {
                 navRight.removeEventListener('mouseleave', onLeaveRight);
             });
         }
+
+        // Close on overlay click
+        const closeAllPopouts = () => {
+            closeLeft();
+            closeRight();
+        };
+
+        if (overlay) {
+            overlay.addEventListener('click', closeAllPopouts);
+            cleanups.push(() => overlay.removeEventListener('click', closeAllPopouts));
+        }
+
+        // Close popouts smoothly on scroll
+        const onScrollClose = () => {
+            closeAllPopouts();
+        };
+        window.addEventListener('scroll', onScrollClose, { passive: true });
+        cleanups.push(() => window.removeEventListener('scroll', onScrollClose));
+
+        // Close on Escape key
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape') closeAllPopouts();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        cleanups.push(() => window.removeEventListener('keydown', onKeyDown));
 
         return () => {
             window.removeEventListener('scroll', updateNavbarColor);
