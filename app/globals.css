@@ -9,6 +9,8 @@
 /* Navbar, logos, header hero               */
 @import './styles/hero.css';
 /* Content section title + underline SVG    */
+@import './styles/horizontal-words.css';
+/* Kinetic horizontal typography marquee    */
 @import './styles/motion-cards.css';
 /* MotionCard section (heading + cards + text)  */
 @import './styles/tech-cards.css';

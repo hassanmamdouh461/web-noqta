@@ -27,71 +27,51 @@ const HorizontalWords = () => {
             // that the querySelectorAll will find nothing and the animation will gracefully skip.
             const arrows = container.querySelectorAll('.horizontal-words__arrow-svg path, .horizontal-words__arrow-end-svg path');
 
-            // ScrollTween for horizontal movement of the text block
-            const scrollTween = gsap.fromTo(textRef, {
-                xPercent: 30 // Start slightly right so it slides in naturally
-            }, {
-                xPercent: -85, // Make sure the ending frame stops in view for the paragraph
-                ease: 'none',
+            // Single unified timeline with ScrollTrigger
+            const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: container,
                     start: "top top",
-                    end: "+=1100", // Snappy scroll duration
+                    end: "+=1200",
                     scrub: 1,
                     pin: true,
                     anticipatePin: 1
                 }
             });
 
-            // Bounce each letter smoothly
-            letters.forEach((letter) => {
-                gsap.from(letter, {
-                    yPercent: (Math.random() - 0.5) * 60,
-                    rotation: (Math.random() - 0.5) * 16,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: letter,
-                        containerAnimation: scrollTween,
-                        start: 'left 90%',
-                        end: 'left 15%',
-                        scrub: 0.5
-                    }
-                });
+            // 1. Move text block smoothly across from right to left
+            tl.fromTo(textRef, 
+                { x: "12vw" }, 
+                { x: "-60vw", ease: "none" }, 
+                0
+            );
+
+            // 2. Animate letters smoothly as wave
+            letters.forEach((letter, i) => {
+                const yOffset = ((i % 2 === 0 ? 1 : -1) * (14 + (i % 3) * 6));
+                const rot = ((i % 2 === 0 ? 1 : -1) * (5 + (i % 4) * 2));
+                tl.fromTo(letter, 
+                    { y: yOffset, rotation: rot }, 
+                    { y: 0, rotation: 0, ease: "power2.out" }, 
+                    (i / letters.length) * 0.4
+                );
             });
 
-            // Bounce stickers smoothly
-            stickers.forEach((sticker) => {
-                gsap.from(sticker, {
-                    scale: 0.4,
-                    yPercent: (Math.random() - 0.5) * 45,
-                    rotation: (Math.random() - 0.5) * 20,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: sticker,
-                        containerAnimation: scrollTween,
-                        start: 'left 90%',
-                        end: 'left 20%',
-                        scrub: 0.5
-                    }
-                });
+            // 3. Pop stickers
+            stickers.forEach((sticker, i) => {
+                tl.fromTo(sticker,
+                    { scale: 0.8, rotation: -10 },
+                    { scale: 1, rotation: 5, ease: "back.out(1.5)" },
+                    0.05 + i * 0.1
+                );
             });
 
-            // Animate Drawing SVG Arrows (Custom stroke-dashoffset alternative to DrawSVGPlugin)
+            // 4. Animate Drawing SVG Arrows
             arrows.forEach((arrowPath) => {
                 if (arrowPath.getTotalLength) {
                     const pathLen = arrowPath.getTotalLength();
                     gsap.set(arrowPath, { strokeDasharray: pathLen, strokeDashoffset: pathLen });
-                    gsap.to(arrowPath, {
-                        strokeDashoffset: 0,
-                        duration: 1,
-                        scrollTrigger: {
-                            trigger: arrowPath.parentElement, // trigger on the SVG itself
-                            containerAnimation: scrollTween,
-                            start: 'left 90%',
-                            end: 'left 30%',
-                            scrub: 0.5
-                        }
-                    });
+                    tl.to(arrowPath, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 0.05);
                 }
             });
 
@@ -101,7 +81,7 @@ const HorizontalWords = () => {
     }, []);
 
     return (
-        <section ref={sectionRef} className="horizontal-words-section content-section">
+        <section ref={sectionRef} className="horizontal-words-section">
             <div className="horizontal-words__relative">
                 <div className="horizontal-words__sticker-svg">
                     <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 386 127" fill="none" className="horizontal-words__arrow-svg"><path d="M2 123C9 35.9999 84.5 17 124 25.9999C217.764 47.3635 207 115 177.5 123C105.777 142.45 110.737 1.99991 232.5 2C310.5 2.00006 366.5 79 376 118L356.5 105.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" ></path><path d="M2 123C9 35.9999 84.5 17 124 25.9999C217.764 47.3635 207 115 177.5 123C105.777 142.45 110.737 1.99991 232.5 2C310.5 2.00006 366.5 79 376 118L384 97" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" ></path></svg>
