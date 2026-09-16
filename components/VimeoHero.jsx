@@ -198,14 +198,14 @@ export default function VimeoHero() {
             <div className="home-header__title" ref={titleRef}>
                 <h1 className="vimeo-hero__title" dir="rtl">
                     <span className="vimeo-hero__word is--relative">
-                        <span className="hero-highlight-brand">نُـقـطَـة</span>
+                        <span className="hero-highlight-brand">نُـقـطَـة </span>
                         <div className="home-header__smiley">
                             <img src="/assets/VimeoHero SVG/smiley-face.svg" alt="" className="home-header__smiley-svg" />
                         </div>
                     </span>
-                    <br />
                     <span className="vimeo-hero__word">من بداية </span>
-                    <span className="vimeo-hero__word"><em>السطر </em></span>
+                    <span className="vimeo-hero__word"><em>السطر</em></span>
+                    <br />
                     <span className="vimeo-hero__word">لنهاية </span>
                     <span className="vimeo-hero__word is--relative">
                         <span className="hero-highlight-word">الإبداع</span>
