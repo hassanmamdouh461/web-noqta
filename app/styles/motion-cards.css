@@ -67,9 +67,9 @@
 .motion-card__cards-area {
     position: relative;
     width: 100%;
-    max-width: 1120px;
+    max-width: 1240px;
     height: auto;
-    min-height: 300px;
+    min-height: 360px;
     margin: 40px auto 60px;
 }
 
@@ -78,7 +78,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(750px, 95vw);
+    width: min(850px, 95vw);
     height: auto;
     z-index: 0;
     pointer-events: none;
@@ -98,22 +98,28 @@
     width: 100%;
     height: 100%;
     z-index: 2;
+    padding: 20px 10px;
 }
 
 .motion-card__card {
     position: relative;
-    width: clamp(170px, 18vw, 240px);
-    height: clamp(230px, 24vw, 320px);
-    border-radius: 16px;
+    width: clamp(230px, 25vw, 360px);
+    aspect-ratio: 4 / 3;
+    height: auto;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
     flex-shrink: 0;
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.35s ease, border-color 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.4);
+    background-color: #0E1430;
+    cursor: pointer;
+    transform-origin: center center;
 }
 
 .motion-card__card:hover {
-    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.32);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45), 0 0 35px rgba(67, 251, 156, 0.25);
+    border-color: var(--color-mint);
 }
 
 .motion-card__card-image {
@@ -121,39 +127,50 @@
     height: 100%;
     background-color: #0E1430;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .motion-card__card-image .cover-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* Card 3 (Thumbnails): banner ratio (16:10) -> contain to keep all 7 video thumbnails completely visible */
+.motion-card__card--3 .motion-card__card-image .cover-image {
+    object-fit: contain;
+    background-color: #0E1430;
 }
 
 /* Fan arrangement */
 .motion-card__card--1 {
-    transform: rotate(-7deg);
-    margin-right: -2.5vw;
+    transform: rotate(-6deg);
+    margin-right: -3.5vw;
     z-index: 1;
 }
 
 .motion-card__card--2 {
-    transform: rotate(5deg);
-    margin-right: -2vw;
-    top: 25px;
+    transform: rotate(4deg);
+    margin-right: -3vw;
+    top: 20px;
     z-index: 2;
 }
 
 .motion-card__card--3 {
-    transform: rotate(-4deg);
-    margin-right: -2vw;
-    top: -15px;
+    transform: rotate(-3deg);
+    margin-right: -3vw;
+    top: -12px;
     z-index: 3;
 }
 
 .motion-card__card--4 {
-    transform: rotate(8deg);
+    transform: rotate(6deg);
     z-index: 4;
-    top: 30px;
+    top: 22px;
 }
 
 /* ─── Floating Labels ────────────────────────────────────────────────────── */
@@ -191,20 +208,20 @@
 
 .motion-card__floating-label--pink {
     background-color: #43FB9C;
-    top: 25%;
-    left: 24%;
+    top: 8%;
+    left: 18%;
 }
 
 .motion-card__floating-label--orange {
     background-color: #F0BEFA;
-    top: 72%;
-    left: 48%;
+    top: 86%;
+    left: 45%;
 }
 
 .motion-card__floating-label--red {
     background-color: #82A0FF;
-    top: 35%;
-    left: 80%;
+    top: 12%;
+    left: 78%;
 }
 
 /* ─── Stats Grid (Proof of Results) ──────────────────────────────────────── */
@@ -279,6 +296,33 @@
 }
 
 /* ─── Responsive ─── */
+@media (max-width: 768px) {
+    .motion-card__cards-area {
+        min-height: 260px;
+        margin: 20px auto 40px;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding: 20px 10px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .motion-card__cards-area::-webkit-scrollbar {
+        display: none;
+    }
+    .motion-card__cards {
+        width: max-content;
+        padding: 10px 20px;
+        gap: 0;
+    }
+    .motion-card__card {
+        width: clamp(210px, 60vw, 290px);
+        margin-right: -25px;
+    }
+    .motion-card__card--1 {
+        margin-right: 0;
+    }
+}
+
 @media (min-width: 640px) {
     .motion-card__stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -310,4 +354,95 @@
     .motion-card__floating-text {
         font-size: 0.92rem;
     }
+}
+
+/* ─── Lightbox Modal for Full Slide View ─── */
+.motion-card__modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 8, 20, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(16px, 3vw, 32px);
+    animation: fadeInModal 0.25s ease forwards;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.motion-card__modal-content {
+    position: relative;
+    max-width: 1050px;
+    width: 100%;
+    background: #0B0E22;
+    border-radius: 20px;
+    border: 1px solid rgba(67, 251, 156, 0.35);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7), 0 0 50px rgba(67, 251, 156, 0.15);
+    overflow: hidden;
+    animation: scaleInModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scaleInModal {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.motion-card__modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.motion-card__modal-title {
+    color: #FFFFFF;
+    font-family: var(--font-ar);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.motion-card__modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #FFFFFF;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.motion-card__modal-close:hover {
+    background: var(--color-mint);
+    color: #07080F;
+    transform: scale(1.1);
+}
+
+.motion-card__modal-body {
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 80vh;
+}
+
+.motion-card__modal-body img {
+    max-width: 100%;
+    max-height: 72vh;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
 }

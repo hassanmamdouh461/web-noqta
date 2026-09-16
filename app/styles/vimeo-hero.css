@@ -107,6 +107,9 @@
 .hero-highlight-word {
     color: #ffffff;
     position: relative;
+    z-index: 2;
+    display: inline-block;
+    padding: 0 10px;
 }
 
 .vimeo-hero__word {
@@ -120,45 +123,79 @@
 }
 
 .vimeo-hero__word em {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
+    font-family: var(--font-ar), var(--font-serif);
+    font-style: normal;
+    font-weight: 800;
     color: #f0befa;
+    display: inline-block;
+    padding: 0 4px;
+    text-shadow: 0 0 25px rgba(240, 190, 250, 0.45);
 }
 
 /* Playful SVG Elements */
 .home-header__smiley {
     position: absolute;
-    top: -24px;
-    inset-inline-start: -20px;
-    width: clamp(35px, 4vw, 55px);
+    top: -34px;
+    left: -14px;
+    width: clamp(34px, 4vw, 50px);
     pointer-events: none;
+    z-index: 3;
+    animation: smileyFloat 4.5s ease-in-out infinite;
 }
 
 .home-header__smiley-svg {
     width: 100%;
     height: auto;
+    filter: drop-shadow(0 4px 14px rgba(130, 160, 255, 0.45));
+}
+
+@keyframes smileyFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(-6deg);
+    }
+    50% {
+        transform: translateY(-6px) rotate(4deg);
+    }
 }
 
 .home-header__star {
     position: absolute;
-    top: -28px;
-    inset-inline-end: -16px;
-    width: clamp(28px, 3.5vw, 45px);
+    top: -24px;
+    left: -18px;
+    width: clamp(26px, 3.2vw, 42px);
     pointer-events: none;
+    z-index: 3;
+    animation: starTwinkle 3.2s ease-in-out infinite;
 }
 
 .home-header__star-svg {
     width: 100%;
     height: auto;
+    filter: drop-shadow(0 0 12px rgba(240, 190, 250, 0.75));
+}
+
+@keyframes starTwinkle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.92;
+    }
+    50% {
+        transform: scale(1.15) rotate(14deg);
+        opacity: 1;
+    }
 }
 
 .home-header__title-line-svg {
     position: absolute;
-    bottom: -14px;
-    inset-inline-start: 0;
-    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -46%);
+    width: 122%;
+    height: 140%;
     pointer-events: none;
+    z-index: 1;
+    opacity: 0.95;
+    filter: drop-shadow(0 2px 10px rgba(255, 255, 255, 0.25));
 }
 
 /* Hero Lead Text */
@@ -263,18 +300,16 @@
     50% { transform: translateY(5px); }
 }
 
-/* ─── Elastic Mute / Follower Bubble ─── */
+/* ─── Elastic Mute / Follower Bubble (Exact Truus-clone standard) ─── */
 .vimeo-mute-bubble {
     position: fixed;
-    top: -300px;
-    left: -300px;
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
+    top: 0;
+    left: 0;
     pointer-events: none;
-    transform: translate(-50%, -50%) scale(0);
-    will-change: transform, opacity;
-    display: none;
+    z-index: 9998;
+    opacity: 0;
+    transform: scale(0) rotate(-30deg);
+    transform-origin: left center;
 }
 
 .vimeo-mute-bubble__blob {
@@ -333,6 +368,16 @@
 
     .vimeo-hero__title {
         font-size: clamp(2.8rem, 6.8vw, 6.4rem);
+    }
+
+    .home-header__star {
+        top: -30px;
+        left: -22px;
+    }
+
+    .home-header__smiley {
+        top: -42px;
+        left: -18px;
     }
 
     .hero-lead-text {

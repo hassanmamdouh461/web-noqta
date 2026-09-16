@@ -3,6 +3,7 @@
 
 /* ─── Design Tokens (Noqta Brand Palette) ────────────────────────────── */
 :root {
+    direction: rtl;
     /* Noqta Core Palette from Image 3 & 4 */
     --color-mint: #43FB9C;
     --color-teal: #3DA792;

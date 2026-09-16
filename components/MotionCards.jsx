@@ -1,19 +1,62 @@
 "use client";
 
 import gsap from "gsap";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TRACK_RECORD } from "@/lib/data";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const SHOWCASE_SLIDES = [
+    {
+        id: 1,
+        title: "التصاميم الإبداعية وبناء الهويات والشعارات",
+        src: "/assets/noqta/noqta-portfolio-slide1.png",
+        alt: "Branding & Logos",
+        className: "motion-card__card--1"
+    },
+    {
+        id: 2,
+        title: "استراتيجيات التسويق الرقمي وإدارة المنصات",
+        src: "/assets/noqta/noqta-marketing-slide10.png",
+        alt: "Marketing Services",
+        className: "motion-card__card--2"
+    },
+    {
+        id: 3,
+        title: "صناعة الميديا وأغلفة الفيديو عالية التفاعل (Thumbnails)",
+        src: "/assets/noqta/noqta-thumbnails-slide9.png",
+        alt: "Content & Thumbnails",
+        className: "motion-card__card--3"
+    },
+    {
+        id: 4,
+        title: "أرقام ونتائج الحملات الإعلانية ونمو المشاهدات",
+        src: "/assets/noqta/noqta-results-slide13.png",
+        alt: "Campaign Analytics",
+        className: "motion-card__card--4"
+    }
+];
+
 export default function MotionCards() {
     const sectionRef = useRef(null);
     const containerRef = useRef(null);
+    const [activeSlide, setActiveSlide] = useState(null);
+
+    // Close modal on Escape
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") setActiveSlide(null);
+        };
+        if (activeSlide) {
+            window.addEventListener("keydown", handleKeyDown);
+        }
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [activeSlide]);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Interactive mouse inertia on photo cards
+            // Interactive mouse inertia & hover focus on photo cards
             const cards = document.querySelectorAll(".motion-card__card");
             cards.forEach((card) => {
                 let lastX = 0;
@@ -24,6 +67,15 @@ export default function MotionCards() {
                 const startRotation = gsap.getProperty(card, "rotation");
                 const startX = gsap.getProperty(card, "x");
                 const startY = gsap.getProperty(card, "y");
+
+                const onEnter = () => {
+                    card.style.zIndex = "40";
+                    gsap.to(card, {
+                        scale: 1.07,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                };
 
                 const onMove = (e) => {
                     speedX = e.clientX - lastX;
@@ -41,15 +93,18 @@ export default function MotionCards() {
                 };
 
                 const onLeave = () => {
+                    card.style.zIndex = "";
                     gsap.to(card, {
                         x: startX,
                         y: startY,
                         rotation: startRotation,
-                        duration: 0.9,
+                        scale: 1,
+                        duration: 0.8,
                         ease: "elastic.out(1, 0.4)"
                     });
                 };
 
+                card.addEventListener("mouseenter", onEnter);
                 card.addEventListener("mousemove", onMove);
                 card.addEventListener("mouseleave", onLeave);
             });
@@ -164,53 +219,30 @@ export default function MotionCards() {
 
                 {/* 4 Cards */}
                 <div ref={containerRef} className="motion-card__cards">
-                    {/* Card 1: Branding & Logos */}
-                    <div className="motion-card__card motion-card__card--1">
-                        <div className="motion-card__card-image">
-                            <img
-                                src="/assets/noqta/noqta-portfolio-slide1.png"
-                                loading="lazy"
-                                alt="Branding & Logos"
-                                className="cover-image"
-                            />
+                    {SHOWCASE_SLIDES.map((slide) => (
+                        <div
+                            key={slide.id}
+                            className={`motion-card__card ${slide.className}`}
+                            onClick={() => setActiveSlide(slide)}
+                            role="button"
+                            tabIndex={0}
+                            title={`انقر لعرض: ${slide.title}`}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                    setActiveSlide(slide);
+                                }
+                            }}
+                        >
+                            <div className="motion-card__card-image">
+                                <img
+                                    src={slide.src}
+                                    loading="lazy"
+                                    alt={slide.alt}
+                                    className="cover-image"
+                                />
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Card 2: 3D Marketing Strategy */}
-                    <div className="motion-card__card motion-card__card--2">
-                        <div className="motion-card__card-image">
-                            <img
-                                src="/assets/noqta/noqta-marketing-slide10.png"
-                                loading="lazy"
-                                alt="Marketing Services"
-                                className="cover-image"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Card 3: Video Thumbnails */}
-                    <div className="motion-card__card motion-card__card--3">
-                        <div className="motion-card__card-image">
-                            <img
-                                src="/assets/noqta/noqta-thumbnails-slide9.png"
-                                loading="lazy"
-                                alt="Content & Thumbnails"
-                                className="cover-image"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Card 4: Campaign Results */}
-                    <div className="motion-card__card motion-card__card--4">
-                        <div className="motion-card__card-image">
-                            <img
-                                src="/assets/noqta/noqta-results-slide13.png"
-                                loading="lazy"
-                                alt="Campaign Analytics"
-                                className="cover-image"
-                            />
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
                 {/* Floating neon labels */}
@@ -244,6 +276,38 @@ export default function MotionCards() {
                     في نقطة، لا نقدم حلولاً جاهزة. نجمع بين عقلية <strong>المطور التقني</strong> الذي يضمن قوة واستقرار أنظمتك البرمجية، وحس <strong>المصمم والمسوق الإبداعي</strong> الذي يضمن أن تلمس رسالتك قلوب الجماهير وتحقق أعلى عوائد نمو.
                 </p>
             </div>
+
+            {/* Lightbox Modal for Full Slide View */}
+            {activeSlide && (
+                <div
+                    className="motion-card__modal-backdrop"
+                    onClick={() => setActiveSlide(null)}
+                    role="dialog"
+                    aria-modal="true"
+                >
+                    <div
+                        className="motion-card__modal-content"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="motion-card__modal-header" dir="rtl">
+                            <h3 className="motion-card__modal-title">{activeSlide.title}</h3>
+                            <button
+                                className="motion-card__modal-close"
+                                onClick={() => setActiveSlide(null)}
+                                aria-label="إغلاق"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <div className="motion-card__modal-body">
+                            <img
+                                src={activeSlide.src}
+                                alt={activeSlide.title}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

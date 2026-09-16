@@ -69,128 +69,91 @@ export default function VimeoHero() {
         };
     }, []);
 
-    // ─── Floating Elastic Cursor Bubble ───
+    // ─── Floating Elastic Cursor Bubble (Truus-clone standard) ───
     useEffect(() => {
         const bubble = bubbleRef.current;
         const hero = heroRef.current;
+        const title = titleRef.current;
         if (!bubble || !hero) return;
 
-        // Skip on coarse pointers (touch devices)
+        // Skip on touch devices
         if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
             return;
         }
 
-        // Initialize bubble completely off-screen and invisible
-        gsap.set(bubble, {
-            x: -500,
-            y: -500,
-            scale: 0,
-            autoAlpha: 0,
-            rotation: -25
-        });
+        // Initialize matching truus-clone CSS transform
+        gsap.set(bubble, { opacity: 0, scale: 0, rotation: -30 });
+
+        const xTo = gsap.quickTo(bubble, 'x', { duration: 0.5, ease: 'power3' });
+        const yTo = gsap.quickTo(bubble, 'y', { duration: 0.5, ease: 'power3' });
 
         let isVisible = false;
-        let lastX = -1000;
-        let lastY = -1000;
 
-        const showBubble = (targetX, targetY) => {
-            if (!isVisible) {
-                isVisible = true;
-                // Place at cursor immediately before popping in so it never flies in from corner
-                gsap.set(bubble, { x: targetX, y: targetY });
-                gsap.to(bubble, {
-                    autoAlpha: 1,
-                    scale: 1,
-                    rotation: 0,
-                    duration: 0.8,
-                    ease: 'elastic.out(1, 0.45)',
-                    overwrite: 'auto'
-                });
-            } else {
-                // Follow cursor smoothly with natural fluid inertia
-                gsap.to(bubble, {
-                    x: targetX,
-                    y: targetY,
-                    duration: 0.32,
-                    ease: 'power2.out',
-                    overwrite: 'auto'
-                });
-            }
+        const showBubble = () => {
+            if (isVisible) return;
+            isVisible = true;
+            // Only kill opacity, scale, and rotation so xTo/yTo are never destroyed!
+            gsap.killTweensOf(bubble, 'opacity,scale,rotation');
+            gsap.to(bubble, {
+                opacity: 1,
+                scale: 1,
+                rotation: 0,
+                duration: 1.5,
+                delay: 0.05,
+                ease: 'elastic.out(1, 0.4)'
+            });
         };
 
         const hideBubble = () => {
             if (!isVisible) return;
             isVisible = false;
+            gsap.killTweensOf(bubble, 'opacity,scale,rotation');
             gsap.to(bubble, {
-                autoAlpha: 0,
+                opacity: 0,
                 scale: 0,
-                rotation: -25,
-                duration: 0.22,
-                ease: 'power2.in',
-                overwrite: 'auto',
-                onComplete: () => {
-                    gsap.set(bubble, { x: -500, y: -500 });
-                }
+                rotation: -30,
+                duration: 0.3,
+                ease: 'sine.inOut'
             });
         };
 
-        const checkInside = (x, y) => {
-            if (x <= 0 || y <= 0) return false;
-            const rect = hero.getBoundingClientRect();
-            return (
-                x >= rect.left + 5 &&
-                x <= rect.right - 5 &&
-                y >= rect.top + 5 &&
-                y <= rect.bottom - 5
-            );
-        };
-
-        const isInteractiveHover = (el) => {
-            if (!el || !el.closest) return false;
-            return Boolean(el.closest('.hero-cta-btn, .navbar, .home-header__title a, button'));
-        };
-
         const onMove = (e) => {
-            lastX = e.clientX;
-            lastY = e.clientY;
+            xTo(e.clientX + 13);
+            yTo(e.clientY - 43);
 
-            const isInside = checkInside(lastX, lastY);
-            const isOverBtn = isInteractiveHover(e.target);
+            const rect = hero.getBoundingClientRect();
+            const isInside = (
+                e.clientX >= rect.left &&
+                e.clientX <= rect.right &&
+                e.clientY >= rect.top &&
+                e.clientY <= rect.bottom
+            );
 
-            if (isInside && !isOverBtn) {
-                showBubble(lastX + 14, lastY - 45);
+            const target = e.target;
+            const isInteractive = target && target.closest ? Boolean(target.closest('.hero-cta-btn, .navbar, a, button')) : false;
+
+            if (isInside && !isInteractive) {
+                showBubble();
             } else {
                 hideBubble();
             }
         };
 
-        const onScrollOrUpdate = () => {
-            if (lastX === -1000 || lastY === -1000) return;
-            const el = document.elementFromPoint(lastX, lastY);
-            const isInside = checkInside(lastX, lastY);
-            const isOverBtn = isInteractiveHover(el);
-
-            if (isInside && !isOverBtn) {
-                showBubble(lastX + 14, lastY - 45);
-            } else {
+        const onScroll = () => {
+            const rect = hero.getBoundingClientRect();
+            if (rect.bottom <= 0 || rect.top >= window.innerHeight) {
                 hideBubble();
             }
-        };
-
-        const onWindowMouseLeave = () => {
-            lastX = -1000;
-            lastY = -1000;
-            hideBubble();
         };
 
         window.addEventListener('mousemove', onMove, { passive: true });
-        window.addEventListener('scroll', onScrollOrUpdate, { passive: true });
-        document.addEventListener('mouseleave', onWindowMouseLeave);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        document.addEventListener('mouseleave', hideBubble);
 
         return () => {
             window.removeEventListener('mousemove', onMove);
-            window.removeEventListener('scroll', onScrollOrUpdate);
-            document.removeEventListener('mouseleave', onWindowMouseLeave);
+            window.removeEventListener('scroll', onScroll);
+            document.removeEventListener('mouseleave', hideBubble);
             gsap.killTweensOf(bubble);
         };
     }, []);
@@ -201,7 +164,7 @@ export default function VimeoHero() {
             <canvas ref={canvasRef} className="vimeo-hero__canvas" />
 
             {/* Elastic Cursor Follower */}
-            <div ref={bubbleRef} className="vimeo-mute-bubble is--unmuted" style={{ pointerEvents: 'none', opacity: 0, visibility: 'hidden' }}>
+            <div ref={bubbleRef} className="vimeo-mute-bubble is--unmuted">
                 <div className="vimeo-mute-bubble__blob">
                     <img src="/assets/VimeoHero SVG/mute-bubble-blob.svg" alt="" className="vimeo-mute-bubble__blob-svg" />
                     <span className="noqta-bubble-label">NOQTA</span>
@@ -215,16 +178,16 @@ export default function VimeoHero() {
             <div className="home-header__title" ref={titleRef}>
                 <h1 className="vimeo-hero__title" dir="rtl">
                     <span className="vimeo-hero__word is--relative">
-                        <span className="hero-highlight-brand">نُـقـطَـة </span>
+                        <span className="hero-highlight-brand">نُـقـطَـة</span>
                         <div className="home-header__smiley">
                             <img src="/assets/VimeoHero SVG/smiley-face.svg" alt="" className="home-header__smiley-svg" />
                         </div>
                     </span>
-                    <span className="vimeo-hero__word">من بداية </span>
+                    <span className="vimeo-hero__word">&nbsp;من بداية&nbsp;</span>
                     <span className="vimeo-hero__word"><em>السطر</em></span>
                     <br />
-                    <span className="vimeo-hero__word">لنهاية </span>
-                    <span className="vimeo-hero__word is--relative">
+                    <span className="vimeo-hero__word">لنهاية&nbsp;</span>
+                    <span className="vimeo-hero__word is--relative hero-word--highlight">
                         <span className="hero-highlight-word">الإبداع</span>
                         <div className="home-header__star">
                             <div className="home-header__star-inner">
