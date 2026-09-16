@@ -61,7 +61,7 @@
 
 .stack__stage {
     position: relative;
-    width: min(1140px, 100%);
+    width: min(1180px, 100%);
     flex: 0 0 auto;
     margin-top: auto;
     margin-bottom: auto;
@@ -70,16 +70,17 @@
 .stack__deck {
     position: relative;
     width: 100%;
-    height: min(65vh, 560px);
+    height: min(68vh, 580px);
 }
 
 .stack-card {
     position: absolute;
     inset: 0;
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: clamp(1.5rem, 3.5vw, 3rem);
-    padding: clamp(1.5rem, 3.5vw, 2.75rem);
+    grid-template-columns: 1fr 1.08fr;
+    align-items: center;
+    gap: clamp(1.5rem, 3.5vw, 2.75rem);
+    padding: clamp(1.5rem, 3vw, 2.5rem);
     border-radius: 20px;
     transform-origin: 50% 0%;
     will-change: transform;
@@ -242,22 +243,67 @@
     opacity: 0.7;
 }
 
-/* Media Box */
+/* Tag Pills */
+.stack-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.stack-card__tag-pill {
+    font-size: 0.76rem;
+    font-weight: 700;
+    font-family: var(--font-en);
+    letter-spacing: 0.02em;
+    padding: 0.3rem 0.8rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.25s ease;
+}
+
+.stack-card[data-tone="2"] .stack-card__tag-pill {
+    background: rgba(18, 18, 18, 0.06);
+    border-color: rgba(18, 18, 18, 0.15);
+    color: #121212;
+}
+
+.stack-card:hover .stack-card__tag-pill {
+    border-color: var(--color-mint);
+    color: var(--color-mint);
+    background: rgba(67, 251, 156, 0.12);
+}
+
+.stack-card[data-tone="2"]:hover .stack-card__tag-pill {
+    border-color: #f5693c;
+    color: #f5693c;
+    background: rgba(245, 105, 60, 0.12);
+}
+
+/* Media Box Showcase */
 .stack-card__media {
     position: relative;
+    height: 100%;
+    width: 100%;
     min-height: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 14px;
+    border-radius: 16px;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.45) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: clamp(0.6rem, 1.2vw, 1rem);
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.35);
 }
 
 .stack-card[data-tone="2"] .stack-card__media {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.08);
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.1) 100%);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.06);
 }
 
 .stack-card__media-inner {
@@ -271,30 +317,18 @@
 }
 
 .stack-card__media-inner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .stack-card:hover .stack-card__media-inner img {
-    transform: scale(1.05);
-}
-
-.stack-card__overlay-tag {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    background: rgba(11, 12, 22, 0.85);
-    backdrop-filter: blur(10px);
-    color: var(--color-mint);
-    padding: 0.4rem 0.85rem;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    font-family: var(--font-en);
-    border: 1px solid rgba(67, 251, 156, 0.3);
+    transform: scale(1.025);
 }
 
 /* ─── Responsive for Mobile & Tablet ─────────────────────────────────── */
@@ -303,15 +337,33 @@
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr;
         gap: 1.25rem;
-        padding: 1.5rem;
+        padding: 1.25rem;
+        overflow-y: auto;
     }
 
     .stack-card__media {
         order: -1;
-        height: 200px;
+        height: 230px;
+        padding: 0.5rem;
+    }
+
+    .stack-card__title {
+        font-size: clamp(1.4rem, 4.5vw, 1.85rem);
+    }
+
+    .stack-card__lede {
+        font-size: 0.88rem;
+    }
+
+    .stack-card__body {
+        font-size: 0.82rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .stack__deck {
-        height: min(72vh, 600px);
+        height: min(78vh, 650px);
     }
 }
