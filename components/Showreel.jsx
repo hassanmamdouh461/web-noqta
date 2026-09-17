@@ -1,11 +1,6 @@
-'use client';
-
-import { useState } from 'react';
 import { NOQTA_INFO } from '@/lib/data';
 
 export default function Showreel() {
-    const [isPlaying, setIsPlaying] = useState(false);
-
     return (
         <section className="showreel-section" id="showreel-section">
             <div className="showreel__container" dir="rtl">

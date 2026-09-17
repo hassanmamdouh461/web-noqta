@@ -5,6 +5,10 @@
     width: 100%;
     margin: 0;
     border-radius: 0 0 20px 20px;
+    /* svh (small viewport height) keeps the hero inside the visible area on
+       mobile browsers, where 100vh overflows behind the URL bar. */
+    min-height: 100vh;
+    height: 100vh;
     min-height: 100svh;
     height: 100svh;
     overflow: hidden;
@@ -33,9 +37,11 @@
 /* ─── Center / Hero Content Layout ─── */
 .home-header__title {
     position: absolute;
-    bottom: 36px;
+    /* MOBILE: 36px put the headline on top of the "اسحب للأسفل" indicator
+       (which sits at bottom: 18px). Lifted clear of it + the home indicator. */
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px));
     inset-inline: 0;
-    padding: 0 20px;
+    padding: 0 clamp(16px, 5vw, 20px);
     z-index: 3;
     display: flex;
     flex-direction: column;
@@ -279,7 +285,7 @@
 /* Scroll indicator */
 .vimeo-hero__controls {
     position: absolute;
-    bottom: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
     z-index: 4;
@@ -344,6 +350,7 @@
     .vimeo-hero {
         width: calc(100% - 24px);
         height: calc(100vh - 24px);
+        height: calc(100svh - 24px);
         margin: 12px auto;
         border-radius: 28px;
         min-height: 640px;

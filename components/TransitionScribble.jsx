@@ -1,152 +1,285 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, forwardRef, useImperativeHandle, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
-import { ANIMATION_CONFIG } from '@/lib/data';
+import { INTRO_COLORS, DEFAULT_INTRO_CONFIG } from '@/lib/intro-config';
 import { prefersReducedMotion } from '@/lib/motion';
+import IntroLogo from './IntroLogo';
 
-export default function TransitionScribble() {
-    useEffect(() => {
-        // A11Y: a ~4.9s full-screen scribble is the single heaviest animation on
-        // the site. Visitors who asked for reduced motion never see it.
+const TransitionScribble = forwardRef(function TransitionScribble(
+    {
+        config = DEFAULT_INTRO_CONFIG,
+        logoText,
+        logoComponent,
+        brand = 'noqta',
+        autoPlay = true,
+        scrollToTopOnLogoClick = true,
+        allowFastForward = true,
+        onStart,
+        onComplete
+    },
+    ref
+) {
+    const svgRef = useRef(null);
+    const pathRef = useRef(null);
+    const logoWrapperRef = useRef(null);
+    const logoInnerRef = useRef(null);
+    const [logoColor, setLogoColor] = useState('#ffffff');
+    const isAnimatingRef = useRef(false);
+    const currentTimelineRef = useRef(null);
+
+    // Function to run the full scribble intro animation
+    const runAnimation = useCallback((colorOverride = null, shouldScrollToTop = false) => {
         if (prefersReducedMotion()) return;
 
-        const logoTruusClickable = document.querySelector('.logo-truus');
-        const transitionScribblePath = document.querySelector('.transition-scribble path');
-        const transitionScribbleSvg = document.querySelector('.transition-scribble');
+        const svg = svgRef.current;
+        const path = pathRef.current;
+        const logoWrapper = logoWrapperRef.current;
+        const logoInner = logoInnerRef.current;
 
-        if (!logoTruusClickable || !transitionScribblePath || !transitionScribbleSvg) return;
+        if (!svg || !path || !logoWrapper || isAnimatingRef.current) return;
 
-        // Listeners that let the user skip/fast-forward the intro animation.
-        const skipCleanups = [];
+        isAnimatingRef.current = true;
+        if (onStart) onStart();
 
-        const transitionColors = [
-            'var(--color-green)', 'var(--color-lightblue)', 'var(--color-darkblue)',
-            'var(--color-lightgreen)', 'var(--color-orange)', 'var(--color-maroon)', 'var(--color-pink)'
-        ];
+        // Pick random color or use override
+        let selected = colorOverride;
+        if (!selected) {
+            selected = INTRO_COLORS[Math.floor(Math.random() * INTRO_COLORS.length)];
+        } else if (typeof selected === 'string') {
+            const found = INTRO_COLORS.find(c => c.value === selected || c.name === selected);
+            selected = found || { name: 'custom', value: selected, isLight: false };
+        }
 
-        const runScribbleAnimation = (e) => {
-            if (e) e.preventDefault();
-            if (gsap.isTweening(transitionScribblePath) || gsap.isTweening(transitionScribbleSvg) || document.body.classList.contains('is-transitioning')) return;
+        // Apply color to scribble SVG
+        svg.style.color = selected.value;
 
-            const config = ANIMATION_CONFIG.transitionScribble;
-            const durIn = config.durationIn || 0.8;
-            const durOut = config.durationOut || 1.5;
+        // Determine contrasting logo color (black for light backgrounds, white for dark)
+        const contrastColor = selected.isLight ? '#000000' : '#ffffff';
+        setLogoColor(contrastColor);
 
-            gsap.set(transitionScribbleSvg, { scale: config.scale });
+        // Calculate path length for stroke dash animation
+        const pathLength = path.getTotalLength();
+        const l = pathLength + 10;
 
-            const pathLength = transitionScribblePath.getTotalLength();
-            const l = pathLength + 5;
+        const durIn = config.durationIn ?? DEFAULT_INTRO_CONFIG.durationIn;
+        const durOut = config.durationOut ?? DEFAULT_INTRO_CONFIG.durationOut;
+        const strokeStart = config.strokeWidthStart ?? DEFAULT_INTRO_CONFIG.strokeWidthStart;
+        const strokeMax = config.strokeWidthMax ?? DEFAULT_INTRO_CONFIG.strokeWidthMax;
+        const scaleVal = config.scale ?? DEFAULT_INTRO_CONFIG.scale;
+        const wiggleRot = config.wiggleIntensity ?? DEFAULT_INTRO_CONFIG.wiggleIntensity;
+        const wiggleSpd = config.wiggleSpeed ?? DEFAULT_INTRO_CONFIG.wiggleSpeed;
 
-            const randomColor = transitionColors[Math.floor(Math.random() * transitionColors.length)];
-            transitionScribbleSvg.style.color = randomColor;
+        // Reset elements
+        gsap.set(svg, { scale: scaleVal, opacity: 1, x: 0, y: 0, rotation: 0 });
+        gsap.set(path, {
+            strokeDasharray: l,
+            strokeDashoffset: l,
+            strokeWidth: strokeStart,
+            opacity: 1
+        });
+        gsap.set(logoWrapper, { opacity: 0, scale: 1 });
+        if (logoInner) gsap.set(logoInner, { rotation: 0 });
 
-            const lightColors = ['var(--color-lightblue)', 'var(--color-lightgreen)', 'var(--color-pink)'];
-            const logoColor = lightColors.includes(randomColor) ? '#000' : '#fff';
+        document.body.classList.add('is-transitioning');
+        const cursorBubble = document.querySelector('.cursor-bubble');
+        if (cursorBubble) gsap.to(cursorBubble, { opacity: 0, duration: 0.2 });
 
-            let transitionLogo = document.querySelector('.transition-logo');
-            if (!transitionLogo) {
-                transitionLogo = document.createElement('div');
-                transitionLogo.className = 'transition-logo';
-                transitionLogo.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10000; pointer-events:none; opacity:0; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px; transition: color 0.1s;';
-                transitionLogo.innerHTML = `
-                    <svg width="150" height="90" viewBox="0 0 700 420" fill="none" style="display:block; transform-origin:center center;">
-                        <circle cx="350" cy="115" r="82.5" fill="currentColor" />
-                        <path d="M 5 125 H 170 A 180 180 0 0 0 530 125 H 695 A 345 345 0 0 1 5 125 Z" fill="currentColor" />
-                    </svg>
-                    <span style="font-family:var(--font-ar, sans-serif); font-size:46px; font-weight:900; letter-spacing:2px; line-height:1;">نُـقـطَـة</span>
-                `;
-                document.body.appendChild(transitionLogo);
+        // Kill any existing timeline
+        if (currentTimelineRef.current) {
+            currentTimelineRef.current.kill();
+        }
+
+        // Main GSAP Timeline
+        const tl = gsap.timeline({
+            onComplete: () => {
+                isAnimatingRef.current = false;
+                currentTimelineRef.current = null;
+                document.body.classList.remove('is-transitioning');
+                gsap.set(path, { strokeWidth: '0%' });
+                gsap.set(logoWrapper, { opacity: 0 });
+                if (logoInner) gsap.killTweensOf(logoInner);
+                if (onComplete) onComplete(selected);
             }
+        });
+        currentTimelineRef.current = tl;
 
-            transitionLogo.style.color = logoColor;
+        // 1. Draw scribble in (covers the screen)
+        tl.to(path, {
+            strokeDashoffset: 0,
+            duration: durIn,
+            ease: 'power1.inOut'
+        }, 0);
 
-            gsap.set(transitionScribblePath, { strokeDasharray: l, strokeDashoffset: l, strokeWidth: config.strokeWidthStart, opacity: 1 });
-            gsap.set(transitionScribbleSvg, { opacity: 1, x: 0, y: 0, rotation: 0 });
-            gsap.set(transitionLogo, { opacity: 0, scale: 1 });
+        tl.to(path, {
+            strokeWidth: strokeMax,
+            duration: durIn,
+            ease: 'power2.inOut'
+        }, 0);
 
-            document.body.classList.add('is-transitioning');
-            const cursorBubble = document.querySelector('.cursor-bubble');
-            if (cursorBubble) gsap.to(cursorBubble, { opacity: 0, duration: 0.2 });
-
-            const drawTl = gsap.timeline({
-                onComplete: () => {
-                    document.body.classList.remove('is-transitioning');
-                    gsap.set(transitionScribblePath, { strokeWidth: '0%' });
-                    gsap.set(transitionLogo, { opacity: 0 });
-                    skipCleanups.forEach((fn) => fn());
-                }
-            });
-
-            drawTl.to(transitionScribblePath, { strokeDashoffset: 0, duration: durIn, ease: 'power1.inOut' }, 0);
-            drawTl.to(transitionScribblePath, { strokeWidth: config.strokeWidthMax, duration: durIn, ease: 'power2.inOut' }, 0);
-
-            drawTl.call(() => {
+        // Scroll to top during coverage if requested
+        if (shouldScrollToTop) {
+            tl.call(() => {
                 const lenis = window.__lenis;
                 if (lenis) lenis.scrollTo(0, { immediate: true });
                 else window.scrollTo(0, 0);
-            }, null, durIn);
+            }, null, durIn * 0.7);
+        }
 
-            drawTl.to(transitionScribblePath, { strokeDashoffset: -l, duration: durOut, ease: 'power2.inOut' }, durIn);
-            drawTl.to(transitionScribblePath, { strokeWidth: config.strokeWidthStart, duration: durOut, ease: 'power2.inOut' }, durIn);
-
-            drawTl.set(transitionLogo, { autoAlpha: 0 }, 0);
-            drawTl.to(transitionLogo, {
-                autoAlpha: 1, duration: durIn * 0.5, ease: 'power2.out',
-                onStart: () => {
-                    const svg = transitionLogo.querySelector('svg');
-                    if (svg) {
-                        gsap.to(svg, { rotation: 5, duration: 0.15, repeat: -1, yoyo: true, ease: 'steps(1)', overwrite: 'auto' });
-                    }
+        // 2. Fade in logo & start signature wiggle halfway through draw-in
+        tl.to(logoWrapper, {
+            opacity: 1,
+            duration: durIn * 0.45,
+            ease: 'power2.out',
+            onStart: () => {
+                if (logoInner) {
+                    gsap.to(logoInner, {
+                        rotation: wiggleRot,
+                        duration: wiggleSpd,
+                        repeat: -1,
+                        yoyo: true,
+                        ease: 'steps(1)',
+                        overwrite: 'auto'
+                    });
                 }
-            }, durIn * 0.5);
+            }
+        }, durIn * 0.48);
 
-            drawTl.set(transitionLogo, {
-                autoAlpha: 0,
-                onComplete: () => {
-                    const svg = transitionLogo.querySelector('svg');
-                    if (svg) {
-                        gsap.killTweensOf(svg);
-                        gsap.set(svg, { rotation: 0 });
-                    }
+        // 3. Hide logo as scribble begins wiping away
+        tl.to(logoWrapper, {
+            opacity: 0,
+            duration: 0.25,
+            ease: 'power2.in',
+            onComplete: () => {
+                if (logoInner) {
+                    gsap.killTweensOf(logoInner);
+                    gsap.set(logoInner, { rotation: 0 });
                 }
-            }, durIn + (durOut * 0.48));
+            }
+        }, durIn + (durOut * 0.42));
 
-            // UX: instead of blocking the page for the full ~4.9s, any real user
-            // interaction fast-forwards the timeline to its end.
-            const skip = () => { drawTl.timeScale(8); };
-            const skipEvents = ['pointerdown', 'keydown', 'wheel', 'touchstart'];
-            skipEvents.forEach((ev) => window.addEventListener(ev, skip, { passive: true }));
-            skipCleanups.push(() => skipEvents.forEach((ev) => window.removeEventListener(ev, skip)));
+        // 4. Undraw scribble away (reveals page content)
+        tl.to(path, {
+            strokeDashoffset: -l,
+            duration: durOut,
+            ease: 'power2.inOut'
+        }, durIn);
+
+        tl.to(path, {
+            strokeWidth: strokeStart,
+            duration: durOut,
+            ease: 'power2.inOut'
+        }, durIn);
+
+        return tl;
+    }, [config, onStart, onComplete]);
+
+    // Expose replay imperative method
+    useImperativeHandle(ref, () => ({
+        replay: (color, scrollToTop = false) => runAnimation(color, scrollToTop),
+        isAnimating: () => isAnimatingRef.current
+    }), [runAnimation]);
+
+    // Fast-forward on user interaction
+    useEffect(() => {
+        if (!allowFastForward) return;
+
+        const fastForward = () => {
+            if (isAnimatingRef.current && currentTimelineRef.current) {
+                currentTimelineRef.current.timeScale(4);
+            }
         };
 
-        logoTruusClickable.addEventListener('click', runScribbleAnimation);
+        const events = ['keydown', 'wheel'];
+        events.forEach(ev => window.addEventListener(ev, fastForward, { passive: true }));
+        return () => {
+            events.forEach(ev => window.removeEventListener(ev, fastForward));
+        };
+    }, [allowFastForward]);
 
-        // Auto-run on load
-        const timer = setTimeout(() => runScribbleAnimation(null), 100);
+    // Listen to global trigger event & navbar click
+    useEffect(() => {
+        const handleCustomEvent = (e) => {
+            runAnimation(e.detail?.color || null, e.detail?.scrollToTop || false);
+        };
+        window.addEventListener('replay-intro', handleCustomEvent);
+
+        // Auto play on mount
+        let timer;
+        if (autoPlay) {
+            timer = setTimeout(() => {
+                runAnimation(null, false);
+            }, config.autoPlayDelay ?? DEFAULT_INTRO_CONFIG.autoPlayDelay);
+        }
+
+        // Listen for clicks on navbar logo
+        const logoClickable = document.querySelector('.logo-truus, .logo-noqta-wrap');
+        const onLogoClick = (e) => {
+            if (e) e.preventDefault();
+            runAnimation(null, scrollToTopOnLogoClick);
+        };
+        if (logoClickable) {
+            logoClickable.addEventListener('click', onLogoClick);
+        }
 
         return () => {
-            logoTruusClickable.removeEventListener('click', runScribbleAnimation);
-            clearTimeout(timer);
-            skipCleanups.forEach((fn) => fn());
+            window.removeEventListener('replay-intro', handleCustomEvent);
+            if (logoClickable) logoClickable.removeEventListener('click', onLogoClick);
+            if (timer) clearTimeout(timer);
+            if (currentTimelineRef.current) currentTimelineRef.current.kill();
+            isAnimatingRef.current = false;
         };
-    }, []);
+    }, [autoPlay, config.autoPlayDelay, runAnimation, scrollToTopOnLogoClick]);
 
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="100%"
-            viewBox="0 0 3222 3114"
-            fill="none"
-            preserveAspectRatio="none"
-            className="transition-scribble"
-        >
-            <path
-                d="M299.654 453.865C505.574 319.225 711.494 184.585 836.054 109.945C960.614 35.3048 997.574 24.7448 944.014 110.385C890.454 196.025 745.254 378.185 571.454 634.385C397.654 890.585 199.654 1215.3 110.854 1382.58C22.0544 1549.86 48.4544 1549.86 77.8944 1540.62C107.334 1531.38 139.014 1512.9 367.854 1319.9C596.694 1126.9 1021.73 759.945 1255.21 555.065C1488.69 350.185 1517.73 318.505 1527.41 306.145C1537.09 293.785 1526.53 301.705 1346.85 618.625C1167.17 935.545 818.694 1561.22 635.214 1896.74C451.734 2232.26 443.814 2258.66 447.654 2268.3C451.494 2277.94 467.334 2270.02 511.134 2236.9C554.934 2203.78 626.214 2145.7 966.534 1817.46C1306.85 1489.22 1914.05 892.585 2263.81 557.505C2613.57 222.425 2687.49 166.985 2741.41 129.185C2795.33 91.3848 2827.01 72.9048 2843.33 67.3448C2859.65 61.7848 2859.65 69.7048 2849.09 96.2248C2838.53 122.745 2817.41 167.625 2584.77 544.505C2352.13 921.385 1370.37 2165.43 1139.25 2537.83C908.134 2910.23 902.854 2926.07 902.774 2939.51C902.694 2952.95 907.974 2963.51 1255.21 2613.87C1602.45 2264.23 2829.73 1017.54 2903.53 1071.46C2977.33 1125.38 2176.12 2817.04 2128 3037C2079.88 3256.96 2911.24 2018.56 3172 1793"
-                stroke="currentColor"
-                strokeLinecap="round"
-                style={{ strokeWidth: '0%', strokeDashoffset: '0.001', strokeDasharray: '0px, 999999px' }}
-            />
-        </svg>
+        <>
+            {/* Scribble SVG covering the viewport */}
+            <svg
+                ref={svgRef}
+                xmlns="http://www.w3.org/2000/svg"
+                width="100%"
+                viewBox="0 0 3222 3114"
+                fill="none"
+                preserveAspectRatio="none"
+                className="transition-scribble"
+                aria-hidden="true"
+            >
+                <path
+                    ref={pathRef}
+                    d="M299.654 453.865C505.574 319.225 711.494 184.585 836.054 109.945C960.614 35.3048 997.574 24.7448 944.014 110.385C890.454 196.025 745.254 378.185 571.454 634.385C397.654 890.585 199.654 1215.3 110.854 1382.58C22.0544 1549.86 48.4544 1549.86 77.8944 1540.62C107.334 1531.38 139.014 1512.9 367.854 1319.9C596.694 1126.9 1021.73 759.945 1255.21 555.065C1488.69 350.185 1517.73 318.505 1527.41 306.145C1537.09 293.785 1526.53 301.705 1346.85 618.625C1167.17 935.545 818.694 1561.22 635.214 1896.74C451.734 2232.26 443.814 2258.66 447.654 2268.3C451.494 2277.94 467.334 2270.02 511.134 2236.9C554.934 2203.78 626.214 2145.7 966.534 1817.46C1306.85 1489.22 1914.05 892.585 2263.81 557.505C2613.57 222.425 2687.49 166.985 2741.41 129.185C2795.33 91.3848 2827.01 72.9048 2843.33 67.3448C2859.65 61.7848 2859.65 69.7048 2849.09 96.2248C2838.53 122.745 2817.41 167.625 2584.77 544.505C2352.13 921.385 1370.37 2165.43 1139.25 2537.83C908.134 2910.23 902.854 2926.07 902.774 2939.51C902.694 2952.95 907.974 2963.51 1255.21 2613.87C1602.45 2264.23 2829.73 1017.54 2903.53 1071.46C2977.33 1125.38 2176.12 2817.04 2128 3037C2079.88 3256.96 2911.24 2018.56 3172 1793"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    style={{ strokeWidth: '0%', strokeDashoffset: '0.001', strokeDasharray: '0px, 999999px' }}
+                />
+            </svg>
+
+            {/* Center Logo / Headline shown during peak coverage */}
+            <div
+                ref={logoWrapperRef}
+                className="transition-logo-container"
+                style={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 10000,
+                    pointerEvents: 'none',
+                    opacity: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            >
+                <div ref={logoInnerRef} style={{ display: 'inline-block' }}>
+                    {logoComponent ? (
+                        logoComponent
+                    ) : (
+                        <IntroLogo color={logoColor} text={logoText} brand={brand} />
+                    )}
+                </div>
+            </div>
+        </>
     );
-}
+});
+
+export default TransitionScribble;

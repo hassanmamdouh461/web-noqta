@@ -43,21 +43,37 @@ export default function MotionCards() {
     const containerRef = useRef(null);
     const [activeSlide, setActiveSlide] = useState(null);
 
-    // Close modal on Escape
+    // Close modal on Escape + freeze the smooth scroller behind it.
     useEffect(() => {
+        if (!activeSlide) return;
+
         const handleKeyDown = (e) => {
             if (e.key === "Escape") setActiveSlide(null);
         };
-        if (activeSlide) {
-            window.addEventListener("keydown", handleKeyDown);
-        }
-        return () => window.removeEventListener("keydown", handleKeyDown);
+        window.addEventListener("keydown", handleKeyDown);
+
+        // Without this the page keeps scrolling under the lightbox (Lenis is
+        // not stopped by the modal because it listens on window).
+        const lenis = typeof window !== "undefined" ? window.__lenis : null;
+        if (lenis) lenis.stop();
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            if (lenis) lenis.start();
+            document.body.style.overflow = prevOverflow;
+        };
     }, [activeSlide]);
 
     useEffect(() => {
+        const root = sectionRef.current;
+        if (!root) return;
+
         const ctx = gsap.context(() => {
-            // Interactive mouse inertia & hover focus on photo cards
-            const cards = document.querySelectorAll(".motion-card__card");
+            // Interactive mouse inertia & hover focus on photo cards.
+            // Scoped to the section instead of the whole document.
+            const cards = root.querySelectorAll(".motion-card__card");
             cards.forEach((card) => {
                 let lastX = 0;
                 let lastY = 0;
@@ -110,7 +126,7 @@ export default function MotionCards() {
             });
 
             // Interactive mouse inertia on floating labels
-            const labels = document.querySelectorAll(".motion-card__floating-label");
+            const labels = root.querySelectorAll(".motion-card__floating-label");
             labels.forEach((label) => {
                 let lastX = 0;
                 let speedX = 0;
@@ -163,7 +179,7 @@ export default function MotionCards() {
             }
 
             // Metric Counters Animation
-            const statNumbers = document.querySelectorAll(".motion-card__stat-num");
+            const statNumbers = root.querySelectorAll(".motion-card__stat-num");
             gsap.from(statNumbers, {
                 scale: 0.8,
                 opacity: 0,
@@ -227,8 +243,13 @@ export default function MotionCards() {
                             role="button"
                             tabIndex={0}
                             title={`انقر لعرض: ${slide.title}`}
+                            aria-label={`عرض بالحجم الكامل: ${slide.title}`}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter" || e.key === " ") {
+                                    // A11Y: without preventDefault the Space key
+                                    // also scrolls the page on top of opening
+                                    // the lightbox.
+                                    e.preventDefault();
                                     setActiveSlide(slide);
                                 }
                             }}

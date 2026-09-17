@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { WIGGLE_CONFIG, NOQTA_INFO } from '@/lib/data';
+import { hasHover } from '@/lib/motion';
 
 function initWiggle(element, intensity) {
     if (!element) return () => {};
@@ -117,18 +118,31 @@ export default function Navbar() {
 
         const overlay = document.querySelector('.nav-overlay');
         // Detect if device supports hover (desktop) vs touch-only
-        const hasHover = window.matchMedia('(hover: hover)').matches;
+        const canHover = hasHover();
+
+        // MOBILE FIX: `.nav-popout` is `pointer-events: none` by default and was
+        // only re-enabled by the CSS `:hover` rule — on touch devices there is no
+        // hover, so every link inside the popouts silently did nothing. The
+        // pointer-events are now driven by JS whenever a popout is opened.
+        const popouts = Array.from(document.querySelectorAll('.nav-popout'));
+        const setPopoutHits = (value) => {
+            popouts.forEach((box) => gsap.set(box, { pointerEvents: value }));
+        };
 
         if (overlay) {
             gsap.set(overlay, { opacity: 0, visibility: 'hidden' });
         }
+        setPopoutHits('none');
+
         const showOverlay = () => {
+            setPopoutHits('auto');
             if (overlay) {
                 gsap.set(overlay, { visibility: 'visible', pointerEvents: 'auto' });
                 gsap.to(overlay, { opacity: 1, duration: 0.35, ease: 'power2.out' });
             }
         };
         const hideOverlay = () => {
+            setPopoutHits('none');
             if (overlay) {
                 gsap.to(overlay, { opacity: 0, duration: 0.3, ease: 'power2.in', onComplete: () => gsap.set(overlay, { visibility: 'hidden', pointerEvents: 'none' }) });
             }
@@ -202,7 +216,7 @@ export default function Navbar() {
 
             closeLeft = onLeaveLeft;
 
-            if (hasHover) {
+            if (canHover) {
                 // Desktop: hover to open/close
                 navLeft.addEventListener('mouseenter', onEnterLeft);
                 navLeft.addEventListener('mouseleave', onLeaveLeft);
@@ -211,15 +225,27 @@ export default function Navbar() {
                     navLeft.removeEventListener('mouseleave', onLeaveLeft);
                 });
             } else {
-                // Touch: click to toggle
+                // Touch: tap the trigger to toggle.
+                //
+                // MOBILE FIX: the previous version called preventDefault()
+                // + stopPropagation() for EVERY tap inside `.nav-left`. Because
+                // the native listener sits on an ancestor it ran before React's
+                // root handler, so stopPropagation() swallowed the click and
+                // preventDefault() cancelled the navigation — the "أعمالنا"
+                // links were dead on phones/tablets. Taps that land on a real
+                // link/button are now left completely alone.
                 const onClickLeft = (e) => {
+                    if (e.target.closest('a, button')) return;
                     e.preventDefault();
-                    e.stopPropagation();
                     if (leftOpen) {
                         onLeaveLeft();
                         leftOpen = false;
                     } else {
-                        if (rightOpen) { onLeaveRight(); rightOpen = false; }
+                        // `closeRight` (not `onLeaveRight`) — onLeaveRight is
+                        // block-scoped to the WhatsApp branch below, so calling
+                        // it here threw a ReferenceError whenever a user opened
+                        // the WhatsApp popout and then tapped "أعمالنا".
+                        if (rightOpen) { closeRight(); rightOpen = false; }
                         onEnterLeft();
                         leftOpen = true;
                     }
@@ -227,6 +253,21 @@ export default function Navbar() {
                 navLeft.addEventListener('click', onClickLeft);
                 cleanups.push(() => navLeft.removeEventListener('click', onClickLeft));
             }
+
+            // Keyboard: focus + Enter/Space opens the popout on both branches.
+            const onKeyLeft = (e) => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                if (e.target.closest('a, button')) return;
+                e.preventDefault();
+                if (leftOpen) { onLeaveLeft(); leftOpen = false; }
+                else {
+                    if (rightOpen) { closeRight(); rightOpen = false; }
+                    onEnterLeft();
+                    leftOpen = true;
+                }
+            };
+            navLeft.addEventListener('keydown', onKeyLeft);
+            cleanups.push(() => navLeft.removeEventListener('keydown', onKeyLeft));
         }
 
         // ─── Navbar Right (WhatsApp) Hover Popout ───
@@ -289,7 +330,7 @@ export default function Navbar() {
 
             closeRight = onLeaveRight;
 
-            if (hasHover) {
+            if (canHover) {
                 // Desktop: hover to open/close
                 navRight.addEventListener('mouseenter', onEnterRight);
                 navRight.addEventListener('mouseleave', onLeaveRight);
@@ -298,15 +339,17 @@ export default function Navbar() {
                     navRight.removeEventListener('mouseleave', onLeaveRight);
                 });
             } else {
-                // Touch: click to toggle
+                // Touch: tap the trigger to toggle. As with the left trigger,
+                // taps on real links (the WhatsApp numbers / chat button) are
+                // left untouched so they still navigate.
                 const onClickRight = (e) => {
+                    if (e.target.closest('a, button')) return;
                     e.preventDefault();
-                    e.stopPropagation();
                     if (rightOpen) {
                         onLeaveRight();
                         rightOpen = false;
                     } else {
-                        if (leftOpen) { onLeaveLeft(); leftOpen = false; }
+                        if (leftOpen) { closeLeft(); leftOpen = false; }
                         onEnterRight();
                         rightOpen = true;
                     }
@@ -314,6 +357,21 @@ export default function Navbar() {
                 navRight.addEventListener('click', onClickRight);
                 cleanups.push(() => navRight.removeEventListener('click', onClickRight));
             }
+
+            // Keyboard parity with the left trigger.
+            const onKeyRight = (e) => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                if (e.target.closest('a, button')) return;
+                e.preventDefault();
+                if (rightOpen) { onLeaveRight(); rightOpen = false; }
+                else {
+                    if (leftOpen) { closeLeft(); leftOpen = false; }
+                    onEnterRight();
+                    rightOpen = true;
+                }
+            };
+            navRight.addEventListener('keydown', onKeyRight);
+            cleanups.push(() => navRight.removeEventListener('keydown', onKeyRight));
         }
 
         // Close on overlay click
@@ -363,7 +421,7 @@ export default function Navbar() {
             <div className="nav-overlay" />
             <nav className="navbar">
                 {/* ─── Left: Projects / Work Popout ─── */}
-                <div className="nav-left">
+                <div className="nav-left" tabIndex={0} aria-label="استكشف أعمالنا">
                     <div className="nav-hover-trigger">
                         <div className="logo-work-container">
                             <img src="/assets/Navbar SVG/nav-work-blob.svg" width="60" height="55" className="nav-bar__work-blob-svg" alt="" aria-hidden="true" />
@@ -486,7 +544,7 @@ export default function Navbar() {
                 </div>
 
                 {/* ─── Right: WhatsApp & Direct Contact Popout ─── */}
-                <div className="nav-right">
+                <div className="nav-right" tabIndex={0} aria-label="تواصل معنا عبر واتساب">
                     <div className="nav-hover-trigger">
                         <div className="logo-whatsapp">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 25 27" fill="none" className="nav-bar__whatsapp-svg">

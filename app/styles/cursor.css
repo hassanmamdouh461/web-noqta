@@ -16,37 +16,4 @@
     z-index: 10000;
     white-space: nowrap;
 }
-
-/* ─── Page Transition Scribble ───────────────────────────────────────────── */
-.transition-scribble {
-    position: fixed;
-    top: -50vh;
-    left: -50vw;
-    width: 200vw;
-    height: 200vh;
-    z-index: 9999;
-    pointer-events: none;
-    color: var(--color-darkblue);
-}
-
-/* ─── Transition States ──────────────────────────────────────────────────── */
-/* NOTE: `pointer-events: none` was intentionally removed here.
-   The intro scribble runs for ~4.9s (durationIn + durationOut), and blocking the
-   whole <body> for that long made the entire site unclickable after every load.
-   The class is still used as a re-entrancy guard and to hide the cursor bubbles;
-   TransitionScribble also fast-forwards the timeline on any user interaction. */
-body.is-transitioning {
-    /* no-op: kept so the class stays meaningful for future scoped overrides */
-}
-
-body.is-transitioning .cursor-bubble {
-    opacity: 0 !important;
-    transform: scale(0) !important;
-    display: none !important;
-}
-
-body.is-transitioning .vimeo-mute-bubble {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    transform: scale(0) !important;
-}
+

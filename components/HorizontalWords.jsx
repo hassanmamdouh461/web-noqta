@@ -3,7 +3,9 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import '../app/styles/horizontal-words.css';
+import { prefersReducedMotion } from '@/lib/motion';
+// NOTE: horizontal-words.css is imported once by app/globals.css. Importing it
+// here as well used to emit the whole stylesheet a second time into the bundle.
 
 gsap.registerPlugin(ScrollTrigger);
 

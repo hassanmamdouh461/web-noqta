@@ -33,9 +33,12 @@
 }
 
 /* ─── Top Row ────────────────────────────────────────────────────────────── */
+/* TABLET FIX: this used to flip straight from one column to three at 768px,
+   which squeezed each column to ~226px on an iPad in portrait. It now steps
+   1 → 2 (contact column spanning the full width) → 3 at 1024px. */
 .footer-top {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 30px;
     position: relative;
     z-index: 5;
@@ -44,9 +47,27 @@
 
 @media (min-width: 768px) {
     .footer-top {
-        flex-direction: row;
-        justify-content: space-between;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 34px 28px;
+    }
+
+    .footer-column:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .footer-column:last-child .footer-socials {
+        margin-top: 12px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer-top {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 40px;
+    }
+
+    .footer-column:last-child {
+        grid-column: auto;
     }
 }
 
@@ -235,6 +256,16 @@
     letter-spacing: 0.05em;
 }
 
+/* ─── Credits: re-enable pointer events ───────────────────────────────────
+   `.footer-bottom-row` is `pointer-events: none` so the decorative stickers
+   underneath stay tappable, and `pointer-events` is inherited — which made the
+   credits link and the credits box completely dead (no hover, no click, no
+   keyboard). They are re-enabled individually here. */
+.footer-credits,
+.credits-box {
+    pointer-events: auto;
+}
+
 /* ─── Credits Popout ─────────────────────────────────────────────────────── */
 .footer-credits-wrapper {
     position: relative;
@@ -275,9 +306,9 @@
 
 .credits-content {
     display: flex;
-    gap: 30px;
+    flex-wrap: wrap;
+    gap: 18px 30px;
     padding: 22px 24px;
-    white-space: nowrap;
     direction: rtl;
 }
 

@@ -3,8 +3,11 @@
 .horizontal-words-section {
     position: relative;
     width: 100%;
-    /* Keep section nicely sized so it takes up full viewport */
+    /* Keep section nicely sized so it takes up full viewport.
+       svh = height with the mobile URL bar visible, so the pinned section is
+       never taller than what the visitor can actually see. */
     height: 100vh;
+    height: 100svh;
     background-color: var(--bg-color);
     overflow: hidden;
     /* Removed flex to control absolute positioning manually */

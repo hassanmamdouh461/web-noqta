@@ -12,7 +12,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 16px;
+    /* viewport-fit=cover is now set in app/layout.jsx, so the bar has to respect
+       the notch / rounded corners instead of hiding underneath them. */
+    padding:
+        calc(14px + env(safe-area-inset-top, 0px))
+        calc(16px + env(safe-area-inset-right, 0px))
+        14px
+        calc(16px + env(safe-area-inset-left, 0px));
     background: transparent;
     z-index: 1000;
     transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -158,11 +164,31 @@
     border-radius: 20px;
     opacity: 0;
     visibility: hidden;
+    /* Re-enabled by JS (Navbar.jsx) whenever a popout opens — keeping it purely
+       on `:hover` left the whole panel dead on touch devices. */
     pointer-events: none;
     z-index: 100;
     overflow: hidden;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
     border: 1px solid rgba(0, 0, 0, 0.08);
+    /* Short screens (landscape phone, small tablets): never grow past the
+       viewport, and scroll inside instead of being cut off. */
+    max-height: min(520px, calc(100dvh - 96px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-left,
+.nav-right {
+    outline: none;
+}
+
+.nav-left:focus-visible,
+.nav-right:focus-visible {
+    outline: 2px solid var(--color-mint);
+    outline-offset: 6px;
+    border-radius: 12px;
 }
 
 .nav-popout-inner {
@@ -179,8 +205,7 @@
     top: -10px;
     inset-inline-start: -8px;
     inset-inline-end: auto;
-    width: min(320px, calc(100vw - 32px));
-    max-height: 520px;
+    width: min(320px, calc(100vw - 24px));
 }
 
 .nav-left .nav-popout-inner {
@@ -299,7 +324,7 @@
     top: -10px;
     inset-inline-end: -8px;
     inset-inline-start: auto;
-    width: min(300px, calc(100vw - 32px));
+    width: min(300px, calc(100vw - 24px));
 }
 
 .nav-right .nav-popout-inner {

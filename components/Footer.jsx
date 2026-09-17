@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { NOQTA_INFO, WIGGLE_CONFIG } from '@/lib/data';
-import { prefersReducedMotion } from '@/lib/motion';
+import { prefersReducedMotion, isCoarsePointer } from '@/lib/motion';
 
 function initWiggle(element, intensity) {
     if (!element) return () => {};
@@ -63,12 +63,56 @@ export default function Footer() {
                     gsap.to(creditsItems, { y: fullHeight, duration: 0.35, ease: 'power3.in', stagger: -0.03, delay: 0.08 });
                 };
 
+                let creditsOpen = false;
+
                 creditsWrapper.addEventListener('mouseenter', onEnter);
                 creditsWrapper.addEventListener('mouseleave', onLeave);
                 cleanups.push(() => {
                     creditsWrapper.removeEventListener('mouseenter', onEnter);
                     creditsWrapper.removeEventListener('mouseleave', onLeave);
                 });
+
+                // MOBILE / A11Y FIX — two problems lived here:
+                //  1. `.footer-bottom-row` sets `pointer-events: none`, which is
+                //     inherited, so the credits link never received hover or
+                //     click events at all. (Fixed in footer.css by re-enabling
+                //     pointer-events on `.footer-credits` / `.credits-box`.)
+                //  2. Touch devices have no mouseenter, so the credits box could
+                //     never be opened on phones or tablets. A click handler now
+                //     toggles it, and keyboard users get Enter/Space.
+                const onClickCredits = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    creditsOpen = !creditsOpen;
+                    if (creditsOpen) onEnter();
+                    else onLeave();
+                };
+                const onKeyCredits = (e) => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    e.preventDefault();
+                    creditsOpen = !creditsOpen;
+                    if (creditsOpen) onEnter();
+                    else onLeave();
+                };
+
+                creditsBtn.addEventListener('click', onClickCredits);
+                creditsBtn.addEventListener('keydown', onKeyCredits);
+                cleanups.push(() => {
+                    creditsBtn.removeEventListener('click', onClickCredits);
+                    creditsBtn.removeEventListener('keydown', onKeyCredits);
+                });
+
+                // On touch the box stays open until the user taps elsewhere.
+                if (isCoarsePointer()) {
+                    const onDocTap = (e) => {
+                        if (!creditsOpen) return;
+                        if (e.target.closest('.footer-credits-wrapper')) return;
+                        creditsOpen = false;
+                        onLeave();
+                    };
+                    document.addEventListener('pointerdown', onDocTap);
+                    cleanups.push(() => document.removeEventListener('pointerdown', onDocTap));
+                }
             }
         }
 
