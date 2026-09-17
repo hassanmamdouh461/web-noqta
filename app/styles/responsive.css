@@ -524,23 +524,32 @@ body {
    overlap and the footer wordmark eats the whole screen.
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (max-height: 560px) and (orientation: landscape) {
+    /* Centre the headline inside the short viewport instead of stacking it from
+       the bottom — a fixed min-height here pushed the hero 30px past the fold
+       and produced a pointless scroll on the very first screen. */
     .vimeo-hero {
-        min-height: 420px;
-        height: auto;
-        padding-bottom: 40px;
+        height: 100vh;
+        height: 100svh;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 0;
     }
 
     .home-header__title {
         position: relative;
-        bottom: auto;
+        inset: auto;
         top: auto;
+        bottom: auto;
         transform: none;
-        padding-top: calc(76px + env(safe-area-inset-top, 0px));
-        padding-bottom: 56px;
+        width: 100%;
+        padding: 0 clamp(16px, 4vw, 32px);
     }
 
     .vimeo-hero__title {
-        font-size: clamp(1.6rem, 5.2vw, 2.4rem);
+        font-size: clamp(1.5rem, 4.6vw, 2.2rem);
+        line-height: 1.2;
     }
 
     .home-header__smiley,
@@ -549,7 +558,7 @@ body {
     }
 
     .vimeo-hero__controls {
-        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
 
     .footer-bottom {
@@ -568,6 +577,17 @@ body {
     .marquee-item {
         width: 120px;
         height: 120px;
+    }
+}
+
+/* Landscape phones that are wide enough to also match the ≥768px tablet rule
+   (e.g. 844×390). That rule gives the hero a 12px top/bottom margin and a
+   height of `100svh - 24px`, but the landscape block above resets the height to
+   a full `100svh` — so the hero ended up 24px taller than the screen. */
+@media (max-height: 560px) and (orientation: landscape) and (min-width: 768px) {
+    .vimeo-hero {
+        height: calc(100vh - 24px);
+        height: calc(100svh - 24px);
     }
 }
 

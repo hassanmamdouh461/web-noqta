@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { WIGGLE_CONFIG, NOQTA_INFO } from '@/lib/data';
 import { hasHover } from '@/lib/motion';
+import WebpImage from './WebpImage';
 
 function initWiggle(element, intensity) {
     if (!element) return () => {};
@@ -440,7 +441,7 @@ export default function Navbar() {
                                     className="nav-work-item"
                                 >
                                     <div className="nav-work-item__img-wrap" style={{ background: '#10162A' }}>
-                                        <img
+                                        <WebpImage
                                             src="/assets/noqta/noqta-portfolio-slide1.png"
                                             loading="lazy"
                                             decoding="async"
@@ -467,7 +468,7 @@ export default function Navbar() {
                                     className="nav-work-item"
                                 >
                                     <div className="nav-work-item__img-wrap" style={{ background: '#1E1B4B' }}>
-                                        <img
+                                        <WebpImage
                                             src="/assets/noqta/noqta-marketing-slide10.png"
                                             loading="lazy"
                                             decoding="async"
@@ -494,7 +495,7 @@ export default function Navbar() {
                                     className="nav-work-item"
                                 >
                                     <div className="nav-work-item__img-wrap" style={{ background: '#151B38' }}>
-                                        <img
+                                        <WebpImage
                                             src="/assets/noqta/noqta-thumbnails-slide9.png"
                                             loading="lazy"
                                             decoding="async"

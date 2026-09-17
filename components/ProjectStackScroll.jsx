@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PROJECTS_DATA, NOQTA_INFO } from '@/lib/data';
+import WebpImage from './WebpImage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,11 +32,17 @@ export default function ProjectStackScroll() {
                 };
             }
 
-            // Initial pose: offscreen downwards
+            // Initial pose: below the fold, rising into the stack.
+            // On phones a full 0.7 viewport of offset left the deck area
+            // completely empty at the start of the pin, so the section looked
+            // broken until the visitor scrolled. A shorter offset keeps the top
+            // edge of the first card just visible, which reads as "scroll me".
+            const startOffset = window.innerHeight * (isMobile ? 0.42 : 0.7);
+
             cards.forEach((card, i) => {
                 gsap.set(card, {
                     zIndex: cards.length - i,
-                    y: window.innerHeight * 0.7 + i * PEEK,
+                    y: startOffset + i * PEEK,
                     scale: stackPose(i).scale * 0.92,
                     rotate: 0,
                     transformOrigin: "50% 0%",
@@ -196,10 +203,11 @@ export default function ProjectStackScroll() {
                             {/* Card Media (Left / Preview) */}
                             <div className="stack-card__media">
                                 <div className="stack-card__media-inner">
-                                    <img
+                                    <WebpImage
                                         src={project.image}
                                         alt={project.titleAr}
                                         loading="lazy"
+                                        decoding="async"
                                     />
                                 </div>
                             </div>

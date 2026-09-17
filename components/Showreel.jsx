@@ -1,4 +1,5 @@
 import { NOQTA_INFO } from '@/lib/data';
+import WebpImage from './WebpImage';
 
 export default function Showreel() {
     return (
@@ -16,7 +17,7 @@ export default function Showreel() {
                         loading="lazy" React 19 emitted a <link rel="preload">
                         for it in the static HTML, so it started downloading
                         immediately and competed with the hero for bandwidth. */}
-                    <img
+                    <WebpImage
                         src="/assets/noqta/noqta-thumbnails-slide9.png"
                         alt="Noqta Media Showreel"
                         className="showreel__preview-img"

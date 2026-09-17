@@ -6,6 +6,26 @@ import { INTRO_COLORS, DEFAULT_INTRO_CONFIG } from '@/lib/intro-config';
 import { prefersReducedMotion } from '@/lib/motion';
 import IntroLogo from './IntroLogo';
 
+/** sessionStorage flag used by `playOncePerSession`. */
+const INTRO_SESSION_KEY = 'noqta:intro-played';
+
+function readIntroPlayed() {
+    try {
+        return sessionStorage.getItem(INTRO_SESSION_KEY) === 'played';
+    } catch {
+        // Private mode / storage blocked — fall back to playing it.
+        return false;
+    }
+}
+
+function markIntroPlayed() {
+    try {
+        sessionStorage.setItem(INTRO_SESSION_KEY, 'played');
+    } catch {
+        /* ignore */
+    }
+}
+
 const TransitionScribble = forwardRef(function TransitionScribble(
     {
         config = DEFAULT_INTRO_CONFIG,
@@ -26,6 +46,9 @@ const TransitionScribble = forwardRef(function TransitionScribble(
     const [logoColor, setLogoColor] = useState('#ffffff');
     const isAnimatingRef = useRef(false);
     const currentTimelineRef = useRef(null);
+    // Holds the "remove the fast-forward listeners" closure so unmounting in
+    // the middle of the intro doesn't leak window listeners.
+    const unbindSkipRef = useRef(null);
 
     // Function to run the full scribble intro animation
     const runAnimation = useCallback((colorOverride = null, shouldScrollToTop = false) => {
@@ -90,11 +113,34 @@ const TransitionScribble = forwardRef(function TransitionScribble(
             currentTimelineRef.current.kill();
         }
 
+        // `body.is-transitioning` disables pointer events for the whole page
+        // for ~4.7s, so any interaction has to fast-forward the timeline —
+        // otherwise the first tap after a page load is silently swallowed.
+        const skipEvents = ['pointerdown', 'keydown', 'wheel', 'touchstart'];
+        let skipBound = false;
+        const skip = () => {
+            if (currentTimelineRef.current) currentTimelineRef.current.timeScale(8);
+        };
+        const bindSkip = () => {
+            if (skipBound) return;
+            skipBound = true;
+            skipEvents.forEach((ev) => window.addEventListener(ev, skip, { passive: true }));
+        };
+        const unbindSkip = () => {
+            if (!skipBound) return;
+            skipBound = false;
+            skipEvents.forEach((ev) => window.removeEventListener(ev, skip));
+        };
+        if (config.skipOnInteraction ?? DEFAULT_INTRO_CONFIG.skipOnInteraction) bindSkip();
+        unbindSkipRef.current = unbindSkip;
+
         // Main GSAP Timeline
         const tl = gsap.timeline({
             onComplete: () => {
                 isAnimatingRef.current = false;
                 currentTimelineRef.current = null;
+                unbindSkip();
+                unbindSkipRef.current = null;
                 document.body.classList.remove('is-transitioning');
                 gsap.set(path, { strokeWidth: '0%' });
                 gsap.set(logoWrapper, { opacity: 0 });
@@ -187,10 +233,17 @@ const TransitionScribble = forwardRef(function TransitionScribble(
         };
         window.addEventListener('replay-intro', handleCustomEvent);
 
-        // Auto play on mount
+        // Auto play on mount — but only once per browser session by default.
+        // Replaying a ~4.7s blocking animation on every reload (and on every
+        // back-navigation) made the site feel broken; the flag lives in
+        // lib/intro-config.js (`playOncePerSession`) if it should always play.
         let timer;
-        if (autoPlay) {
+        const oncePerSession = config.playOncePerSession ?? DEFAULT_INTRO_CONFIG.playOncePerSession;
+        const alreadyPlayed = oncePerSession && readIntroPlayed();
+
+        if (autoPlay && !alreadyPlayed) {
             timer = setTimeout(() => {
+                markIntroPlayed();
                 runAnimation(null, false);
             }, config.autoPlayDelay ?? DEFAULT_INTRO_CONFIG.autoPlayDelay);
         }
@@ -210,9 +263,14 @@ const TransitionScribble = forwardRef(function TransitionScribble(
             if (logoClickable) logoClickable.removeEventListener('click', onLogoClick);
             if (timer) clearTimeout(timer);
             if (currentTimelineRef.current) currentTimelineRef.current.kill();
+            if (unbindSkipRef.current) {
+                unbindSkipRef.current();
+                unbindSkipRef.current = null;
+            }
+            document.body.classList.remove('is-transitioning');
             isAnimatingRef.current = false;
         };
-    }, [autoPlay, config.autoPlayDelay, runAnimation, scrollToTopOnLogoClick]);
+    }, [autoPlay, config.autoPlayDelay, config.playOncePerSession, runAnimation, scrollToTopOnLogoClick]);
 
     return (
         <>

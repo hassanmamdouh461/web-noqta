@@ -35,33 +35,65 @@ export default function Footer() {
             const creditsItems = creditsBox ? creditsBox.querySelectorAll('.credits-item') : [];
 
             if (creditsBox) {
-                gsap.set(creditsBox, { visibility: 'visible', width: 'auto', height: 'auto', opacity: 1 });
-                const boxRect = creditsBox.getBoundingClientRect();
-                const fullWidth = boxRect.width;
-                const fullHeight = boxRect.height;
                 const creditsBtn = creditsWrapper.querySelector('.footer-credits');
                 const startY = creditsBtn ? creditsBtn.offsetHeight + 15 : 40;
 
-                gsap.set(creditsBox, { visibility: 'hidden', width: 0, height: 0, opacity: 0, y: startY });
-                gsap.set(creditsItems, { y: fullHeight });
+                // On phones the desktop "unfold" (width: 0 → measured width) is
+                // both wrong and fragile: an absolutely positioned box measured
+                // with `width: auto` shrink-to-fits, and on a 390px screen the
+                // two credits columns collapse into one very tall column that
+                // covers the whole footer. Below 768px the box gets a fixed
+                // width from CSS and simply fades/slides in instead.
+                const isNarrow = window.matchMedia('(max-width: 767px)').matches;
 
-                const onEnter = () => {
-                    gsap.set(creditsBox, { visibility: 'visible' });
-                    gsap.killTweensOf(creditsBox);
-                    gsap.killTweensOf(creditsItems);
-                    gsap.to(creditsBox, { width: fullWidth, height: fullHeight, opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' });
-                    gsap.to(creditsItems, { y: 0, duration: 0.5, stagger: 0.04, ease: 'power3.out', delay: 0.1 });
-                };
+                let onEnter;
+                let onLeave;
 
-                const onLeave = () => {
-                    gsap.killTweensOf(creditsBox);
-                    gsap.killTweensOf(creditsItems);
-                    gsap.to(creditsBox, {
-                        width: 0, height: 0, opacity: 0, y: startY, duration: 0.35, ease: 'power3.in',
-                        onComplete: () => gsap.set(creditsBox, { visibility: 'hidden' })
-                    });
-                    gsap.to(creditsItems, { y: fullHeight, duration: 0.35, ease: 'power3.in', stagger: -0.03, delay: 0.08 });
-                };
+                if (isNarrow) {
+                    gsap.set(creditsBox, { visibility: 'hidden', opacity: 0, y: startY, scale: 0.96 });
+
+                    onEnter = () => {
+                        gsap.set(creditsBox, { visibility: 'visible' });
+                        gsap.killTweensOf(creditsBox);
+                        gsap.to(creditsBox, {
+                            opacity: 1, y: 0, scale: 1, duration: 0.32, ease: 'power3.out',
+                        });
+                    };
+
+                    onLeave = () => {
+                        gsap.killTweensOf(creditsBox);
+                        gsap.to(creditsBox, {
+                            opacity: 0, y: startY, scale: 0.96, duration: 0.25, ease: 'power3.in',
+                            onComplete: () => gsap.set(creditsBox, { visibility: 'hidden' }),
+                        });
+                    };
+                } else {
+                    gsap.set(creditsBox, { visibility: 'visible', width: 'auto', height: 'auto', opacity: 1 });
+                    const boxRect = creditsBox.getBoundingClientRect();
+                    const fullWidth = boxRect.width;
+                    const fullHeight = boxRect.height;
+
+                    gsap.set(creditsBox, { visibility: 'hidden', width: 0, height: 0, opacity: 0, y: startY });
+                    gsap.set(creditsItems, { y: fullHeight });
+
+                    onEnter = () => {
+                        gsap.set(creditsBox, { visibility: 'visible' });
+                        gsap.killTweensOf(creditsBox);
+                        gsap.killTweensOf(creditsItems);
+                        gsap.to(creditsBox, { width: fullWidth, height: fullHeight, opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' });
+                        gsap.to(creditsItems, { y: 0, duration: 0.5, stagger: 0.04, ease: 'power3.out', delay: 0.1 });
+                    };
+
+                    onLeave = () => {
+                        gsap.killTweensOf(creditsBox);
+                        gsap.killTweensOf(creditsItems);
+                        gsap.to(creditsBox, {
+                            width: 0, height: 0, opacity: 0, y: startY, duration: 0.35, ease: 'power3.in',
+                            onComplete: () => gsap.set(creditsBox, { visibility: 'hidden' })
+                        });
+                        gsap.to(creditsItems, { y: fullHeight, duration: 0.35, ease: 'power3.in', stagger: -0.03, delay: 0.08 });
+                    };
+                }
 
                 let creditsOpen = false;
 

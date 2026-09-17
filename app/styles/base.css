@@ -33,6 +33,19 @@
     --font-ar: 'Cairo', system-ui, -apple-system, sans-serif;
     --font-en: 'DM Sans', 'Plus Jakarta Sans', system-ui, sans-serif;
     --font-serif: 'Instrument Serif', Georgia, serif;
+
+    /* Height of the fixed navbar (padding + tallest control).
+       Used by the pinned sections, which must start below the bar or their
+       headings render underneath it. */
+    --nav-h: 72px;
+    --nav-safe-top: env(safe-area-inset-top, 0px);
+    --nav-total: calc(var(--nav-h) + var(--nav-safe-top));
+}
+
+@media (min-width: 768px) {
+    :root {
+        --nav-h: 91px;
+    }
 }
 
 /* ─── Reset ──────────────────────────────────────────────────────────── */
@@ -147,6 +160,15 @@ body::-webkit-scrollbar {
 img, video, iframe, canvas {
     max-width: 100%;
     height: auto;
+}
+
+/* `<picture>` is only used as a WebP/fallback switch (see WebpImage.jsx).
+   `display: contents` makes the wrapper layout-transparent so the inner <img>
+   remains the direct flex/grid child — otherwise every rule that sizes an image
+   through its parent flex container (cards, stack media, nav thumbnails) would
+   silently break. */
+picture {
+    display: contents;
 }
 
 svg {

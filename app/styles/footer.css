@@ -294,7 +294,11 @@
 .credits-box {
     position: absolute;
     bottom: calc(100% + 14px);
-    inset-inline-start: 0;
+    /* RTL: inline-end is the LEFT edge. The credits button sits in the bottom
+       left corner of the footer, so anchoring the box to its start (right)
+       edge made the panel grow leftwards and run off the screen. Anchoring to
+       the end (left) edge makes it grow inwards, where there is room. */
+    inset-inline-end: 0;
     background: #0B0C16;
     border-radius: 16px;
     opacity: 0;
@@ -304,11 +308,40 @@
     z-index: 10;
 }
 
+/* Phones: anchor the box to the centre of the credits button and give it an
+   explicit width. Relying on the desktop shrink-to-fit measurement produced a
+   one-character-wide column that covered the whole footer on narrow screens. */
+@media (max-width: 767px) {
+    .credits-box {
+        --credits-w: min(280px, calc(100vw - 40px));
+        /* Centred on the button. `left: 50%` overrides the base
+           `inset-inline-end: 0` (which is `left: 0` in RTL) because this rule
+           comes later in the cascade. */
+        left: 50%;
+        width: var(--credits-w);
+        margin-left: calc(var(--credits-w) / -2);
+    }
+
+    .credits-content {
+        flex-direction: column;
+        gap: 14px;
+        padding: 16px 18px;
+        white-space: nowrap;
+    }
+
+    .credits-item {
+        text-align: start;
+    }
+}
+
 .credits-content {
     display: flex;
-    flex-wrap: wrap;
-    gap: 18px 30px;
+    gap: 30px;
     padding: 22px 24px;
+    /* Must stay nowrap: the desktop open animation measures this box with
+       `width: auto`, and allowing it to wrap collapses that measurement to the
+       width of a single word. */
+    white-space: nowrap;
     direction: rtl;
 }
 

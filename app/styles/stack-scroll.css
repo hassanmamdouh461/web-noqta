@@ -1,16 +1,27 @@
 /* ─── Stack Scroll (Projects Showcase 3D Stacking Cards) ─────────────── */
 
+/* NOTE: this section is pinned by ScrollTrigger, so it MUST be exactly one
+   viewport tall. With `min-height` it grew past the viewport on phones (840px
+   on a 740px screen), which clipped the bottom of every project card for the
+   whole pinned scroll. The stage/deck below now flex to fill the leftover
+   space instead of using fixed heights. */
 .stack-section {
     position: relative;
     background: var(--bg-dark);
     color: #ffffff;
-    min-height: 100vh;
-    min-height: 100svh;
+    height: 100vh;
+    height: 100svh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 4vw, 1.5rem) clamp(2.5rem, 6vh, 4.5rem);
+    /* The navbar is fixed and the section is pinned underneath it, so the top
+       padding has to clear the bar — otherwise the "أعمال حية تُحقق نتائج"
+       heading renders on top of the logo. */
+    padding:
+        calc(var(--nav-total) + clamp(8px, 2vh, 28px))
+        clamp(1rem, 4vw, 1.5rem)
+        clamp(1.25rem, 3.5vh, 4.5rem);
     z-index: 10;
 }
 
@@ -19,8 +30,8 @@
     text-align: center;
     z-index: 20;
     pointer-events: none;
-    margin-bottom: clamp(1.5rem, 4vh, 3rem);
-    margin-top: 1rem;
+    margin-bottom: clamp(1rem, 3vh, 3rem);
+    margin-top: 0;
 }
 
 .stack__badge {
@@ -62,17 +73,19 @@
 .stack__stage {
     position: relative;
     width: min(1180px, 100%);
-    flex: 0 0 auto;
-    margin-top: auto;
-    margin-bottom: auto;
+    /* Fill whatever vertical space the header and padding leave behind, and
+       never push the section past 100svh. `min-height: 0` is required or the
+       flex item refuses to shrink below its content size. */
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
 }
 
 .stack__deck {
     position: relative;
     width: 100%;
-    /* svh so the deck fits between the mobile URL bar and the pinned header. */
-    height: min(78vh, 650px);
-    height: min(74svh, 650px);
+    height: 100%;
+    min-height: 0;
 }
 
 .stack-card {
@@ -415,18 +428,10 @@
     }
 }
 
-/* Tablets in portrait: a shorter deck keeps the header + card both visible. */
-@media (min-width: 768px) and (max-width: 1023px) {
-    .stack__deck {
-        height: min(70svh, 560px);
-    }
-}
-
 /* ─── Responsive for Mobile & Tablet ─────────────────────────────────── */
 @media (min-width: 1024px) {
-    .stack__deck {
-        height: min(68vh, 580px);
-    }
+    /* The deck now fills the stage (which fills the pinned viewport), so no
+       fixed height is needed here. */
     .stack-card {
         grid-template-columns: 1fr 1.08fr;
         grid-template-rows: none;

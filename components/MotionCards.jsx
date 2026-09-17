@@ -4,6 +4,7 @@ import gsap from "gsap";
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TRACK_RECORD } from "@/lib/data";
+import WebpImage from './WebpImage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -259,9 +260,10 @@ export default function MotionCards() {
                             }}
                         >
                             <div className="motion-card__card-image">
-                                <img
+                                <WebpImage
                                     src={slide.src}
                                     loading="lazy"
+                                    decoding="async"
                                     alt={slide.alt}
                                     className="cover-image"
                                 />
@@ -325,10 +327,7 @@ export default function MotionCards() {
                             </button>
                         </div>
                         <div className="motion-card__modal-body">
-                            <img
-                                src={activeSlide.src}
-                                alt={activeSlide.title}
-                            />
+                            <WebpImage src={activeSlide.src} alt={activeSlide.title} decoding="async" />
                         </div>
                     </div>
                 </div>
