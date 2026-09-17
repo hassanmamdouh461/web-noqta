@@ -101,11 +101,28 @@ export default function ProjectStackScroll() {
             });
 
             tl.to({}, { duration: 0.35 });
-
-            window.addEventListener("resize", () => ScrollTrigger.refresh());
         }, sectionRef);
 
-        return () => ctx.revert();
+        // PERF/MEM: ScrollTrigger.refresh() re-measures every trigger, so it
+        // must not run once per resize event — coalesce to one call per frame.
+        // It also has to live OUTSIDE gsap.context(): ctx.revert() reverts GSAP
+        // objects but never removes listeners we attached by hand, so the old
+        // inline listener leaked on every unmount.
+        let resizeRaf = null;
+        const onResize = () => {
+            if (resizeRaf !== null) return;
+            resizeRaf = requestAnimationFrame(() => {
+                resizeRaf = null;
+                ScrollTrigger.refresh();
+            });
+        };
+        window.addEventListener("resize", onResize);
+
+        return () => {
+            window.removeEventListener("resize", onResize);
+            if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
+            ctx.revert();
+        };
     }, []);
 
     return (

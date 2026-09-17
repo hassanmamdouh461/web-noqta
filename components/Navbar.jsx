@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { WIGGLE_CONFIG, NOQTA_INFO } from '@/lib/data';
 
 function initWiggle(element, intensity) {
@@ -28,40 +29,74 @@ export default function Navbar() {
         const navbar = document.querySelector('.navbar');
         const footerEl = document.querySelector('.main-footer');
 
+        // Declared up-front: several registrations below (navbar-colour
+        // invalidation, wiggle, popouts, scroll, keydown) append their disposers
+        // to this list.
+        const cleanups = [];
+
         // Start white on dark (hero is dark)
         if (navbar) { navbar.classList.add('on-dark'); navbar.classList.remove('on-light'); }
 
-        const updateNavbarColor = () => {
-            if (!navbar) return;
-            const scrollPos = window.scrollY + navbar.offsetHeight / 2;
+        // PERF: the previous version ran querySelectorAll + getBoundingClientRect
+        // for every section on EVERY scroll frame — a selector query plus a
+        // forced layout, 60x/second. We now resolve the elements once and cache
+        // their document offsets, and only re-measure when the layout can
+        // actually change (resize, fonts loading, ScrollTrigger refresh).
+        let lightSections = [];
+        let stackRange = null;
+        let footerTop = Infinity;
+        let measured = false;
 
-            const lightSections = document.querySelectorAll('.content-section, .Double-marquee, .light-section');
-            let isOverLight = false;
-
-            lightSections.forEach(section => {
-                const rect = section.getBoundingClientRect();
+        const measureSections = () => {
+            const offsetOf = (el) => {
+                const rect = el.getBoundingClientRect();
                 const top = rect.top + window.scrollY;
-                const bottom = top + rect.height;
-                if (scrollPos >= top && scrollPos <= bottom) {
-                    isOverLight = true;
-                }
-            });
+                return { top, bottom: top + rect.height };
+            };
+            lightSections = Array.from(
+                document.querySelectorAll('.content-section, .Double-marquee, .light-section')
+            ).map(offsetOf);
 
             const stackSection = document.querySelector('#stack-section');
-            if (stackSection) {
-                const stackRect = stackSection.getBoundingClientRect();
-                const stackTop = stackRect.top + window.scrollY;
-                const stackBottom = stackTop + stackRect.height;
-                if (scrollPos >= stackTop && scrollPos <= stackBottom) {
-                    isOverLight = false;
+            stackRange = stackSection ? offsetOf(stackSection) : null;
+
+            footerTop = footerEl ? offsetOf(footerEl).top : Infinity;
+            measured = true;
+        };
+
+        const invalidateSections = () => { measured = false; };
+        window.addEventListener('resize', invalidateSections);
+        cleanups.push(() => window.removeEventListener('resize', invalidateSections));
+
+        if (typeof document !== 'undefined' && document.fonts) {
+            document.fonts.ready.then(invalidateSections);
+        }
+        // Pinned sections (ProjectStackScroll) inject a pin-spacer and change the
+        // document height, so any ScrollTrigger refresh invalidates our offsets.
+        ScrollTrigger.addEventListener('refresh', invalidateSections);
+        cleanups.push(() => ScrollTrigger.removeEventListener('refresh', invalidateSections));
+
+        const updateNavbarColor = () => {
+            if (!navbar) return;
+            if (!measured) measureSections();
+
+            const scrollPos = window.scrollY + navbar.offsetHeight / 2;
+            let isOverLight = false;
+
+            for (let i = 0; i < lightSections.length; i++) {
+                const { top, bottom } = lightSections[i];
+                if (scrollPos >= top && scrollPos <= bottom) {
+                    isOverLight = true;
+                    break;
                 }
             }
 
-            if (footerEl) {
-                const footerTop = footerEl.getBoundingClientRect().top + window.scrollY;
-                if (scrollPos >= footerTop) {
-                    isOverLight = false;
-                }
+            if (stackRange && scrollPos >= stackRange.top && scrollPos <= stackRange.bottom) {
+                isOverLight = false;
+            }
+
+            if (scrollPos >= footerTop) {
+                isOverLight = false;
             }
 
             if (isOverLight) {
@@ -77,7 +112,6 @@ export default function Navbar() {
         updateNavbarColor();
 
         // Wiggle setup
-        const cleanups = [];
         const logoNoqta = document.querySelector('.logo-noqta-wrap');
         if (logoNoqta) cleanups.push(initWiggle(logoNoqta, WIGGLE_CONFIG.logoTruus));
 

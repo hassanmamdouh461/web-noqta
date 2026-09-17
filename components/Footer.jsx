@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { NOQTA_INFO, WIGGLE_CONFIG } from '@/lib/data';
+import { prefersReducedMotion } from '@/lib/motion';
 
 function initWiggle(element, intensity) {
     if (!element) return () => {};
@@ -20,6 +21,12 @@ function initWiggle(element, intensity) {
 export default function Footer() {
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
+
+        // Every listener / tween registered below returns a cleanup that we
+        // collect here — the previous version only removed `mousemove` and left
+        // the credits hover listeners, the wiggle listeners and the sticker
+        // ScrollTrigger alive after unmount.
+        const cleanups = [];
 
         // ─── Credits Popout ───
         const creditsWrapper = document.querySelector('.footer-credits-wrapper');
@@ -58,6 +65,10 @@ export default function Footer() {
 
                 creditsWrapper.addEventListener('mouseenter', onEnter);
                 creditsWrapper.addEventListener('mouseleave', onLeave);
+                cleanups.push(() => {
+                    creditsWrapper.removeEventListener('mouseenter', onEnter);
+                    creditsWrapper.removeEventListener('mouseleave', onLeave);
+                });
             }
         }
 
@@ -67,7 +78,7 @@ export default function Footer() {
         gsap.set(footerStickers, { scale: 0, opacity: 0, transformOrigin: 'center bottom' });
         footerStickers.forEach((sticker, i) => gsap.set(sticker, { rotation: stickerRotations[i % stickerRotations.length] }));
 
-        gsap.to(footerStickers, {
+        const stickerTween = gsap.to(footerStickers, {
             scale: 1, opacity: 1,
             rotation: (i) => stickerRotations[i % stickerRotations.length] * 0.7,
             duration: 0.7, ease: 'back.out(1.7)', stagger: 0.12,
@@ -77,34 +88,79 @@ export default function Footer() {
                 toggleActions: 'play none none reverse'
             }
         });
+        cleanups.push(() => {
+            if (stickerTween.scrollTrigger) stickerTween.scrollTrigger.kill();
+            stickerTween.kill();
+        });
 
         // ─── Sticker cursor-velocity repulsion push physics ───
-        let prevX = 0, prevY = 0;
-        const onMouseMove = (e) => {
-            const dx = e.clientX - prevX;
-            const dy = e.clientY - prevY;
-            prevX = e.clientX;
-            prevY = e.clientY;
-            const speed = Math.hypot(dx, dy);
-
-            footerStickers.forEach((sticker, i) => {
+        // PERF: the original handler called getBoundingClientRect() for all six
+        // stickers on EVERY mousemove event (up to ~120/s) — that is a forced
+        // layout per event. Instead we cache the centres, invalidate the cache
+        // on scroll/resize, and do the work once per animation frame.
+        const PROXIMITY_RADIUS = 160;
+        let stickerCentres = [];
+        let centresDirty = true;
+        const invalidateCentres = () => { centresDirty = true; };
+        const measureCentres = () => {
+            stickerCentres = footerStickers.map((sticker) => {
                 const rect = sticker.getBoundingClientRect();
-                const cx = rect.left + rect.width / 2;
-                const cy = rect.top + rect.height / 2;
-                const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-                const PROXIMITY_RADIUS = 160;
-
-                if (dist < PROXIMITY_RADIUS && speed > 2) {
-                    const falloff = 1 - (dist / PROXIMITY_RADIUS);
-                    const pushX = Math.max(-50, Math.min(50, dx * 3.5 * falloff));
-                    const pushY = Math.max(-50, Math.min(50, dy * 3.5 * falloff));
-                    gsap.killTweensOf(sticker);
-                    gsap.to(sticker, { x: pushX, y: pushY, duration: 0.18, ease: 'power3.out' });
-                    gsap.to(sticker, { x: 0, y: 0, duration: 1.1, ease: 'elastic.out(1, 0.35)', delay: 0.18 });
-                }
+                return { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 };
             });
+            centresDirty = false;
         };
-        document.addEventListener('mousemove', onMouseMove);
+
+        window.addEventListener('scroll', invalidateCentres, { passive: true });
+        window.addEventListener('resize', invalidateCentres);
+        cleanups.push(() => {
+            window.removeEventListener('scroll', invalidateCentres);
+            window.removeEventListener('resize', invalidateCentres);
+        });
+
+        let prevX = 0, prevY = 0;
+        let lastX = 0, lastY = 0;
+        let hasPrev = false;
+        let moveRaf = null;
+
+        const applyRepulsion = () => {
+            moveRaf = null;
+            const dx = hasPrev ? lastX - prevX : 0;
+            const dy = hasPrev ? lastY - prevY : 0;
+            prevX = lastX;
+            prevY = lastY;
+            hasPrev = true;
+            if (Math.hypot(dx, dy) <= 2) return;
+            if (centresDirty) measureCentres();
+
+            for (let i = 0; i < footerStickers.length; i++) {
+                const { cx, cy } = stickerCentres[i] || {};
+                if (cx === undefined) continue;
+                const dist = Math.hypot(prevX - cx, prevY - cy);
+                if (dist >= PROXIMITY_RADIUS) continue;
+
+                const falloff = 1 - (dist / PROXIMITY_RADIUS);
+                const pushX = Math.max(-50, Math.min(50, dx * 3.5 * falloff));
+                const pushY = Math.max(-50, Math.min(50, dy * 3.5 * falloff));
+                const sticker = footerStickers[i];
+                gsap.killTweensOf(sticker);
+                gsap.to(sticker, { x: pushX, y: pushY, duration: 0.18, ease: 'power3.out' });
+                gsap.to(sticker, { x: 0, y: 0, duration: 1.1, ease: 'elastic.out(1, 0.35)', delay: 0.18 });
+            }
+        };
+
+        const onMouseMove = (e) => {
+            lastX = e.clientX;
+            lastY = e.clientY;
+            if (moveRaf === null) moveRaf = requestAnimationFrame(applyRepulsion);
+        };
+
+        if (!prefersReducedMotion()) {
+            document.addEventListener('mousemove', onMouseMove);
+            cleanups.push(() => {
+                document.removeEventListener('mousemove', onMouseMove);
+                if (moveRaf !== null) cancelAnimationFrame(moveRaf);
+            });
+        }
 
         // ─── Wiggle targets ───
         const wiggleTargets = [
@@ -112,14 +168,16 @@ export default function Footer() {
             { selector: '.footer-whatsapp', key: 'whatsapp' },
             { selector: '.footer-phone-item', key: 'whatsapp' }
         ];
+        // initWiggle returns a disposer — the previous code dropped it on the
+        // floor, leaking a mouseenter/mouseleave pair per element.
         wiggleTargets.forEach(({ selector, key }) => {
-            document.querySelectorAll(selector).forEach(el => initWiggle(el, WIGGLE_CONFIG[key]));
+            document.querySelectorAll(selector).forEach(el => cleanups.push(initWiggle(el, WIGGLE_CONFIG[key])));
         });
 
-        document.querySelectorAll('.single-social').forEach(el => initWiggle(el, WIGGLE_CONFIG.socials));
+        document.querySelectorAll('.single-social').forEach(el => cleanups.push(initWiggle(el, WIGGLE_CONFIG.socials)));
 
         return () => {
-            document.removeEventListener('mousemove', onMouseMove);
+            cleanups.forEach((fn) => { if (typeof fn === 'function') fn(); });
         };
     }, []);
 

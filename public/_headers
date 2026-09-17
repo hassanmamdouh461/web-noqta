@@ -1,0 +1,27 @@
+# Cloudflare Workers static-asset headers.
+# Docs: https://developers.cloudflare.com/workers/static-assets/headers/
+# NOTE: this file is parsed by Workers and is NOT served as an asset itself.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000
+
+# /_next/static/* filenames are content-hashed by Next.js, so they can be
+# cached indefinitely. Everything else keeps Cloudflare's default
+# (public, max-age=0, must-revalidate).
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Brand/media artwork is not fingerprinted -> shorter, but still useful TTL.
+/assets/*
+  Cache-Control: public, max-age=604800
+
+# TODO: add a Content-Security-Policy once it has been verified in a browser.
+# The site needs at least:
+#   style-src  'self' 'unsafe-inline' https://fonts.googleapis.com
+#   font-src   'self' https://fonts.gstatic.com
+#   script-src 'self' 'unsafe-inline'   (Next.js static export inlines bootstrap scripts)
+# so it is deliberately left out here rather than risk breaking the live site.

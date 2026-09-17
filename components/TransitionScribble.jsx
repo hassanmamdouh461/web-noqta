@@ -3,9 +3,14 @@
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ANIMATION_CONFIG } from '@/lib/data';
+import { prefersReducedMotion } from '@/lib/motion';
 
 export default function TransitionScribble() {
     useEffect(() => {
+        // A11Y: a ~4.9s full-screen scribble is the single heaviest animation on
+        // the site. Visitors who asked for reduced motion never see it.
+        if (prefersReducedMotion()) return;
+
         const logoTruusClickable = document.querySelector('.logo-truus');
         const transitionScribblePath = document.querySelector('.transition-scribble path');
         const transitionScribbleSvg = document.querySelector('.transition-scribble');

@@ -10,7 +10,7 @@ export default function ServiceCards() {
         gsap.registerPlugin(ScrollTrigger);
 
         // Animate underline SVG paths on scroll
-        gsap.to('.title-underline-svg path', {
+        const underlineTween = gsap.to('.title-underline-svg path', {
             strokeDashoffset: 0,
             duration: 1.2,
             ease: 'power3.out',
@@ -22,7 +22,15 @@ export default function ServiceCards() {
             }
         });
 
-        initCardAnimations();
+        // initCardAnimations() now returns a disposer; previously it registered
+        // 10 mouse listeners + a pinned ScrollTrigger with no cleanup at all.
+        const disposeCards = initCardAnimations();
+
+        return () => {
+            if (underlineTween.scrollTrigger) underlineTween.scrollTrigger.kill();
+            underlineTween.kill();
+            if (disposeCards) disposeCards();
+        };
     }, []);
 
     return (
@@ -82,7 +90,12 @@ export default function ServiceCards() {
 
 function initCardAnimations() {
     const cards = gsap.utils.toArray('.card');
-    if (!cards.length) return;
+    if (!cards.length) return () => {};
+
+    // Everything created below is registered here so the effect can dispose of
+    // it on unmount (React 19 StrictMode double-invokes effects in dev).
+    const disposers = [];
+    const triggers = [];
 
     const originalData = [
         { rotation: 4 },
@@ -97,7 +110,7 @@ function initCardAnimations() {
 
     if (!isMobile) {
         cards.forEach((card, index) => {
-            card.addEventListener('mouseenter', () => {
+            const onEnter = () => {
                 if (leaveTimeout) { clearTimeout(leaveTimeout); leaveTimeout = null; }
                 const hoverGap = 120;
                 const clusterGap = 145;
@@ -139,14 +152,21 @@ function initCardAnimations() {
                         gsap.to(item.card, { x: targetX, y: targetY, rotation: originalData[item.index].rotation, scale: 1, duration: 0.95, ease: 'elastic.out(1, 0.5)', overwrite: true });
                     });
                 }
-            });
+            };
 
-            card.addEventListener('mouseleave', () => {
+            const onLeave = () => {
                 leaveTimeout = setTimeout(() => {
                     cards.forEach((c, i) => {
                         gsap.to(c, { x: 0, y: 0, scale: 1, rotation: originalData[i].rotation, duration: 0.95, ease: 'elastic.out(1, 0.5)', overwrite: true, zIndex: i + 1 });
                     });
                 }, 75);
+            };
+
+            card.addEventListener('mouseenter', onEnter);
+            card.addEventListener('mouseleave', onLeave);
+            disposers.push(() => {
+                card.removeEventListener('mouseenter', onEnter);
+                card.removeEventListener('mouseleave', onLeave);
             });
         });
     } else {
@@ -173,18 +193,18 @@ function initCardAnimations() {
         const wrapperH = window.innerHeight * 0.7 + scrollPerCard * (cards.length - 1);
         gsap.set(cardsWrapper, { height: wrapperH });
 
-        ScrollTrigger.create({
+        triggers.push(ScrollTrigger.create({
             trigger: cardsWrapper,
             start: `top ${navH}px`,
             end: `+=${scrollPerCard * (cards.length - 1)}`,
             pin: true,
             pinSpacing: true,
             id: 'mobile-cards-pin'
-        });
+        }));
 
         cards.forEach((card, i) => {
             if (i === 0) return;
-            gsap.fromTo(card,
+            const tween = gsap.fromTo(card,
                 { y: window.innerHeight * 1.1 },
                 {
                     y: 0,
@@ -197,6 +217,13 @@ function initCardAnimations() {
                     }
                 }
             );
+            triggers.push(tween.scrollTrigger);
         });
     }
+
+    return () => {
+        if (leaveTimeout) { clearTimeout(leaveTimeout); leaveTimeout = null; }
+        disposers.forEach((fn) => fn());
+        triggers.forEach((t) => { if (t) t.kill(); });
+    };
 }

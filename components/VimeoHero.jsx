@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { NOQTA_INFO } from '@/lib/data';
+import { prefersReducedMotion } from '@/lib/motion';
 
 export default function VimeoHero() {
     const heroRef = useRef(null);
@@ -39,7 +39,7 @@ export default function VimeoHero() {
             { x: width * 0.85, y: height * 0.2, vx: -0.6, vy: 0.7, r: width * 0.25, color: 'rgba(61, 167, 146, 0.35)' } // Teal
         ];
 
-        const render = () => {
+        const drawFrame = () => {
             ctx.fillStyle = '#0B0C16';
             ctx.fillRect(0, 0, width, height);
 
@@ -59,7 +59,20 @@ export default function VimeoHero() {
                 ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
                 ctx.fill();
             });
+        };
 
+        // A11Y: with "reduce motion" we paint one static frame instead of
+        // running a permanent full-screen gradient loop.
+        if (prefersReducedMotion()) {
+            drawFrame();
+            const onResizeStatic = () => { handleResize(); drawFrame(); };
+            window.removeEventListener('resize', handleResize);
+            window.addEventListener('resize', onResizeStatic);
+            return () => window.removeEventListener('resize', onResizeStatic);
+        }
+
+        const render = () => {
+            drawFrame();
             animId = requestAnimationFrame(render);
         };
 
