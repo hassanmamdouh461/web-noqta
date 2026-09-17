@@ -19,7 +19,9 @@ export default function VimeoHero() {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        let animId;
+        // NOTE: MUST stay `null` (not undefined) — the start/stop guards below
+        // compare strictly against null to detect "not running yet".
+        let animId = null;
         let width = (canvas.width = window.innerWidth);
         let height = (canvas.height = window.innerHeight);
 
@@ -61,11 +63,37 @@ export default function VimeoHero() {
             animId = requestAnimationFrame(render);
         };
 
-        render();
+        // PERF: the loop used to run forever, redrawing 4 full-screen radial
+        // gradients every frame even when the hero was 10 screens away.
+        const start = () => { if (animId === null) render(); };
+        const stop = () => {
+            if (animId !== null) {
+                cancelAnimationFrame(animId);
+                animId = null;
+            }
+        };
+
+        let inView = true;
+        const io = new IntersectionObserver((entries) => {
+            inView = entries[0].isIntersecting;
+            if (inView && !document.hidden) start();
+            else stop();
+        }, { threshold: 0 });
+        io.observe(canvas);
+
+        const onVisibility = () => {
+            if (document.hidden) stop();
+            else if (inView) start();
+        };
+        document.addEventListener('visibilitychange', onVisibility);
+
+        start();
 
         return () => {
             window.removeEventListener('resize', handleResize);
-            cancelAnimationFrame(animId);
+            document.removeEventListener('visibilitychange', onVisibility);
+            io.disconnect();
+            stop();
         };
     }, []);
 

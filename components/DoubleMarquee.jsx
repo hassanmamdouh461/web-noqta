@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { brands } from '@/lib/data';
@@ -15,28 +15,33 @@ const MARQUEE_BG_COLORS = [
     "#82A0FF"
 ];
 
-function buildMarqueeTracks(isMobile) {
-    const tracks = [[], []];
-    for (let t = 0; t < 2; t++) {
-        const shuffled = [...brands].sort(() => 0.5 - Math.random());
-        const items = shuffled.map((brand, i) => ({
-            brand,
-            color: MARQUEE_BG_COLORS[i % MARQUEE_BG_COLORS.length],
-            isDark: [MARQUEE_BG_COLORS[2], MARQUEE_BG_COLORS[3]].includes(MARQUEE_BG_COLORS[i % MARQUEE_BG_COLORS.length])
-        }));
-        tracks[t] = isMobile ? items : [...items, ...items];
-    }
-    return tracks;
-}
+const DARK_COLORS = [MARQUEE_BG_COLORS[2], MARQUEE_BG_COLORS[3]];
+
+/**
+ * Tracks are built deterministically at module scope (no Math.random, no
+ * window access) so the content is rendered into the statically exported HTML
+ * instead of being injected after hydration — previously `useState([[], []])`
+ * meant the exported index.html contained ZERO marquee items, i.e. the whole
+ * "التقنيات والأدوات" section was invisible to crawlers and to no-JS visitors.
+ *
+ * Each track is duplicated once because the CSS marquee translates the track by
+ * -50%; it needs exactly two copies to loop seamlessly. On mobile the columns
+ * become a horizontal grid, and the duplicate half is hidden via CSS
+ * (`.marquee-track > .marquee-item:nth-child(n + 13)`).
+ */
+const MARQUEE_TRACKS = [0, 1].map((trackIndex) => {
+    const offset = trackIndex * 3;
+    const rotated = brands.slice(offset).concat(brands.slice(0, offset));
+    const items = rotated.map((brand, i) => {
+        const color = MARQUEE_BG_COLORS[i % MARQUEE_BG_COLORS.length];
+        return { brand, color, isDark: DARK_COLORS.includes(color) };
+    });
+    return [...items, ...items];
+});
 
 export default function DoubleMarquee() {
-    const [tracks, setTracks] = useState([[], []]);
-
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
-
-        const mobile = window.matchMedia('(max-width: 768px)').matches;
-        setTracks(buildMarqueeTracks(mobile));
 
         gsap.set('.marquee-left .marquee-svg-item:nth-child(2) path', { strokeDashoffset: 1000 });
 
@@ -102,7 +107,7 @@ export default function DoubleMarquee() {
 
                 {/* Left Column in RTL: Two Vertical Scrolling Columns */}
                 <div className="marquee-right" dir="ltr">
-                    {tracks.map((trackItems, colIndex) => (
+                    {MARQUEE_TRACKS.map((trackItems, colIndex) => (
                         <div key={colIndex} className={`marquee-column marquee-column--${colIndex}`}>
                             <div className="marquee-track">
                                 {trackItems.map((item, i) => (

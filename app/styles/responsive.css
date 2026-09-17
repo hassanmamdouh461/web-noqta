@@ -89,6 +89,13 @@ body {
     flex-shrink: 0;
 }
 
+/* Each marquee track is duplicated (2 × 12) so the desktop CSS animation can
+   translate by -50% and loop seamlessly. On mobile the columns become a single
+   horizontal grid, so only the first copy is shown (12 = brands.length). */
+.marquee-track > .marquee-item:nth-child(n + 13) {
+    display: none;
+}
+
 /* ── Marquee text (mobile) ─── */
 .marquee-left h2 {
     font-size: clamp(1.8rem, 10vw, 2.6rem);
@@ -315,6 +322,11 @@ body {
         width: 100%;
         height: 240px;
         flex-shrink: unset;
+    }
+
+    /* Desktop vertical marquee: show the duplicated copy again. */
+    .marquee-track > .marquee-item:nth-child(n + 13) {
+        display: flex;
     }
 
     .marquee-left h2 {

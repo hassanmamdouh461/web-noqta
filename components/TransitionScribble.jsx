@@ -12,6 +12,9 @@ export default function TransitionScribble() {
 
         if (!logoTruusClickable || !transitionScribblePath || !transitionScribbleSvg) return;
 
+        // Listeners that let the user skip/fast-forward the intro animation.
+        const skipCleanups = [];
+
         const transitionColors = [
             'var(--color-green)', 'var(--color-lightblue)', 'var(--color-darkblue)',
             'var(--color-lightgreen)', 'var(--color-orange)', 'var(--color-maroon)', 'var(--color-pink)'
@@ -66,6 +69,7 @@ export default function TransitionScribble() {
                     document.body.classList.remove('is-transitioning');
                     gsap.set(transitionScribblePath, { strokeWidth: '0%' });
                     gsap.set(transitionLogo, { opacity: 0 });
+                    skipCleanups.forEach((fn) => fn());
                 }
             });
 
@@ -102,6 +106,13 @@ export default function TransitionScribble() {
                     }
                 }
             }, durIn + (durOut * 0.48));
+
+            // UX: instead of blocking the page for the full ~4.9s, any real user
+            // interaction fast-forwards the timeline to its end.
+            const skip = () => { drawTl.timeScale(8); };
+            const skipEvents = ['pointerdown', 'keydown', 'wheel', 'touchstart'];
+            skipEvents.forEach((ev) => window.addEventListener(ev, skip, { passive: true }));
+            skipCleanups.push(() => skipEvents.forEach((ev) => window.removeEventListener(ev, skip)));
         };
 
         logoTruusClickable.addEventListener('click', runScribbleAnimation);
@@ -112,6 +123,7 @@ export default function TransitionScribble() {
         return () => {
             logoTruusClickable.removeEventListener('click', runScribbleAnimation);
             clearTimeout(timer);
+            skipCleanups.forEach((fn) => fn());
         };
     }, []);
 

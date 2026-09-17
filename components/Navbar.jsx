@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
-import { WIGGLE_CONFIG, NOQTA_INFO, PROJECTS_DATA } from '@/lib/data';
+import { WIGGLE_CONFIG, NOQTA_INFO } from '@/lib/data';
 
 function initWiggle(element, intensity) {
     if (!element) return () => {};
@@ -73,7 +73,7 @@ export default function Navbar() {
             }
         };
 
-        window.addEventListener('scroll', updateNavbarColor, { passive: true });
+        // NOTE: the scroll listener is registered once below (merged + rAF-throttled).
         updateNavbarColor();
 
         // Wiggle setup
@@ -131,6 +131,7 @@ export default function Navbar() {
             gsap.set(workBlob, { transformOrigin: 'center center' });
 
             const onEnterLeft = () => {
+                leftOpen = true;
                 gsap.killTweensOf(workBox);
                 gsap.killTweensOf(workItems);
                 gsap.killTweensOf(workBlob);
@@ -147,6 +148,7 @@ export default function Navbar() {
             };
 
             const onLeaveLeft = () => {
+                leftOpen = false;
                 gsap.killTweensOf(workBox);
                 gsap.killTweensOf(workItems);
                 gsap.killTweensOf(workBlob);
@@ -219,6 +221,7 @@ export default function Navbar() {
             gsap.set(waItems, { y: 10, opacity: 0 });
 
             const onEnterRight = () => {
+                rightOpen = true;
                 gsap.killTweensOf(waBox);
                 gsap.killTweensOf(waItems);
                 showOverlay();
@@ -233,6 +236,7 @@ export default function Navbar() {
             };
 
             const onLeaveRight = () => {
+                rightOpen = false;
                 gsap.killTweensOf(waBox);
                 gsap.killTweensOf(waItems);
                 hideOverlay();
@@ -291,12 +295,22 @@ export default function Navbar() {
             cleanups.push(() => overlay.removeEventListener('click', closeAllPopouts));
         }
 
-        // Close popouts smoothly on scroll
-        const onScrollClose = () => {
-            closeAllPopouts();
+        // Single rAF-throttled scroll handler: navbar colour + popout auto-close.
+        // Previously closeAllPopouts() ran on EVERY scroll event and created ~10
+        // GSAP tweens per event even when nothing was open. Now it only runs when
+        // a popout is actually open, and at most once per animation frame.
+        let scrollTicking = false;
+        const onScroll = () => {
+            if (scrollTicking) return;
+            scrollTicking = true;
+            requestAnimationFrame(() => {
+                scrollTicking = false;
+                updateNavbarColor();
+                if (leftOpen || rightOpen) closeAllPopouts();
+            });
         };
-        window.addEventListener('scroll', onScrollClose, { passive: true });
-        cleanups.push(() => window.removeEventListener('scroll', onScrollClose));
+        window.addEventListener('scroll', onScroll, { passive: true });
+        cleanups.push(() => window.removeEventListener('scroll', onScroll));
 
         // Close on Escape key
         const onKeyDown = (e) => {
@@ -306,7 +320,6 @@ export default function Navbar() {
         cleanups.push(() => window.removeEventListener('keydown', onKeyDown));
 
         return () => {
-            window.removeEventListener('scroll', updateNavbarColor);
             cleanups.forEach(fn => fn && fn());
         };
     }, []);
@@ -337,7 +350,8 @@ export default function Navbar() {
                                     <div className="nav-work-item__img-wrap" style={{ background: '#10162A' }}>
                                         <img
                                             src="/assets/noqta/noqta-portfolio-slide1.png"
-                                            loading="eager"
+                                            loading="lazy"
+                                            decoding="async"
                                             alt="هويات بصرية وشعارات"
                                             className="nav-work-item__img"
                                         />
@@ -363,7 +377,8 @@ export default function Navbar() {
                                     <div className="nav-work-item__img-wrap" style={{ background: '#1E1B4B' }}>
                                         <img
                                             src="/assets/noqta/noqta-marketing-slide10.png"
-                                            loading="eager"
+                                            loading="lazy"
+                                            decoding="async"
                                             alt="تسويق رقمي وحملات إعلانية"
                                             className="nav-work-item__img"
                                         />
@@ -389,7 +404,8 @@ export default function Navbar() {
                                     <div className="nav-work-item__img-wrap" style={{ background: '#151B38' }}>
                                         <img
                                             src="/assets/noqta/noqta-thumbnails-slide9.png"
-                                            loading="eager"
+                                            loading="lazy"
+                                            decoding="async"
                                             alt="تصاميم الأغلفة وصناعة الميديا"
                                             className="nav-work-item__img"
                                         />
