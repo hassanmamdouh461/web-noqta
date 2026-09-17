@@ -1,17 +1,20 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   RESPONSIVE — Mobile-First Consolidated Overrides
-   
-   All component-level responsive rules are in their own CSS files.
-   This file handles CROSS-CUTTING refinements and fine-tuning that
-   span multiple components at specific breakpoints.
-   
+   RESPONSIVE — Cross-cutting overrides for phone / tablet / desktop
+
+   Component-level responsive rules live in their own CSS files. This file
+   handles the refinements that span several components at a given breakpoint.
+
    Breakpoints (mobile-first, min-width):
    ── Base ─── 0–639px   (small phones, default styles)
    ── sm ───── ≥640px    (large phones)
    ── md ───── ≥768px    (tablets)
-   ── lg ───── ≥1024px   (small laptops)
+   ── lg ───── ≥1024px   (small laptops / iPad landscape)
    ── xl ───── ≥1280px   (desktops)
    ── 2xl ──── ≥1536px   (large desktops / 2K+)
+
+   Height: `svh` (small viewport height) is used instead of `vh` wherever a
+   section is meant to fill the screen, because `vh` on mobile browsers
+   includes the collapsing URL bar and makes sections taller than the display.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ─── Global Overflow Guard ──────────────────────────────────────────────── */
@@ -23,8 +26,6 @@ body {
 
 /* ═══════════════════════════════════════════════════════════════════════════
    BASE (0–639px) — Default small phone styles
-   Most mobile defaults are set in individual component CSS files.
-   These are cross-cutting refinements only.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Navbar extras ─── */
@@ -35,19 +36,22 @@ body {
 
 .nav-bar__whatsapp-svg {
     width: 26px;
+    height: 26px;
 }
 
 /* ── Content sections ─── */
 .content-section {
     overflow: visible;
+    /* Tighter gutters so long Arabic headlines don't break awkwardly. */
+    padding-inline: clamp(14px, 5vw, 20px);
 }
 
-/* ── Cards mobile stacking (GSAP override) ─── */
+/* ── Cards ─── */
 .card-sticker {
     pointer-events: none;
 }
 
-/* ── Marquee mobile: horizontal scroll grid ─── */
+/* ── Marquee: vertical columns become a swipeable horizontal grid ─── */
 .marquee-right {
     display: grid;
     grid-template-rows: 130px 130px;
@@ -55,12 +59,16 @@ body {
     grid-auto-columns: 130px;
     gap: 8px;
     width: 100%;
+    max-width: 100%;
     height: auto;
     margin-inline-end: 0;
-    padding: 20px 24px 32px;
+    padding: 20px 20px 32px;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 20px;
     scrollbar-width: none;
 }
 
@@ -87,6 +95,21 @@ body {
     width: 130px;
     height: 130px;
     flex-shrink: 0;
+    padding: 12px 10px;
+    scroll-snap-align: center;
+}
+
+.marquee-badge-name {
+    font-size: 1.05rem;
+}
+
+.marquee-badge-label {
+    font-size: 0.7rem;
+}
+
+.marquee-badge-cat {
+    font-size: 0.62rem;
+    padding: 3px 8px;
 }
 
 /* Each marquee track is duplicated (2 × 12) so the desktop CSS animation can
@@ -98,22 +121,45 @@ body {
 
 /* ── Marquee text (mobile) ─── */
 .marquee-left h2 {
-    font-size: clamp(1.8rem, 10vw, 2.6rem);
-    letter-spacing: -1.5px;
+    font-size: clamp(1.75rem, 9.5vw, 2.6rem);
+    letter-spacing: -1px;
     margin-bottom: 0;
     margin-inline-end: 0;
 }
 
 .marquee-underline {
-    top: 5rem;
-    inset-inline-end: auto;
-    inset-inline-start: 9.5rem;
-    width: 70px;
+    top: auto;
+    bottom: -8px;
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+    width: 78px;
 }
 
-/* ── Footer extras (mobile) ─── */
+.marquee-left-subtext {
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+/* ── Footer (mobile) ─────────────────────────────────────────────────────
+   The credits row used to be absolutely positioned over the sticker band, so
+   the stickers sat on top of the hashtag and the credits link. It now flows
+   underneath the wordmark, and the sticker band is clipped to the wordmark
+   area so the two can never collide. */
 .footer-bottom {
-    margin-top: 200px;
+    margin-top: 120px;
+}
+
+.footer-bottom-row {
+    position: relative;
+    bottom: auto;
+    padding-top: 26px;
+    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+}
+
+.footer-stickers {
+    top: 0;
+    transform: translateX(-50%);
+    height: 62%;
 }
 
 .footer-logo__svg {
@@ -122,17 +168,23 @@ body {
 }
 
 .footer-credits-wrapper {
-    margin-inline-end: -15px;
-    margin-bottom: -15px;
+    margin-inline-end: 0;
+    margin-bottom: 0;
 }
 
 .footer-credits {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    padding: 8px 18px;
 }
 
 .credits-box {
     padding: 16px 20px;
     gap: 20px;
+}
+
+.credits-content {
+    gap: 16px 24px;
+    padding: 16px 18px;
 }
 
 .credits-label {
@@ -143,41 +195,52 @@ body {
     font-size: 0.95rem;
 }
 
-/* ── Footer stickers (mobile positions) ─── */
+/* ── Footer stickers (mobile positions — upper band only) ─── */
 .sticker-boom {
-    left: 2%;
-    bottom: 10%;
-    width: 90px;
+    left: 1%;
+    bottom: 4%;
+    width: 68px;
 }
 
 .sticker-smiley {
-    left: 30%;
-    bottom: 5%;
-    width: 90px;
+    left: 27%;
+    bottom: 26%;
+    width: 68px;
 }
 
 .sticker-heart {
     left: 50%;
-    bottom: 18%;
-    width: 85px;
+    bottom: 6%;
+    width: 62px;
 }
 
 .footer-sticker.sticker-hands {
-    left: 60%;
-    bottom: 2%;
-    width: 90px;
+    left: 64%;
+    bottom: 30%;
+    width: 68px;
 }
 
 .footer-sticker.sticker-100 {
-    left: 72%;
-    bottom: 20%;
-    width: 80px;
+    left: 76%;
+    bottom: 4%;
+    width: 58px;
 }
 
 .footer-sticker.sticker-camera {
-    right: 2%;
-    bottom: 8%;
-    width: 85px;
+    right: 1%;
+    bottom: 28%;
+    width: 64px;
+}
+
+/* ── Showreel (mobile) ─── */
+.showreel__desc {
+    font-size: 1rem;
+}
+
+.showreel__play-btn {
+    font-size: 0.85rem;
+    padding: 12px 18px;
+    gap: 8px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -185,16 +248,26 @@ body {
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (min-width: 640px) {
     .marquee-left h2 {
-        font-size: clamp(2rem, 9vw, 2.6rem);
+        font-size: clamp(2rem, 8vw, 2.6rem);
+    }
+
+    .marquee-right {
+        grid-template-rows: 140px 140px;
+        grid-auto-columns: 140px;
+        padding: 24px 28px 36px;
+    }
+
+    .marquee-item {
+        width: 140px;
+        height: 140px;
+    }
+
+    .marquee-badge-name {
+        font-size: 1.15rem;
     }
 
     .footer-bottom {
-        margin-top: 200px;
-    }
-
-    .footer-credits-wrapper {
-        margin-inline-end: 0;
-        margin-bottom: 0;
+        margin-top: 140px;
     }
 }
 
@@ -210,11 +283,41 @@ body {
 
     .nav-bar__whatsapp-svg {
         width: 30px;
+        height: 30px;
+    }
+
+    /* ── Marquee: give the grid more breathing room ─── */
+    .marquee-right {
+        grid-template-rows: 160px 160px;
+        grid-auto-columns: 160px;
+        gap: 12px;
+        padding: 28px 32px 40px;
+    }
+
+    .marquee-item {
+        width: 160px;
+        height: 160px;
     }
 
     /* ── Footer ─── */
     .footer-bottom {
-        margin-top: 50px;
+        margin-top: 70px;
+    }
+
+    .footer-bottom-row {
+        position: absolute;
+        bottom: 0;
+        padding-top: 20px;
+        padding-bottom: 0;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .footer-stickers {
+        top: 50%;
+        transform: translate(-50%, -50%);
+        height: 100%;
     }
 
     .footer-logo__svg {
@@ -231,6 +334,11 @@ body {
         gap: 30px;
     }
 
+    .credits-content {
+        gap: 30px;
+        padding: 22px 24px;
+    }
+
     .credits-label {
         font-size: 0.78rem;
     }
@@ -239,49 +347,49 @@ body {
         font-size: 1.05rem;
     }
 
-    /* ── Footer stickers (tablet+ positions) ─── */
+    /* ── Footer stickers (tablet positions) ─── */
     .sticker-boom {
         left: -1%;
         bottom: 15%;
-        width: 150px;
+        width: 130px;
     }
 
     .sticker-smiley {
         left: 20%;
         bottom: 45%;
-        width: 130px;
+        width: 120px;
     }
 
     .sticker-heart {
         left: 45%;
         bottom: 30%;
-        width: 130px;
+        width: 120px;
     }
 
     .footer-sticker.sticker-hands {
         left: 55%;
         bottom: 0%;
-        width: 130px;
+        width: 120px;
     }
 
     .footer-sticker.sticker-100 {
-        left: 60%;
+        left: 62%;
         bottom: 55%;
-        width: 130px;
+        width: 120px;
     }
 
     .footer-sticker.sticker-camera {
-        right: 8%;
+        right: 6%;
         bottom: 15%;
-        width: 130px;
+        width: 120px;
     }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   LG (≥1024px) — Small laptops
+   LG (≥1024px) — Small laptops / iPad landscape
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (min-width: 1024px) {
-    /* ── Marquee: restore vertical columns ─── */
+    /* ── Marquee: restore the two vertical scrolling columns ─── */
     .marquee-right {
         display: flex;
         grid-template-rows: unset;
@@ -289,11 +397,13 @@ body {
         grid-auto-columns: unset;
         gap: 14px;
         width: 520px;
+        max-width: 520px;
         height: 850px;
         margin-inline-end: 0;
         padding: 0;
         overflow-x: visible;
         overflow-y: hidden;
+        scroll-snap-type: none;
     }
 
     .marquee-column {
@@ -322,6 +432,20 @@ body {
         width: 100%;
         height: 240px;
         flex-shrink: unset;
+        padding: 24px 20px;
+    }
+
+    .marquee-badge-name {
+        font-size: 1.65rem;
+    }
+
+    .marquee-badge-label {
+        font-size: 0.85rem;
+    }
+
+    .marquee-badge-cat {
+        font-size: 0.72rem;
+        padding: 4px 10px;
     }
 
     /* Desktop vertical marquee: show the duplicated copy again. */
@@ -344,6 +468,11 @@ body {
         max-width: 132px;
     }
 
+    .marquee-left-subtext {
+        font-size: 1.15rem;
+        margin-bottom: 30px;
+    }
+
     .content-section {
         overflow: hidden;
     }
@@ -359,11 +488,12 @@ body {
 @media (min-width: 1280px) {
     .marquee-right {
         width: 520px;
+        max-width: 520px;
     }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   2XL (≥1536px) — Large desktops / 2K+ screens
+   2XL (≥1536px) — Large desktops / 2K+
    Cap content width to prevent overly wide layouts.
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (min-width: 1536px) {
@@ -388,15 +518,83 @@ body {
 
 /* ═══════════════════════════════════════════════════════════════════════════
    SPECIAL: Landscape phones (short viewport height)
-   Prevents clipped hero content on landscape-oriented phones.
+
+   A phone turned sideways is ~360–430px tall — shorter than the hero's natural
+   content stack. Without these rules the headline and the scroll indicator
+   overlap and the footer wordmark eats the whole screen.
    ═══════════════════════════════════════════════════════════════════════════ */
-@media (max-height: 500px) and (orientation: landscape) {
-    .vimeo-hero,
-    .header-content {
-        min-height: 480px;
+@media (max-height: 560px) and (orientation: landscape) {
+    .vimeo-hero {
+        min-height: 420px;
+        height: auto;
+        padding-bottom: 40px;
     }
 
     .home-header__title {
-        bottom: 24px;
+        position: relative;
+        bottom: auto;
+        top: auto;
+        transform: none;
+        padding-top: calc(76px + env(safe-area-inset-top, 0px));
+        padding-bottom: 56px;
+    }
+
+    .vimeo-hero__title {
+        font-size: clamp(1.6rem, 5.2vw, 2.4rem);
+    }
+
+    .home-header__smiley,
+    .home-header__star {
+        display: none;
+    }
+
+    .vimeo-hero__controls {
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .footer-bottom {
+        margin-top: 60px;
+    }
+
+    .footer-stickers {
+        display: none;
+    }
+
+    .marquee-right {
+        grid-template-rows: 120px 120px;
+        grid-auto-columns: 120px;
+    }
+
+    .marquee-item {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOUCH DEVICES
+   Hover-only affordances either never trigger or "stick" after a tap on touch
+   hardware, so the purely decorative ones are neutralised.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (hover: none) {
+    .marquee-item:hover {
+        transform: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    }
+
+    .showreel__media-box:hover .showreel__preview-img {
+        transform: none;
+    }
+
+    .single-social:hover,
+    .footer-phone-item:hover,
+    .footer-whatsapp:hover {
+        transform: none;
+    }
+
+    /* The custom cursor bubbles are pointer-only decorations. */
+    .cursor-bubble,
+    .vimeo-mute-bubble {
+        display: none !important;
     }
 }

@@ -332,22 +332,22 @@ export default function Footer() {
                 {/* Floating Interactive Stickers */}
                 <div className="footer-stickers">
                     <div className="footer-sticker sticker-smiley">
-                        <img src="/assets/Footer-Sticker SVG/footer-sticker-smiley.svg" width="100%" alt="" aria-hidden="true" />
+                        <img loading="lazy" decoding="async" src="/assets/Footer-Sticker SVG/footer-sticker-smiley.svg" width="100%" alt="" aria-hidden="true" />
                     </div>
                     <div className="footer-sticker sticker-heart">
-                        <img src="/assets/Footer-Sticker SVG/footer-sticker-heart.svg" width="100%" alt="" aria-hidden="true" />
+                        <img loading="lazy" decoding="async" src="/assets/Footer-Sticker SVG/footer-sticker-heart.svg" width="100%" alt="" aria-hidden="true" />
                     </div>
                     <div className="footer-sticker sticker-hands">
-                        <img src="/assets/Footer-Sticker SVG/footer-sticker-hands.svg" width="100%" alt="" aria-hidden="true" />
+                        <img loading="lazy" decoding="async" src="/assets/Footer-Sticker SVG/footer-sticker-hands.svg" width="100%" alt="" aria-hidden="true" />
                     </div>
                     <div className="footer-sticker sticker-100">
-                        <img src="/assets/Footer-Sticker SVG/footer-sticker-100.svg" width="100%" alt="" aria-hidden="true" />
+                        <img loading="lazy" decoding="async" src="/assets/Footer-Sticker SVG/footer-sticker-100.svg" width="100%" alt="" aria-hidden="true" />
                     </div>
                     <div className="footer-sticker sticker-camera">
-                        <img src="/assets/Footer-Sticker SVG/footer-sticker-camera.svg" width="100%" alt="" aria-hidden="true" />
+                        <img loading="lazy" decoding="async" src="/assets/Footer-Sticker SVG/footer-sticker-camera.svg" width="100%" alt="" aria-hidden="true" />
                     </div>
                     <div className="footer-sticker sticker-boom">
-                        <img src="/assets/Footer-Sticker SVG/footer-sticker-boom.svg" width="100%" alt="" aria-hidden="true" />
+                        <img loading="lazy" decoding="async" src="/assets/Footer-Sticker SVG/footer-sticker-boom.svg" width="100%" alt="" aria-hidden="true" />
                     </div>
                 </div>
 

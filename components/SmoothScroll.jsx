@@ -30,6 +30,10 @@ export default function SmoothScroll() {
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             smoothWheel: true,
             touchMultiplier: 1.5,
+            // Touch devices keep native momentum scrolling: hijacking it makes
+            // pinned sections feel broken on iOS and fights the browser's own
+            // rubber-banding. (Lenis default, stated explicitly for clarity.)
+            syncTouch: false,
         });
 
         lenis.on('scroll', ScrollTrigger.update);
@@ -38,7 +42,16 @@ export default function SmoothScroll() {
 
         window.__lenis = lenis;
 
+        // Everything above changes the document height (pins, injected
+        // spacers), so re-measure once the layout has settled and again after
+        // the web fonts swap in — otherwise pinned sections can be positioned
+        // from pre-font metrics and land in the wrong place on first scroll.
+        const refresh = () => ScrollTrigger.refresh();
+        window.addEventListener('load', refresh);
+        if (document.fonts) document.fonts.ready.then(refresh);
+
         return () => {
+            window.removeEventListener('load', refresh);
             lenis.destroy();
             gsap.ticker.remove(tickerFn);
             document.removeEventListener('visibilitychange', handleVisibility);

@@ -12,10 +12,16 @@ export default function Showreel() {
                 </div>
 
                 <div className="showreel__media-box">
+                    {/* PERF: this is a ~900 KB PNG far below the fold. Without
+                        loading="lazy" React 19 emitted a <link rel="preload">
+                        for it in the static HTML, so it started downloading
+                        immediately and competed with the hero for bandwidth. */}
                     <img
                         src="/assets/noqta/noqta-thumbnails-slide9.png"
                         alt="Noqta Media Showreel"
                         className="showreel__preview-img"
+                        loading="lazy"
+                        decoding="async"
                     />
                     <div className="showreel__overlay">
                         <a

@@ -24,9 +24,42 @@ export default function ServiceCards() {
 
         // initCardAnimations() now returns a disposer; previously it registered
         // 10 mouse listeners + a pinned ScrollTrigger with no cleanup at all.
-        const disposeCards = initCardAnimations();
+        let disposeCards = initCardAnimations();
+
+        // RESPONSIVE FIX: the fan-out (desktop) and the pinned stack (mobile)
+        // are two completely different layouts, and the choice was made once at
+        // mount. Rotating a tablet — or resizing a window across 1200px — left
+        // the old inline GSAP transforms (position/left/yPercent) in place, so
+        // the cards ended up stacked on top of each other in the wrong layout.
+        // Re-initialise whenever the breakpoint is actually crossed.
+        const mq = window.matchMedia('(max-width: 1199px)');
+        const onBreakpointChange = () => {
+            if (disposeCards) disposeCards();
+            // Wipe every inline style GSAP wrote before re-initialising. The
+            // wrapper keeps the inline height the mobile branch computed, which
+            // would otherwise survive into the desktop layout.
+            gsap.set('.card', { clearProps: 'all' });
+            gsap.set('.cards-wrapper', { clearProps: 'height' });
+            disposeCards = initCardAnimations();
+            ScrollTrigger.refresh();
+        };
+        mq.addEventListener('change', onBreakpointChange);
+
+        // iOS fires `orientationchange` before the new viewport metrics settle.
+        let orientationRaf = null;
+        const onOrientation = () => {
+            if (orientationRaf !== null) cancelAnimationFrame(orientationRaf);
+            orientationRaf = requestAnimationFrame(() => {
+                orientationRaf = null;
+                ScrollTrigger.refresh();
+            });
+        };
+        window.addEventListener('orientationchange', onOrientation);
 
         return () => {
+            mq.removeEventListener('change', onBreakpointChange);
+            window.removeEventListener('orientationchange', onOrientation);
+            if (orientationRaf !== null) cancelAnimationFrame(orientationRaf);
             if (underlineTween.scrollTrigger) underlineTween.scrollTrigger.kill();
             underlineTween.kill();
             if (disposeCards) disposeCards();
@@ -105,7 +138,7 @@ function initCardAnimations() {
         { rotation: 5 }
     ];
 
-    const isMobile = window.matchMedia('(max-width: 1200px)').matches;
+    const isMobile = window.matchMedia('(max-width: 1199px)').matches;
     let leaveTimeout = null;
 
     if (!isMobile) {

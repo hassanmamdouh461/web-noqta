@@ -214,6 +214,8 @@ export default function MotionCards() {
                             src="/assets/Footer-Sticker SVG/footer-sticker-hands.svg"
                             alt=""
                             className="motion-card__sticker-img"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </span>
                 </p>
@@ -230,6 +232,8 @@ export default function MotionCards() {
                         src="/assets/MotionCard SVG/motion-card-blob.svg"
                         alt=""
                         className="motion-card__blob-svg"
+                        loading="lazy"
+                        decoding="async"
                     />
                 </div>
 

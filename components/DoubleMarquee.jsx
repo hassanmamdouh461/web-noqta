@@ -59,9 +59,10 @@ export default function DoubleMarquee() {
             .to('.marquee-left .marquee-svg-item:nth-child(2) path', { strokeDashoffset: 0, duration: 1.3, ease: 'power2.out' }, '-=0.3');
 
         return () => {
-            ScrollTrigger.getAll().forEach(t => {
-                if (t.vars.trigger === '.Double-marquee') t.kill();
-            });
+            // The timeline itself was never killed before — only its trigger was,
+            // which left the tween objects (and their targets) referenced.
+            if (marqueeTl.scrollTrigger) marqueeTl.scrollTrigger.kill();
+            marqueeTl.kill();
         };
     }, []);
 
@@ -90,10 +91,10 @@ export default function DoubleMarquee() {
                     </div>
 
                     <div className="marquee-blob-container" aria-hidden="true">
-                        <img src="/assets/Marquee-blob SVG/marquee-blob.svg" className="marquee-blob" alt="" />
+                        <img src="/assets/Marquee-blob SVG/marquee-blob.svg" className="marquee-blob" alt="" loading="lazy" decoding="async" />
                         <div className="marquee-svg-container">
                             <div className="marquee-svg-item">
-                                <img src="/assets/Marquee-blob SVG/marquee-hand.svg" width="100%" alt="" />
+                                <img src="/assets/Marquee-blob SVG/marquee-hand.svg" width="100%" alt="" loading="lazy" decoding="async" />
                             </div>
                             <div className="marquee-svg-item">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 386 127" fill="none">

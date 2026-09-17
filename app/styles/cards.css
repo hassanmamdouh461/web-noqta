@@ -180,6 +180,58 @@
     color: #12141d;
 }
 
+/* ─── Phone / tablet: the deck is driven by GSAP (see ServiceCards.jsx) ───
+   Below 1200px the five cards are stacked and revealed on scroll, so a single
+   card has to fit the space the script reserves per step (0.7 × viewport
+   height). A hard 450px min-height overflowed on short phones such as the
+   iPhone SE, which left the last bullet points permanently cut off. */
+@media (max-width: 1199px) {
+    .card {
+        width: min(320px, 88vw);
+        min-height: min(460px, 66svh);
+        padding: 2.6rem 1.4rem 1.5rem;
+    }
+
+    .card-title {
+        font-size: clamp(1.3rem, 5.2vw, 1.6rem);
+    }
+
+    .card-division-badge {
+        font-size: 0.66rem;
+        padding: 3px 9px;
+    }
+
+    .card-subtitle-en {
+        font-size: 0.76rem;
+        margin-bottom: 10px;
+    }
+
+    .card-divider-svg {
+        margin-bottom: 10px;
+    }
+
+    .card-list {
+        gap: 8px;
+    }
+
+    .card-list li {
+        font-size: 0.86rem;
+        line-height: 1.35;
+    }
+
+    .card-bullet-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .card-sticker {
+        top: -18px;
+        right: 18px;
+        width: 48px;
+        height: 48px;
+    }
+}
+
 @media (min-width: 1200px) {
     .cards-wrapper {
         display: flex;

@@ -3,8 +3,10 @@
     position: fixed;
     top: -50vh;
     left: -50vw;
-    width: 200vw;
-    height: 200vh;
+    width: 200vw !important;
+    max-width: none !important;
+    height: 200vh !important;
+    max-height: none !important;
     z-index: 9999;
     pointer-events: none;
     color: var(--color-maroon, #a0325a);

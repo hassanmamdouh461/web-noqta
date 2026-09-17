@@ -2,11 +2,17 @@
 
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
+import { isCoarsePointer } from '@/lib/motion';
 
 export default function CursorBubble() {
     useEffect(() => {
         const cursorBubble = document.querySelector('.cursor-bubble');
         if (!cursorBubble) return;
+
+        // PERF: this is a pointer-only decoration. On phones/tablets the CSS
+        // already hides it, but the mousemove/mouseover listeners were still
+        // being attached — no reason to pay for them at all.
+        if (isCoarsePointer()) return;
 
         const xTo = gsap.quickTo(cursorBubble, 'x', { duration: 0.45, ease: 'power3' });
         const yTo = gsap.quickTo(cursorBubble, 'y', { duration: 0.45, ease: 'power3' });
@@ -51,12 +57,14 @@ export default function CursorBubble() {
 
         window.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseover', onMouseOver);
-        document.addEventListener('mouseleave', onMouseLeave);
+        // `mouseleave` on `document` never fires — it has to sit on an element
+        // that actually gets left, i.e. the document element.
+        document.documentElement.addEventListener('mouseleave', onMouseLeave);
 
         return () => {
             window.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseover', onMouseOver);
-            document.removeEventListener('mouseleave', onMouseLeave);
+            document.documentElement.removeEventListener('mouseleave', onMouseLeave);
         };
     }, []);
 

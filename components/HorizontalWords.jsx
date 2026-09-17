@@ -37,7 +37,13 @@ const HorizontalWords = () => {
                 top: '50%'
             });
 
+            const reduced = prefersReducedMotion();
+            const isSmall = window.matchMedia('(max-width: 767px)').matches;
+
             // ─── ScrollTween: starts in the void (right) and exits into the void (left) ───
+            // The travel distance is derived from the actual text width so short
+            // viewports don't get a needlessly long pinned section (mobile used to
+            // reserve a flat 2400px of scroll for a single line of text).
             const scrollTween = gsap.fromTo(textRef, {
                 x: () => window.innerWidth + 150
             }, {
@@ -46,13 +52,17 @@ const HorizontalWords = () => {
                 scrollTrigger: {
                     trigger: container,
                     start: "top top",
-                    end: () => `+=${Math.max(2400, textRef.offsetWidth * 0.9)}`,
+                    end: () => `+=${Math.max(isSmall ? 1100 : 1800, textRef.offsetWidth * 0.85)}`,
                     scrub: 1,
                     pin: true,
                     anticipatePin: 1,
                     invalidateOnRefresh: true
                 }
             });
+
+            // A11Y: the random elastic bounces and the arrow draw-in are pure
+            // decoration — skipped entirely when the visitor asked for less motion.
+            if (reduced) return;
 
             // Bounce each letter randomly as it passes across the screen
             letters.forEach((letter) => {

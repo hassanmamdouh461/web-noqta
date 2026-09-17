@@ -21,16 +21,23 @@ export default function Home() {
             <SmoothScroll />
             <CursorBubble />
 
+            {/* Keyboard users can jump straight past the fixed navbar. */}
+            <a href="#main-content" className="skip-link">تخطَّ إلى المحتوى الرئيسي</a>
+
             {/* Header: Fixed Navbar + Interactive Hero */}
             <header className="main-header" id="hero">
                 <Navbar />
                 <VimeoHero />
             </header>
 
-            {/* Pinned Horizontal Words on Scroll */}
-            <HorizontalWords />
+            {/* NOTE: everything that is neither the header nor the footer now
+                lives inside <main>. HorizontalWords and DoubleMarquee used to
+                sit between </header> and <main>, which left the page without a
+                single contiguous main landmark for screen readers. */}
+            <main id="main-content">
+                {/* Pinned Horizontal Words on Scroll */}
+                <HorizontalWords />
 
-            <main>
                 {/* Motion Cards with Physics Inertia & Metrics */}
                 <div className="content-section motion-cards-wrapper">
                     <MotionCards />
@@ -46,10 +53,10 @@ export default function Home() {
 
                 {/* Showreel & Video Production Section */}
                 <Showreel />
-            </main>
 
-            {/* Dual Vertical Marquee with Tech & Media Tools */}
-            <DoubleMarquee />
+                {/* Dual Vertical Marquee with Tech & Media Tools */}
+                <DoubleMarquee />
+            </main>
 
             {/* Footer with Contact Links, WhatsApp, Socials & Stickers */}
             <footer className="main-footer">

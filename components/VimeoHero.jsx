@@ -223,12 +223,14 @@ export default function VimeoHero() {
 
         window.addEventListener('mousemove', onMove, { passive: true });
         window.addEventListener('scroll', onScroll, { passive: true });
-        document.addEventListener('mouseleave', hideBubble);
+        // `mouseleave` on `document` never fires — attach it to the element the
+        // pointer actually leaves.
+        document.documentElement.addEventListener('mouseleave', hideBubble);
 
         return () => {
             window.removeEventListener('mousemove', onMove);
             window.removeEventListener('scroll', onScroll);
-            document.removeEventListener('mouseleave', hideBubble);
+            document.documentElement.removeEventListener('mouseleave', hideBubble);
             gsap.killTweensOf(bubble);
         };
     }, []);
@@ -241,7 +243,7 @@ export default function VimeoHero() {
             {/* Elastic Cursor Follower */}
             <div ref={bubbleRef} className="vimeo-mute-bubble is--unmuted" aria-hidden="true">
                 <div className="vimeo-mute-bubble__blob">
-                    <img src="/assets/VimeoHero SVG/mute-bubble-blob.svg" alt="" className="vimeo-mute-bubble__blob-svg" />
+                    <img src="/assets/VimeoHero SVG/mute-bubble-blob.svg" alt="" className="vimeo-mute-bubble__blob-svg" decoding="async" />
                     <span className="noqta-bubble-label">NOQTA</span>
                 </div>
             </div>
@@ -255,7 +257,7 @@ export default function VimeoHero() {
                     <span className="vimeo-hero__word is--relative">
                         <span className="hero-highlight-brand">نُـقـطَـة</span>
                         <div className="home-header__smiley">
-                            <img src="/assets/VimeoHero SVG/smiley-face.svg" alt="" className="home-header__smiley-svg" />
+                            <img src="/assets/VimeoHero SVG/smiley-face.svg" alt="" className="home-header__smiley-svg" decoding="async" />
                         </div>
                     </span>
                     <span className="vimeo-hero__word">&nbsp;من بداية&nbsp;</span>
@@ -266,10 +268,10 @@ export default function VimeoHero() {
                         <span className="hero-highlight-word">الإبداع</span>
                         <div className="home-header__star">
                             <div className="home-header__star-inner">
-                                <img src="/assets/VimeoHero SVG/pink-star.svg" alt="" className="home-header__star-svg" />
+                                <img src="/assets/VimeoHero SVG/pink-star.svg" alt="" className="home-header__star-svg" decoding="async" />
                             </div>
                         </div>
-                        <img src="/assets/VimeoHero SVG/oval-underline.svg" alt="" className="home-header__title-line-svg" />
+                        <img src="/assets/VimeoHero SVG/oval-underline.svg" alt="" className="home-header__title-line-svg" decoding="async" />
                     </span>
                 </h1>
             </div>

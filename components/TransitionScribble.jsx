@@ -14,7 +14,6 @@ const TransitionScribble = forwardRef(function TransitionScribble(
         brand = 'noqta',
         autoPlay = true,
         scrollToTopOnLogoClick = true,
-        allowFastForward = true,
         onStart,
         onComplete
     },
@@ -64,6 +63,7 @@ const TransitionScribble = forwardRef(function TransitionScribble(
 
         const durIn = config.durationIn ?? DEFAULT_INTRO_CONFIG.durationIn;
         const durOut = config.durationOut ?? DEFAULT_INTRO_CONFIG.durationOut;
+        const delayPause = config.delayBeforeOut ?? DEFAULT_INTRO_CONFIG.delayBeforeOut ?? 0.25;
         const strokeStart = config.strokeWidthStart ?? DEFAULT_INTRO_CONFIG.strokeWidthStart;
         const strokeMax = config.strokeWidthMax ?? DEFAULT_INTRO_CONFIG.strokeWidthMax;
         const scaleVal = config.scale ?? DEFAULT_INTRO_CONFIG.scale;
@@ -104,7 +104,7 @@ const TransitionScribble = forwardRef(function TransitionScribble(
         });
         currentTimelineRef.current = tl;
 
-        // 1. Draw scribble in (covers the screen)
+        // 1. Draw scribble in (covers the entire screen edge-to-edge)
         tl.to(path, {
             strokeDashoffset: 0,
             duration: durIn,
@@ -156,20 +156,20 @@ const TransitionScribble = forwardRef(function TransitionScribble(
                     gsap.set(logoInner, { rotation: 0 });
                 }
             }
-        }, durIn + (durOut * 0.42));
+        }, durIn + delayPause + (durOut * 0.2));
 
         // 4. Undraw scribble away (reveals page content)
         tl.to(path, {
             strokeDashoffset: -l,
             duration: durOut,
             ease: 'power2.inOut'
-        }, durIn);
+        }, durIn + delayPause);
 
         tl.to(path, {
             strokeWidth: strokeStart,
             duration: durOut,
             ease: 'power2.inOut'
-        }, durIn);
+        }, durIn + delayPause);
 
         return tl;
     }, [config, onStart, onComplete]);
@@ -179,23 +179,6 @@ const TransitionScribble = forwardRef(function TransitionScribble(
         replay: (color, scrollToTop = false) => runAnimation(color, scrollToTop),
         isAnimating: () => isAnimatingRef.current
     }), [runAnimation]);
-
-    // Fast-forward on user interaction
-    useEffect(() => {
-        if (!allowFastForward) return;
-
-        const fastForward = () => {
-            if (isAnimatingRef.current && currentTimelineRef.current) {
-                currentTimelineRef.current.timeScale(4);
-            }
-        };
-
-        const events = ['keydown', 'wheel'];
-        events.forEach(ev => window.addEventListener(ev, fastForward, { passive: true }));
-        return () => {
-            events.forEach(ev => window.removeEventListener(ev, fastForward));
-        };
-    }, [allowFastForward]);
 
     // Listen to global trigger event & navbar click
     useEffect(() => {
@@ -237,12 +220,17 @@ const TransitionScribble = forwardRef(function TransitionScribble(
             <svg
                 ref={svgRef}
                 xmlns="http://www.w3.org/2000/svg"
-                width="100%"
                 viewBox="0 0 3222 3114"
                 fill="none"
                 preserveAspectRatio="none"
                 className="transition-scribble"
                 aria-hidden="true"
+                style={{
+                    maxWidth: 'none',
+                    maxHeight: 'none',
+                    width: '200vw',
+                    height: '200vh'
+                }}
             >
                 <path
                     ref={pathRef}
