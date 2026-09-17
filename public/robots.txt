@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://noqta.engaz.tech/sitemap.xml
