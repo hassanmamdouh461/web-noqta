@@ -50,22 +50,26 @@ body {
    The component CSS pins `.vimeo-hero` to a full 100svh so the vignette
    fills the screen, but the headline is `position: absolute; bottom:
    64px`, which leaves ~400px of empty air between the navbar and the
-   title at iPhone 13 widths. Cap the hero at ~560px on phones and pull
-   the headline up so the gap is roughly symmetric (small air top + the
-   scroll indicator at the bottom). The 100svh lock is preserved on
-   ≥768px via the original `.vimeo-hero` rule. */
+   title at iPhone 13 widths. Keep the hero at the full viewport height
+   so the dark canvas always reaches the fold, but pull the headline up
+   so the gap above it is balanced instead of empty air. The original
+   ≥768px rule in vimeo-hero.css still owns the rounded "card" look. */
 .vimeo-hero {
-    min-height: 560px;
-    height: auto;
+    /* Fill the viewport from edge to edge so there is no white gap
+       below the hero when the device is taller than 560px. */
+    min-height: 100svh;
+    min-height: 100dvh;
+    height: 100svh;
+    height: 100dvh;
 }
 
 .home-header__title {
     /* Lift the title above the 64px bottom offset so the gap between the
-       navbar (56px) and the headline is ~24-40px instead of ~400px. The
-       pills + 2-line headline + lead + CTA stack measure ~260px tall on
-       iPhone 13, so the top of the title lands at ~(560 - 260 - 16) =
-       ~284px, leaving a balanced margin. */
-    bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+       navbar (56px) and the headline is ~24-40px instead of ~400px on
+       shorter phones, and stays vertically centered on taller ones. */
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .vimeo-hero__controls {
@@ -788,13 +792,13 @@ body {
 }
 
 /* Landscape phones that are wide enough to also match the ≥768px tablet rule
-   (e.g. 844×390). That rule gives the hero a 12px top/bottom margin and a
-   height of `100svh - 24px`, but the landscape block above resets the height to
-   a full `100svh` — so the hero ended up 24px taller than the screen. */
+   (e.g. 844×390). The taller rule gives the hero a full 100svh with no
+   outer margin; here we keep the same full-viewport fill (no -24px
+   gap) so the hero covers the first screen on landscape phones too. */
 @media (max-height: 560px) and (orientation: landscape) and (min-width: 768px) {
     .vimeo-hero {
-        height: calc(100vh - 24px);
-        height: calc(100svh - 24px);
+        height: 100vh;
+        height: 100svh;
     }
 }
 
