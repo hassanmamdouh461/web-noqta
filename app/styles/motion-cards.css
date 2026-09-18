@@ -273,7 +273,9 @@
     font-family: var(--font-en);
     font-size: 0.78rem;
     font-weight: 600;
-    color: #777777;
+    /* Was #777777 = 4.48:1 on the white stat card, just under the 4.5:1 WCAG AA
+       floor for 12px text. #6b6b6b measures 5.33:1. */
+    color: #6b6b6b;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }

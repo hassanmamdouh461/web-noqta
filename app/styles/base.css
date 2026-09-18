@@ -1,5 +1,10 @@
-/* ─── Google Fonts Import ───────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+/* ─── Google Fonts ───────────────────────────────────────────────────────
+   NOTE: the font stylesheet is loaded with <link rel="preconnect"> +
+   <link rel="stylesheet"> in app/layout.jsx, NOT with an @import here.
+   An @import at the top of this file is invisible to the browser until this
+   stylesheet has itself downloaded and parsed, which adds a blocking round
+   trip to Google Fonts and delayed FCP by ~1s on a throttled phone.
+   ─────────────────────────────────────────────────────────────────────── */
 
 /* ─── Design Tokens (Noqta Brand Palette) ────────────────────────────── */
 :root {
