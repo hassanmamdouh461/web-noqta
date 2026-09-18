@@ -348,11 +348,41 @@
 }
 
 @media (max-width: 767px) {
-    /* Rotations cost layout width on narrow screens; flatten them slightly. */
-    .motion-card__card--1 { transform: rotate(-4deg); }
-    .motion-card__card--2 { transform: rotate(3deg); }
-    .motion-card__card--3 { transform: rotate(-2deg); }
-    .motion-card__card--4 { transform: rotate(4deg); }
+    /* Phones (≤767px): the horizontal deck hides cards 3 and 4 behind a swipe
+       most people never discover. Redesign as a vertical stack — each card
+       spans the viewport, all 4 images are visible without interaction, and
+       the section stays friendly to one-handed scrolling. */
+    .motion-card__cards-area {
+        min-height: 0;
+        margin: 20px auto 32px;
+        padding: 0;
+        overflow: visible;
+        direction: rtl;  /* back to RTL — the column is single-source, no flex ordering issues */
+    }
+    .motion-card__cards {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 380px;
+        margin: 0 auto;
+        padding: 0 12px;
+        gap: 18px;
+        direction: rtl;
+    }
+    .motion-card__card {
+        width: 100%;
+        margin-right: 0;
+        margin-left: 0;
+        scroll-snap-align: none;
+        /* Subtle personality rotation that stays inside the column width —
+           a 6° fan would 4px along a 360-wide card. */
+        transform: none;
+    }
+    .motion-card__card--1 { transform: rotate(-2deg); }
+    .motion-card__card--2 { transform: rotate(1.5deg); }
+    .motion-card__card--3 { transform: rotate(-1deg); }
+    .motion-card__card--4 { transform: rotate(2deg); }
 
     .motion-card__title {
         font-size: clamp(2rem, 9vw, 2.8rem);
@@ -367,6 +397,12 @@
         top: -22px;
         left: -10px;
         width: clamp(56px, 14vw, 80px);
+    }
+
+    /* Floating labels at 767px and below — they overlapped the cards in the
+       original design; only show on tablet+ where the fan has room. */
+    .motion-card__floating-labels {
+        display: none;
     }
 }
 
