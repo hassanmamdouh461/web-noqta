@@ -28,9 +28,9 @@
     display: inline-block;
     padding: 6px 16px;
     border-radius: 9999px;
-    background: rgba(67, 251, 156, 0.12);
+    background: rgba(66, 250, 154, 0.12);
     color: var(--color-mint);
-    border: 1px solid rgba(67, 251, 156, 0.25);
+    border: 1px solid rgba(66, 250, 154, 0.25);
     font-family: var(--font-ar);
     font-size: 0.85rem;
     font-weight: 700;
@@ -109,7 +109,7 @@
     min-width: 48px;
     font-weight: 800;
     text-decoration: none;
-    box-shadow: 0 10px 30px rgba(67, 251, 156, 0.4);
+    box-shadow: 0 10px 30px rgba(66, 250, 154, 0.4);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
 }
@@ -123,7 +123,7 @@
 
 .showreel__play-btn:hover {
     transform: scale(1.06) translateY(-2px);
-    box-shadow: 0 15px 40px rgba(67, 251, 156, 0.6);
+    box-shadow: 0 15px 40px rgba(66, 250, 154, 0.6);
 }
 
 .showreel__brand-tag {

@@ -6,16 +6,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { brands } from '@/lib/data';
 
 const MARQUEE_BG_COLORS = [
-    "#43FB9C",
-    "#3DA792",
+    "#8dffc4",
+    "#42fa9a",
+    "#3da791",
     "#362488",
-    "#323E86",
-    "#F0BEFA",
-    "#F5693C",
-    "#82A0FF"
+    "#323e86"
 ];
 
-const DARK_COLORS = [MARQUEE_BG_COLORS[2], MARQUEE_BG_COLORS[3]];
+const DARK_COLORS = ["#362488", "#323e86", "#3da791"];
 
 /**
  * Tracks are built deterministically at module scope (no Math.random, no

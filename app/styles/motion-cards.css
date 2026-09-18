@@ -121,7 +121,7 @@
 }
 
 .motion-card__card:hover {
-    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45), 0 0 35px rgba(67, 251, 156, 0.25);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45), 0 0 35px rgba(66, 250, 154, 0.25);
     border-color: var(--color-mint);
 }
 
@@ -210,21 +210,25 @@
 }
 
 .motion-card__floating-label--pink {
-    background-color: #43FB9C;
+    background-color: var(--color-mint);
     top: 8%;
     left: 18%;
 }
 
 .motion-card__floating-label--orange {
-    background-color: #F0BEFA;
+    background-color: var(--color-mint-light);
     top: 86%;
     left: 45%;
 }
 
 .motion-card__floating-label--red {
-    background-color: #82A0FF;
+    background-color: var(--color-teal);
     top: 12%;
     left: 78%;
+}
+
+.motion-card__floating-label--red .motion-card__floating-text {
+    color: #ffffff;
 }
 
 /* ─── Stats Grid (Proof of Results) ──────────────────────────────────────── */
@@ -248,7 +252,7 @@
 
 .motion-card__stat-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(67, 251, 156, 0.2);
+    box-shadow: 0 16px 40px rgba(66, 250, 154, 0.2);
     border-color: var(--color-mint);
 }
 
@@ -465,8 +469,8 @@
     width: 100%;
     background: #0B0E22;
     border-radius: 20px;
-    border: 1px solid rgba(67, 251, 156, 0.35);
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7), 0 0 50px rgba(67, 251, 156, 0.15);
+    border: 1px solid rgba(66, 250, 154, 0.35);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7), 0 0 50px rgba(66, 250, 154, 0.15);
     overflow: hidden;
     animation: scaleInModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

@@ -9,20 +9,21 @@
 /* ─── Design Tokens (Noqta Brand Palette) ────────────────────────────── */
 :root {
     direction: rtl;
-    /* Noqta Core Palette from Image 3 & 4 */
-    --color-mint: #43FB9C;
-    --color-teal: #3DA792;
-    --color-violet: #362488;
-    --color-indigo: #323E86;
+    /* ─── Strict 5-Color Brand Palette from Coolors ─── */
+    --color-mint-light: #8dffc4; /* 1: Pale Mint / Aquamarine */
+    --color-mint: #42fa9a;       /* 2: Vibrant Spring Mint Green */
+    --color-teal: #3da791;       /* 3: Balanced Teal / Sea Green */
+    --color-violet: #362488;     /* 4: Deep Regal Violet / Purple */
+    --color-indigo: #323e86;     /* 5: Deep Indigo / Royal Navy */
 
-    /* Theme Accents */
-    --color-green: #43FB9C;
-    --color-lightblue: #82a0ff;
-    --color-darkblue: #323E86;
-    --color-lightgreen: #e6fab9;
-    --color-orange: #f5693c;
-    --color-maroon: #362488;
-    --color-pink: #f0befa;
+    /* Theme Accents (strictly mapped to the 5 palette colors) */
+    --color-green: var(--color-mint);
+    --color-lightblue: var(--color-mint-light);
+    --color-darkblue: var(--color-indigo);
+    --color-lightgreen: var(--color-mint-light);
+    --color-orange: var(--color-mint);
+    --color-maroon: var(--color-violet);
+    --color-pink: var(--color-mint-light);
 
     /* Backgrounds & Neutrals */
     --bg-color: #f4f2ec;

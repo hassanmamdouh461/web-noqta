@@ -9,7 +9,7 @@
     max-height: none !important;
     z-index: 9999;
     pointer-events: none;
-    color: var(--color-maroon, #a0325a);
+    color: var(--color-violet, #362488);
 }
 
 body.is-transitioning {

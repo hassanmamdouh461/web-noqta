@@ -35,10 +35,11 @@ export default function VimeoHero() {
         // desktop resize). Previously they were seeded from absolute pixels and
         // were never remapped, so after a resize orbs drifted off-screen.
         const orbs = [
-            { fx: 0.25, fy: 0.35, vx: 0.8, vy: 0.6, rf: 0.35, color: 'rgba(54, 36, 136, 0.75)' }, // Deep Violet
-            { fx: 0.75, fy: 0.65, vx: -0.7, vy: -0.5, rf: 0.38, color: 'rgba(50, 62, 134, 0.7)' }, // Deep Indigo
-            { fx: 0.5, fy: 0.5, vx: 0.5, vy: -0.8, rf: 0.28, color: 'rgba(67, 251, 156, 0.25)' }, // Neon Mint
-            { fx: 0.85, fy: 0.2, vx: -0.6, vy: 0.7, rf: 0.25, color: 'rgba(61, 167, 146, 0.35)' } // Teal
+            { fx: 0.25, fy: 0.35, vx: 0.8, vy: 0.6, rf: 0.35, color: 'rgba(54, 36, 136, 0.75)' }, // 4: Deep Violet (#362488)
+            { fx: 0.75, fy: 0.65, vx: -0.7, vy: -0.5, rf: 0.38, color: 'rgba(50, 62, 134, 0.7)' }, // 5: Deep Indigo (#323e86)
+            { fx: 0.5, fy: 0.5, vx: 0.5, vy: -0.8, rf: 0.28, color: 'rgba(66, 250, 154, 0.25)' }, // 2: Neon Mint (#42fa9a)
+            { fx: 0.85, fy: 0.2, vx: -0.6, vy: 0.7, rf: 0.25, color: 'rgba(61, 167, 145, 0.35)' }, // 3: Teal (#3da791)
+            { fx: 0.15, fy: 0.8, vx: 0.4, vy: -0.5, rf: 0.22, color: 'rgba(141, 255, 196, 0.2)' }  // 1: Mint Light (#8dffc4)
         ];
 
         const measure = () => {

@@ -38,9 +38,9 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(67, 251, 156, 0.12);
+    background: rgba(66, 250, 154, 0.12);
     color: var(--color-mint);
-    border: 1px solid rgba(67, 251, 156, 0.25);
+    border: 1px solid rgba(66, 250, 154, 0.25);
     padding: 0.4rem 1rem;
     border-radius: 9999px;
     font-size: 0.85rem;
@@ -110,31 +110,31 @@
 .stack-card[data-tone="1"] {
     background: linear-gradient(145deg, #131A33 0%, #0B0E1D 100%);
     color: #ffffff;
-    border-color: rgba(67, 251, 156, 0.3);
+    border-color: rgba(66, 250, 154, 0.3);
 }
 
 .stack-card[data-tone="2"] {
     background: linear-gradient(145deg, #FAF7F0 0%, #EFE8DA 100%);
     color: #121212;
-    border-color: rgba(245, 105, 60, 0.35);
+    border-color: rgba(54, 36, 136, 0.35);
 }
 
 .stack-card[data-tone="3"] {
     background: linear-gradient(145deg, #182046 0%, #0E1430 100%);
     color: #ffffff;
-    border-color: rgba(130, 160, 255, 0.35);
+    border-color: rgba(141, 255, 196, 0.35);
 }
 
 .stack-card[data-tone="4"] {
     background: linear-gradient(145deg, #0E2929 0%, #061919 100%);
     color: #ffffff;
-    border-color: rgba(61, 167, 146, 0.4);
+    border-color: rgba(61, 167, 145, 0.4);
 }
 
 .stack-card[data-tone="5"] {
     background: linear-gradient(145deg, #2A1D4E 0%, #150D2E 100%);
     color: #ffffff;
-    border-color: rgba(67, 251, 156, 0.35);
+    border-color: rgba(66, 250, 154, 0.35);
 }
 
 .stack-card__content {
@@ -239,7 +239,7 @@
 
 .stack-card__cta:hover {
     transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 10px 25px rgba(67, 251, 156, 0.4);
+    box-shadow: 0 10px 25px rgba(66, 250, 154, 0.4);
 }
 
 .stack-card[data-tone="2"] .stack-card__cta:hover {
@@ -294,13 +294,19 @@
 .stack-card:hover .stack-card__tag-pill {
     border-color: var(--color-mint);
     color: var(--color-mint);
-    background: rgba(67, 251, 156, 0.12);
+    background: rgba(66, 250, 154, 0.12);
 }
 
 .stack-card[data-tone="2"]:hover .stack-card__tag-pill {
-    border-color: #f5693c;
-    color: #f5693c;
-    background: rgba(245, 105, 60, 0.12);
+    border-color: var(--color-violet);
+    color: var(--color-violet);
+    background: rgba(54, 36, 136, 0.12);
+}
+
+.stack-card[data-tone="3"]:hover .stack-card__tag-pill {
+    border-color: var(--color-mint-light);
+    color: var(--color-mint-light);
+    background: rgba(141, 255, 196, 0.12);
 }
 
 /* Media Box Showcase */

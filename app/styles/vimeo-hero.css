@@ -72,15 +72,15 @@
 }
 
 .hero-pill--tech {
-    background: rgba(67, 251, 156, 0.12);
+    background: rgba(66, 250, 154, 0.12);
     color: var(--color-mint);
-    border: 1px solid rgba(67, 251, 156, 0.28);
+    border: 1px solid rgba(66, 250, 154, 0.28);
 }
 
 .hero-pill--media {
     background: rgba(54, 36, 136, 0.25);
-    color: #d1c4f7;
-    border: 1px solid rgba(130, 160, 255, 0.3);
+    color: var(--color-mint-light);
+    border: 1px solid rgba(50, 62, 134, 0.4);
 }
 
 .pill-dot {
@@ -105,7 +105,7 @@
 
 .hero-highlight-brand {
     color: var(--color-mint);
-    text-shadow: 0 0 35px rgba(67, 251, 156, 0.5);
+    text-shadow: 0 0 35px rgba(66, 250, 154, 0.5);
     position: relative;
     display: inline-block;
 }
@@ -132,10 +132,10 @@
     font-family: var(--font-ar), var(--font-serif);
     font-style: normal;
     font-weight: 800;
-    color: #f0befa;
+    color: var(--color-mint-light);
     display: inline-block;
     padding: 0 4px;
-    text-shadow: 0 0 25px rgba(240, 190, 250, 0.45);
+    text-shadow: 0 0 25px rgba(141, 255, 196, 0.45);
 }
 
 /* Playful SVG Elements */
@@ -152,7 +152,7 @@
 .home-header__smiley-svg {
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 4px 14px rgba(130, 160, 255, 0.45));
+    filter: drop-shadow(0 4px 14px rgba(66, 250, 154, 0.45));
 }
 
 @keyframes smileyFloat {
@@ -177,7 +177,7 @@
 .home-header__star-svg {
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 0 12px rgba(240, 190, 250, 0.75));
+    filter: drop-shadow(0 0 12px rgba(141, 255, 196, 0.75));
 }
 
 @keyframes starTwinkle {
@@ -247,12 +247,12 @@
 .hero-cta-btn--primary {
     background: var(--color-mint);
     color: #07080f;
-    box-shadow: 0 10px 30px rgba(67, 251, 156, 0.35);
+    box-shadow: 0 10px 30px rgba(66, 250, 154, 0.35);
 }
 
 .hero-cta-btn--primary:hover {
     transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 14px 40px rgba(67, 251, 156, 0.5);
+    box-shadow: 0 14px 40px rgba(66, 250, 154, 0.5);
 }
 
 .hero-cta-btn--secondary {
@@ -277,9 +277,9 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #25D366;
+    background: var(--color-mint);
     display: inline-block;
-    box-shadow: 0 0 10px #25D366;
+    box-shadow: 0 0 10px var(--color-mint);
 }
 
 /* Scroll indicator */
@@ -332,7 +332,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 10px 20px rgba(67, 251, 156, 0.35));
+    filter: drop-shadow(0 10px 20px rgba(66, 250, 154, 0.35));
 }
 
 .noqta-bubble-label {
