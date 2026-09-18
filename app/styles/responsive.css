@@ -79,6 +79,55 @@ body {
     pointer-events: none;
 }
 
+/* ── Section vertical rhythm on phones ───
+   The shared `.content-section { padding: clamp(80px, 15vh, 200px)... }`
+   rule from hero.css yields ~100px of top padding on a 664px screen,
+   and each inner section (`.motion-card-section`, `.stack-section`,
+   `.service-cards-wrapper-inner`, `.showreel-section`, `#tools`) layers
+   another 50-90px on top of that. End result: ~150-200px of empty air
+   between every major block on phones. Measured top paddings on iPhone
+   13 (vh=664) before this rule:
+     .content-section               99.6px  (15vh)
+     .horizontal-words-section      99.6px  (15vh)
+     .motion-card-section           66.4px  (10vh)
+     .service-cards-wrapper-inner   66.4px  (10vh)
+     .stack-section                 85.3px
+     .showreel-section              66.4px
+     #tools.Double-marquee          93.0px
+   Target on phones: ~40-60px of clear air, so each block reads as its
+   own unit instead of floating inside a void. The clamp keeps the
+   larger sizes intact on tablets/desktops. */
+.content-section,
+.horizontal-words-section {
+    padding-top: clamp(44px, 6vh, 64px);
+}
+
+.motion-card-section {
+    padding-top: clamp(36px, 5vh, 52px);
+    padding-bottom: clamp(36px, 5vh, 52px);
+}
+
+.service-cards-wrapper-inner {
+    padding-top: clamp(40px, 6vh, 56px);
+    padding-bottom: clamp(40px, 6vh, 60px);
+}
+
+.stack-section {
+    padding-top: clamp(48px, 7vh, 64px);
+    padding-bottom: clamp(40px, 6vh, 56px);
+}
+
+.showreel-section {
+    padding-top: clamp(40px, 6vh, 56px);
+    padding-bottom: clamp(40px, 6vh, 56px);
+}
+
+#tools.Double-marquee,
+.Double-marquee {
+    padding-top: clamp(48px, 7vh, 64px);
+    padding-bottom: clamp(48px, 7vh, 64px);
+}
+
 /* ── Marquee: keep the SAME two-column vertical marquee as desktop, just
    scaled down to fit a phone. Two earlier attempts both failed: turning it
    into a flat grid left it completely static with most brands hidden
