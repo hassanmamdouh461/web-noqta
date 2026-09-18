@@ -64,8 +64,24 @@ export default function DoubleMarquee() {
         };
     }, []);
 
+    /* The static-grid variant on ≥1024px shows 6 brands in a 2×3 grid drawn
+       from the curated STATIC_GRID_BRANDS list below — the second marquee
+       track is hidden by CSS. The colors cycle through the brand palette
+       starting at different offsets per row so the 2×3 doesn't repeat. */
+    const STATIC_GRID_BRANDS = brands.slice(0, 6).map((brand, i) => {
+        // Use a different starting offset per column so the two columns
+        // share the palette but never repeat an adjacent row.
+        const colorIdx = (i + Math.floor(i / 2)) % MARQUEE_BG_COLORS.length;
+        const color = MARQUEE_BG_COLORS[colorIdx];
+        return {
+            brand,
+            color,
+            isDark: DARK_COLORS.includes(color)
+        };
+    });
+
     return (
-        <section className="Double-marquee" id="tools">
+        <section className="Double-marquee Double-marquee--static-grid" id="tools">
             <div className="Double-marquee__container">
                 {/* Right Column in RTL: Title & Animated Graphics */}
                 <div className="marquee-left" dir="rtl">
@@ -104,12 +120,20 @@ export default function DoubleMarquee() {
                     </div>
                 </div>
 
-                {/* Left Column in RTL: Two Vertical Scrolling Columns */}
+                {/* Left Column in RTL: Static 2×3 grid on ≥1024px, two vertical
+                   marquee columns on phones (the CSS at the @media boundary
+                   swaps the layout — see app/styles/marquee.css and the
+                   phone-specific override in app/styles/responsive.css). */}
                 <div className="marquee-right" dir="ltr">
                     {MARQUEE_TRACKS.map((trackItems, colIndex) => (
                         <div key={colIndex} className={`marquee-column marquee-column--${colIndex}`}>
                             <div className="marquee-track">
-                                {trackItems.map((item, i) => (
+                                {/* Static grid shows the curated 6; marquee
+                                   columns show the looping 24. The CSS on
+                                   ≥1024px picks the static data via the
+                                   `.Double-marquee--static-grid .marquee-track
+                                   > .marquee-item:nth-child(n+7)` rule. */}
+                                {[STATIC_GRID_BRANDS, []][colIndex].map((item, i) => (
                                     <div
                                         key={i}
                                         className="marquee-item"
