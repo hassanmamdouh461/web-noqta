@@ -224,7 +224,14 @@ body {
 .footer-stickers {
     top: 0;
     transform: translateX(-50%);
-    height: 62%;
+    /* Confine the stickers to the wordmark. footer-bottom's height is
+       `big-text height - 70px (big-text's negative margin) + row height`, and
+       the row measures 113px on phones, so `100% - 43px` resolves to exactly
+       the wordmark's height — the band the stickers are meant to float over.
+       Capped so it stays sane on wide-but-short viewports (landscape phones,
+       narrow desktop windows). Going taller would drop stickers onto the
+       Credits pill at the bottom of .footer-bottom-row. */
+    height: min(calc(100% - 43px), 116px);
 }
 
 .footer-logo__svg {
@@ -260,41 +267,52 @@ body {
     font-size: 0.95rem;
 }
 
-/* ── Footer stickers (mobile positions — upper band only) ─── */
-.sticker-boom {
-    left: 1%;
-    bottom: 4%;
-    width: 68px;
+/* ── Footer stickers (mobile — 3 columns x 2 rows, no collisions) ─────
+   The old single-row layout (left: 1%/27%/50%/64%/76%, right: 1%, each
+   58-68px wide) crammed six stickers into an 84px band and produced five
+   real collisions — smiley↔heart, heart↔hands, hands↔100, hands↔camera,
+   100↔camera, 15-49px of overlap each — and clipped smiley 15px and camera
+   6px above the wrapper (it has `overflow: hidden`).
+
+   Six 60px stickers cannot sit on one line of a 320-390px screen, so they
+   are arranged as three columns of two. The size follows the viewport
+   (9vw) because the available band also scales with the viewport — the
+   wordmark is an SVG sized in %, so the band is ~23.8% of the viewport
+   width at every phone size. Each column pairs the tallest sticker with
+   the flattest one so no column needs more room than the band has
+   (worst column: boom + camera ≈ 2.33 x width + 4px gap). */
+.footer-sticker {
+    width: clamp(26px, 9vw, 40px);
 }
 
 .sticker-smiley {
-    left: 27%;
-    bottom: 26%;
-    width: 68px;
-}
-
-.sticker-heart {
-    left: 50%;
-    bottom: 6%;
-    width: 62px;
+    left: 6%;
+    bottom: 45%;
 }
 
 .footer-sticker.sticker-hands {
-    left: 64%;
-    bottom: 30%;
-    width: 68px;
+    left: 6%;
+    bottom: 8%;
 }
 
 .footer-sticker.sticker-100 {
-    left: 76%;
-    bottom: 4%;
-    width: 58px;
+    left: 40%;
+    bottom: 51%;
+}
+
+.sticker-heart {
+    left: 40%;
+    bottom: 7%;
+}
+
+.sticker-boom {
+    left: 73%;
+    bottom: 50%;
 }
 
 .footer-sticker.sticker-camera {
-    right: 1%;
-    bottom: 28%;
-    width: 64px;
+    left: 73%;
+    bottom: 2%;
 }
 
 /* ── Showreel (mobile) ─── */
