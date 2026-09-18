@@ -46,6 +46,34 @@ body {
     padding-inline: clamp(14px, 5vw, 20px);
 }
 
+/* ── Hero: tighten its 100vh on phones ───
+   The component CSS pins `.vimeo-hero` to a full 100svh so the vignette
+   fills the screen, but the headline is `position: absolute; bottom:
+   64px`, which leaves ~400px of empty air between the navbar and the
+   title at iPhone 13 widths. Cap the hero at ~560px on phones and pull
+   the headline up so the gap is roughly symmetric (small air top + the
+   scroll indicator at the bottom). The 100svh lock is preserved on
+   ≥768px via the original `.vimeo-hero` rule. */
+.vimeo-hero {
+    min-height: 560px;
+    height: auto;
+}
+
+.home-header__title {
+    /* Lift the title above the 64px bottom offset so the gap between the
+       navbar (56px) and the headline is ~24-40px instead of ~400px. The
+       pills + 2-line headline + lead + CTA stack measure ~260px tall on
+       iPhone 13, so the top of the title lands at ~(560 - 260 - 16) =
+       ~284px, leaving a balanced margin. */
+    bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+}
+
+.vimeo-hero__controls {
+    /* The indicator was already at 18px; keep it, but make sure it sits
+       clear of the now-higher headline. */
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+}
+
 /* ── Cards ─── */
 .card-sticker {
     pointer-events: none;
