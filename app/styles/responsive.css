@@ -51,57 +51,53 @@ body {
     pointer-events: none;
 }
 
-/* ── Marquee: vertical columns become a horizontal swipeable grid (2 rows
-   × 6 cols). The previous attempt made each column 70vw wide and stretched
-   the items to 252×170 — the cards looked squashed and the decorative hand
-   + path-underline scribbles tangled into a confusing swirl under the
-   heading. Going back to a tighter grid where items stay near-square, and
-   moving the decorative elements into a single tidy row above the grid. */
+/* ── Marquee: keep the SAME two-column vertical marquee as desktop, just
+   scaled down to fit a phone. Two earlier attempts both failed: turning it
+   into a flat grid left it completely static with most brands hidden
+   behind a swipe, and making each column a 70vw snap page stretched the
+   items to 252×170 and tangled the scribbles. Two slim scrolling columns
+   keep the one thing the phone was actually missing — the animation. */
 .marquee-right {
-    display: grid;
-    grid-template-rows: 120px 120px;
-    grid-auto-flow: column;
-    grid-auto-columns: 120px;
+    display: flex;
     gap: 10px;
     width: 100%;
     max-width: 100%;
-    height: auto;
+    height: clamp(360px, 52vh, 430px);
     margin-inline-end: 0;
-    padding: 18px 20px 32px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scroll-padding-inline: 20px;
-    scrollbar-width: none;
-}
-
-.marquee-right::-webkit-scrollbar {
-    display: none;
+    padding: 0;
+    overflow: hidden;
 }
 
 .marquee-column {
-    display: contents;
+    flex: 1 1 0;
+    min-width: 0;
 }
 
+/* Shorter fade masks so the shorter phone columns don't wash out. */
 .marquee-column::before,
 .marquee-column::after {
-    display: none;
+    height: 44px;
 }
 
-.marquee-column:nth-child(1) .marquee-track,
+.marquee-column .marquee-track {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.marquee-column:nth-child(1) .marquee-track {
+    animation: marqueeUp 26s linear infinite;
+}
+
 .marquee-column:nth-child(2) .marquee-track {
-    display: contents;
-    animation: none;
+    animation: marqueeDown 26s linear infinite;
 }
 
 .marquee-item {
-    width: 120px;
-    height: 120px;
+    width: 100%;
+    height: 150px;
     flex-shrink: 0;
     padding: 12px 10px;
-    scroll-snap-align: center;
 }
 
 .marquee-badge-name {
@@ -118,12 +114,9 @@ body {
     padding: 3px 8px;
 }
 
-/* Each marquee track is duplicated (2 × 12) so the desktop CSS animation can
-   translate by -50% and loop seamlessly. On mobile the columns become a single
-   horizontal grid, so only the first copy is shown (12 = brands.length). */
-.marquee-track > .marquee-item:nth-child(n + 13) {
-    display: none;
-}
+/* Each marquee track is duplicated (2 × 12) so the keyframes can translate by
+   -50% and loop seamlessly. Both copies must stay on every breakpoint — hiding
+   the second half is what broke the loop on phones before. */
 
 /* Decorative row above the marquee: blob on the left, heart + scribble on
    the right. We size them to ~80-90px tall so they decorate without taking
@@ -306,14 +299,12 @@ body {
     }
 
     .marquee-right {
-        grid-template-rows: 140px 140px;
-        grid-auto-columns: 140px;
-        padding: 24px 28px 36px;
+        height: clamp(400px, 54vh, 480px);
+        gap: 12px;
     }
 
     .marquee-item {
-        width: 140px;
-        height: 140px;
+        height: 170px;
     }
 
     .marquee-badge-name {
@@ -340,17 +331,17 @@ body {
         height: 30px;
     }
 
-    /* ── Marquee: give the grid more breathing room on tablet ─── */
+    /* ── Marquee: taller columns on tablet, capped width so the cards
+          stay card-shaped instead of stretching across the screen ─── */
     .marquee-right {
-        grid-template-rows: 140px 140px;
-        grid-auto-columns: 140px;
-        gap: 12px;
-        padding: 24px 28px 36px;
+        max-width: 620px;
+        margin: 0 auto;
+        height: clamp(440px, 54vh, 520px);
+        gap: 14px;
     }
 
     .marquee-item {
-        width: 140px;
-        height: 140px;
+        height: 200px;
     }
 
     .marquee-badge-name {
@@ -641,12 +632,10 @@ body {
     }
 
     .marquee-right {
-        grid-template-rows: 120px 120px;
-        grid-auto-columns: 120px;
+        height: 260px;
     }
 
     .marquee-item {
-        width: 120px;
         height: 120px;
     }
 }
