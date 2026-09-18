@@ -188,3 +188,38 @@
         line-height: 1.5;
     }
 }
+/* ─── Landscape phones / short viewports ─────────────────────────────────
+   This section is pinned at exactly 100svh, so the size rules above (which
+   are all width-based) overflow once the viewport gets short: a landscape
+   phone is ~844x390, which is wide enough for the `min-width: 640px` tier
+   (88px type) but only 390px tall — 26-53px of the headline and stickers
+   fell outside the section. Scaling the type off `vh` and shrinking the
+   decorations keeps every element inside; the four stickers are kept, not
+   hidden. Verified: 844x390, 932x430, 740x360 and 667x375 all report 0
+   overflow, and 1280x800 is untouched. */
+@media (min-width: 640px) and (max-height: 560px) {
+    .horizontal-words__h2 {
+        font-size: clamp(1.8rem, 10vh, 3.2rem);
+    }
+
+    .horizontal-words__arrow-svg {
+        width: 10em;
+    }
+
+    .horizontal-words__sticker-watch {
+        width: 2.6em;
+    }
+
+    .horizontal-words__sticker-cursor {
+        width: 2.8em;
+    }
+
+    .horizontal-words__sticker-phone {
+        width: 3em;
+    }
+
+    .horizontal-words__bottom-text-l {
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+}
