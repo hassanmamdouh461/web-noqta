@@ -424,6 +424,55 @@
     }
 }
 
+/* ─── Tablets & landscape phones (768-1023px) ──────────────────────────────
+   The `max-width: 1023px` block above turns the fan into a horizontal,
+   swipeable deck. On a tablet that deck is 1155px wide inside a 688-943px
+   window, so card 4 sat at 0% visible and card 3 at 35-60% — the same
+   "hidden images" problem that was already fixed for phones, just one
+   breakpoint up. Cards 3 and 4 are only reachable by a swipe most people
+   never attempt.
+
+   A 2x2 grid keeps all four images on screen with no interaction, and suits
+   a tablet better than the 1-column phone stack (which would make each card
+   ~700px wide).
+
+   Dropping `overflow-x: auto` also stops the decorative blob being sliced:
+   at these widths the blob is 730-850px tall inside a 290px band, so
+   `overflow-y: hidden` cut 439-559px off it. With `overflow: visible` it
+   bleeds exactly like it does on desktop. */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .motion-card__cards-area {
+        overflow: visible;
+        direction: rtl;
+        scroll-snap-type: none;
+        min-height: 0;
+        padding: 0;
+        margin: 24px auto 40px;
+    }
+    .motion-card__cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 20px;
+        direction: rtl;
+    }
+    .motion-card__card {
+        width: 100%;
+        margin-right: 0;
+        margin-left: 0;
+        scroll-snap-align: none;
+    }
+    /* The desktop fan is ±6deg; at ~350px wide that swings ~35px and would
+       collide across the grid gutters. Same gentle tilt as the phone stack. */
+    .motion-card__card--1 { transform: rotate(-2deg); }
+    .motion-card__card--2 { transform: rotate(1.5deg); }
+    .motion-card__card--3 { transform: rotate(-1deg); }
+    .motion-card__card--4 { transform: rotate(2deg); }
+}
+
 @media (min-width: 1024px) {
     .motion-card-section {
         padding: 110px 40px 90px;
