@@ -89,10 +89,10 @@ export default function DoubleMarquee() {
                     </div>
 
                     <div className="marquee-blob-container" aria-hidden="true">
-                        <img src="/assets/Marquee-blob SVG/marquee-blob.svg" className="marquee-blob" alt="" loading="lazy" decoding="async" />
+                        <img src="/assets/Marquee-blob SVG/marquee-blob.svg" className="marquee-blob" alt="" loading="lazy" decoding="async" width={404} height={474} />
                         <div className="marquee-svg-container">
                             <div className="marquee-svg-item">
-                                <img src="/assets/Marquee-blob SVG/marquee-hand.svg" width="100%" alt="" loading="lazy" decoding="async" />
+                                <img src="/assets/Marquee-blob SVG/marquee-hand.svg" width={92} height={157} alt="" loading="lazy" decoding="async" />
                             </div>
                             <div className="marquee-svg-item">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 386 127" fill="none">
@@ -122,7 +122,7 @@ export default function DoubleMarquee() {
                                             <span className="marquee-badge-cat">
                                                 {item.brand.category === 'tech' ? '⚡ CODE' : '🎨 MEDIA'}
                                             </span>
-                                            <h4 className="marquee-badge-name">{item.brand.name}</h4>
+                                            <p className="marquee-badge-name">{item.brand.name}</p>
                                             <span className="marquee-badge-label">{item.brand.label}</span>
                                         </div>
                                     </div>

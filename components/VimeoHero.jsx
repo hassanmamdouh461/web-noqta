@@ -272,7 +272,7 @@ export default function VimeoHero() {
                                 <img src="/assets/VimeoHero SVG/pink-star.svg" alt="" className="home-header__star-svg" decoding="async" />
                             </div>
                         </div>
-                        <img src="/assets/VimeoHero SVG/oval-underline.svg" alt="" className="home-header__title-line-svg" decoding="async" />
+                        <img src="/assets/VimeoHero SVG/oval-underline.svg" alt="" className="home-header__title-line-svg" decoding="async" width={608} height={100} />
                     </span>
                 </h1>
             </div>

@@ -6,6 +6,19 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CARDS_DATA } from '@/lib/data';
 import { prefersReducedMotion } from '@/lib/motion';
 
+/**
+ * Intrinsic viewBox sizes for the decorative card stickers. Without them an
+ * SVG referenced through <img> has no intrinsic size and height:auto collapses
+ * to 0 - the sticker disappears and Lighthouse flags the missing dimensions.
+ */
+const STICKER_DIMS = {
+    camera: [158, 144],
+    phone: [142, 162],
+    smiley: [128, 128],
+    hand: [132, 114],
+    heart: [162, 129],
+};
+
 export default function ServiceCards() {
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
@@ -91,7 +104,8 @@ export default function ServiceCards() {
                             <img
                                 src={`/assets/Card-Sticker SVG/sticker-${card.sticker}.svg`}
                                 alt=""
-                                width="100%"
+                                width={STICKER_DIMS[card.sticker]?.[0]}
+                                height={STICKER_DIMS[card.sticker]?.[1]}
                                 loading="lazy"
                                 aria-hidden="true"
                             />

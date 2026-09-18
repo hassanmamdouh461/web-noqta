@@ -9,34 +9,42 @@ import { prefersReducedMotion } from '@/lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// `w`/`h` are the intrinsic pixel sizes of each file. They are emitted as
+// width/height attributes so the browser can reserve the right box before the
+// bytes arrive — Lighthouse flags images without them, and it is the cheapest
+// guard against layout shift if a container ever loses its aspect-ratio.
 const SHOWCASE_SLIDES = [
     {
         id: 1,
         title: "التصاميم الإبداعية وبناء الهويات والشعارات",
         src: "/assets/noqta/noqta-portfolio-slide1.png",
         alt: "Branding & Logos",
-        className: "motion-card__card--1"
+        className: "motion-card__card--1",
+        w: 1024, h: 765
     },
     {
         id: 2,
         title: "استراتيجيات التسويق الرقمي وإدارة المنصات",
         src: "/assets/noqta/noqta-marketing-slide10.png",
         alt: "Marketing Services",
-        className: "motion-card__card--2"
+        className: "motion-card__card--2",
+        w: 1024, h: 766
     },
     {
         id: 3,
         title: "صناعة الميديا وأغلفة الفيديو عالية التفاعل (Thumbnails)",
         src: "/assets/noqta/noqta-thumbnails-slide9.png",
         alt: "Content & Thumbnails",
-        className: "motion-card__card--3"
+        className: "motion-card__card--3",
+        w: 1024, h: 622
     },
     {
         id: 4,
         title: "أرقام ونتائج الحملات الإعلانية ونمو المشاهدات",
         src: "/assets/noqta/noqta-results-slide13.png",
         alt: "Campaign Analytics",
-        className: "motion-card__card--4"
+        className: "motion-card__card--4",
+        w: 662, h: 495
     }
 ];
 
@@ -237,7 +245,7 @@ export default function MotionCards() {
                             alt=""
                             className="motion-card__sticker-img"
                             loading="lazy"
-                            decoding="async"
+                            decoding="async" width={181} height={116}
                         />
                     </span>
                 </p>
@@ -255,7 +263,7 @@ export default function MotionCards() {
                         alt=""
                         className="motion-card__blob-svg"
                         loading="lazy"
-                        decoding="async"
+                        decoding="async" width={527} height={526}
                     />
                 </div>
 
@@ -287,6 +295,8 @@ export default function MotionCards() {
                                     decoding="async"
                                     alt={slide.alt}
                                     className="cover-image"
+                                    width={slide.w}
+                                    height={slide.h}
                                 />
                             </div>
                         </div>

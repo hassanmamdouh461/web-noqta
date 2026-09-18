@@ -422,7 +422,10 @@ export default function Navbar() {
             <div className="nav-overlay" />
             <nav className="navbar">
                 {/* ─── Left: Projects / Work Popout ─── */}
-                <div className="nav-left" tabIndex={0} aria-label="استكشف أعمالنا">
+                {/* role="group" so the aria-label is permitted — a bare <div>
+                    has the generic role, where ARIA prohibits aria-label
+                    (Lighthouse: "elements use prohibited ARIA attributes"). */}
+                <div className="nav-left" role="group" tabIndex={0} aria-label="استكشف أعمالنا">
                     <div className="nav-hover-trigger">
                         <div className="logo-work-container">
                             <img src="/assets/Navbar SVG/nav-work-blob.svg" width="60" height="55" className="nav-bar__work-blob-svg" alt="" aria-hidden="true" />
@@ -443,6 +446,8 @@ export default function Navbar() {
                                     <div className="nav-work-item__img-wrap" style={{ background: '#10162A' }}>
                                         <WebpImage
                                             src="/assets/noqta/noqta-portfolio-slide1.png"
+                                            width={1024}
+                                            height={765}
                                             loading="lazy"
                                             decoding="async"
                                             alt="هويات بصرية وشعارات"
@@ -453,9 +458,9 @@ export default function Navbar() {
                                         <span className="nav-work-badge badge-violet">
                                             هويات وشعارات
                                         </span>
-                                        <h4 className="nav-work-title">
+                                        <p className="nav-work-title">
                                             تصميم الهويات والشعارات
-                                        </h4>
+                                        </p>
                                     </div>
                                 </a>
 
@@ -470,6 +475,8 @@ export default function Navbar() {
                                     <div className="nav-work-item__img-wrap" style={{ background: '#1E1B4B' }}>
                                         <WebpImage
                                             src="/assets/noqta/noqta-marketing-slide10.png"
+                                            width={1024}
+                                            height={766}
                                             loading="lazy"
                                             decoding="async"
                                             alt="تسويق رقمي وحملات إعلانية"
@@ -480,9 +487,9 @@ export default function Navbar() {
                                         <span className="nav-work-badge badge-mint">
                                             تسويق رقمي
                                         </span>
-                                        <h4 className="nav-work-title">
+                                        <p className="nav-work-title">
                                             إدارة الحملات الإعلانية
-                                        </h4>
+                                        </p>
                                     </div>
                                 </a>
 
@@ -497,6 +504,8 @@ export default function Navbar() {
                                     <div className="nav-work-item__img-wrap" style={{ background: '#151B38' }}>
                                         <WebpImage
                                             src="/assets/noqta/noqta-thumbnails-slide9.png"
+                                            width={1024}
+                                            height={622}
                                             loading="lazy"
                                             decoding="async"
                                             alt="تصاميم الأغلفة وصناعة الميديا"
@@ -507,9 +516,9 @@ export default function Navbar() {
                                         <span className="nav-work-badge badge-blue">
                                             صناعة ميديا
                                         </span>
-                                        <h4 className="nav-work-title">
+                                        <p className="nav-work-title">
                                             تصاميم الأغلفة (Thumbnails)
-                                        </h4>
+                                        </p>
                                     </div>
                                 </a>
 
@@ -545,7 +554,7 @@ export default function Navbar() {
                 </div>
 
                 {/* ─── Right: WhatsApp & Direct Contact Popout ─── */}
-                <div className="nav-right" tabIndex={0} aria-label="تواصل معنا عبر واتساب">
+                <div className="nav-right" role="group" tabIndex={0} aria-label="تواصل معنا عبر واتساب">
                     <div className="nav-hover-trigger">
                         <div className="logo-whatsapp">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 25 27" fill="none" className="nav-bar__whatsapp-svg">
@@ -561,7 +570,7 @@ export default function Navbar() {
                                         <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z" />
                                     </svg>
                                 </div>
-                                <h4 className="nav-wa-title">تواصل معنا عبر واتساب</h4>
+                                <p className="nav-wa-title">تواصل معنا عبر واتساب</p>
                                 <p className="nav-wa-desc">
                                     جاهزون لمناقشة فكرتك والبدء في مشروعك التقني أو حملتك الإعلانية القادمة.
                                 </p>

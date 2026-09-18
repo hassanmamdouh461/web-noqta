@@ -219,6 +219,8 @@ export default function ProjectStackScroll() {
                                         alt={project.titleAr}
                                         loading="lazy"
                                         decoding="async"
+                                        width={project.imageW}
+                                        height={project.imageH}
                                     />
                                 </div>
                             </div>

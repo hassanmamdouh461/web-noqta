@@ -23,6 +23,8 @@ export default function Showreel() {
                         className="showreel__preview-img"
                         loading="lazy"
                         decoding="async"
+                        width={1024}
+                        height={622}
                     />
                     <div className="showreel__overlay">
                         <a
