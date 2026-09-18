@@ -95,13 +95,23 @@ const HorizontalWords = () => {
                 });
             });
 
-            // Bounce stickers
+            // Bounce stickers — visible by default at scale 1; GSAP only animates
+            // them as they travel across the pinned horizontal scroll. The
+            // `immediateRender: false` is the key change: `gsap.from` defaults
+            // to `immediateRender: true`, which forces every sticker to scale
+            // 0 the moment JS mounts — so on a fresh load (or any scroll
+            // position before the sticker crosses `left 95%` of the container)
+            // the four decorations are flat-zero, invisible. With the flag off,
+            // the CSS default (`scale(1)`) survives until the scrollTrigger
+            // range actually starts, which keeps them on-screen for the
+            // entire pinned trip except the very narrow lead-in.
             stickers.forEach((sticker) => {
                 gsap.from(sticker, {
                     scale: 0,
                     yPercent: (Math.random() - 0.5) * 400,
                     rotation: (Math.random() - 0.5) * 60,
                     ease: "elastic.out(1.2, 1)",
+                    immediateRender: false,
                     scrollTrigger: {
                         trigger: sticker,
                         containerAnimation: scrollTween,
