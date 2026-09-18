@@ -128,7 +128,12 @@ body {
     bottom: auto;
     left: auto;
     width: 100%;
-    height: 84px;
+    /* `auto`, not a fixed height: the hand scribble is 107px tall (it is a
+       tall, narrow SVG), so a fixed 84px band clipped 12px off its bottom
+       through the `overflow: hidden` below. Letting the flex row size to
+       its tallest child keeps the whole drawing visible. */
+    height: auto;
+    min-height: 92px;
     margin: 4px auto 8px;
     display: flex;
     align-items: center;
@@ -351,7 +356,7 @@ body {
     }
 
     .marquee-blob-container {
-        height: 100px;
+        min-height: 110px;
     }
 
     .marquee-blob {
