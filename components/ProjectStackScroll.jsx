@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PROJECTS_DATA, NOQTA_INFO } from '@/lib/data';
 import WebpImage from './WebpImage';
+import { prefersReducedMotion } from '@/lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,6 +25,33 @@ export default function ProjectStackScroll() {
             const isMobile = window.matchMedia('(max-width: 768px)').matches;
             const PEEK = isMobile ? 24 : 38;
             const SCALE_STEP = 0.04;
+
+            // ── Phones: no pin, no deck, no flying cards ─────────────────
+            // The pinned stage is exactly 100svh tall, and a full card needs
+            // ~420px of content inside the ~370px the stage leaves on a phone.
+            // The overflow was hidden behind `overflow-y: auto`, so the tags
+            // and the CTA button were clipped and the visitor had to scroll
+            // *inside* a card that was already being scrolled — measured
+            // 106-209px of cut content on 360/375/390-wide devices, and no
+            // amount of type/media trimming made it fit on a 320×568 screen.
+            // So on phones the deck becomes a plain vertical list: every
+            // project fully visible, no inner scrolling.
+            if (window.matchMedia('(max-width: 767px)').matches) {
+                deck.classList.add('stack__deck--flat');
+                gsap.set(cards, { clearProps: 'all' });
+                if (!prefersReducedMotion()) {
+                    gsap.from(cards, {
+                        scrollTrigger: { trigger: deck, start: 'top 85%', once: true },
+                        opacity: 0,
+                        y: 40,
+                        duration: 0.7,
+                        stagger: 0.12,
+                        ease: 'power3.out',
+                        clearProps: 'all'
+                    });
+                }
+                return;
+            }
 
             function stackPose(index) {
                 return {

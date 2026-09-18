@@ -466,3 +466,67 @@
     }
 }
 
+/* ─── Phones: flat list instead of the pinned deck ───────────────────────
+   The pinned stage is exactly one viewport tall (see the note at the top of
+   this file), and on a phone the stage only leaves ~370px for a card whose
+   content needs ~420px. The overflow was hidden behind `overflow-y: auto`,
+   so the tag pills and the CTA were clipped and needed a second, nested
+   scroll. Measured 106-209px of cut content at 360/375/390 wide, and even
+   trimming the media to 92px and clamping the lede still overflowed by
+   126px on a 320x568 screen — so on phones the deck becomes a plain
+   vertical list. `ProjectStackScroll.jsx` adds `.stack__deck--flat` and
+   skips the pinned timeline on the same breakpoint. Tablets (768-1023)
+   keep the pinned deck, which fits there. */
+@media (max-width: 767px) {
+    .stack__deck--flat {
+        position: relative;
+        height: auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .stack-section {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        padding-bottom: clamp(2rem, 8vh, 4rem);
+    }
+
+    .stack__stage {
+        display: block;
+        height: auto;
+        min-height: 0;
+    }
+
+    .stack__deck--flat .stack-card {
+        position: relative;
+        inset: auto;
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        grid-template-rows: auto auto;
+        align-items: start;
+        transform: none;
+        opacity: 1;
+    }
+
+    .stack__deck--flat .stack-card__media {
+        height: clamp(140px, 24svh, 200px);
+    }
+
+    .stack__deck--flat .stack-card__content {
+        min-height: 0;
+        overflow: visible;
+    }
+
+    /* The body is clamped to two lines only to make the pinned card fit —
+       in the flat list there is room for all of it. */
+    .stack__deck--flat .stack-card__body {
+        -webkit-line-clamp: unset;
+        display: block;
+        overflow: visible;
+    }
+}
+
