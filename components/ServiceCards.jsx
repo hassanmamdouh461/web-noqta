@@ -242,6 +242,44 @@ function initCardAnimations() {
                 ease: 'power3.out',
             });
         }
+    } else if (window.matchMedia('(max-width: 1199px)').matches) {
+        // Tablets (768-1199px): same vertical-stack treatment as phones. The
+        // pinned-scroll-reveal left cards sliding under the fixed navbar and
+        // the section heading ended up scrolled away from the cards (probe
+        // showed `titleTop: -347` while card-1 was at y=55). Stacking reads
+        // better on a tablet too — the JSX card content is what people came
+        // for, not the scroll choreography.
+        cardsWrapper.classList.add('mobile-readable');
+
+        cards.forEach((card, i) => {
+            gsap.set(card, {
+                position: 'relative',
+                left: 'auto',
+                top: 'auto',
+                xPercent: 0,
+                y: 0,
+                rotation: 0,
+                zIndex: 'auto',
+                transformOrigin: 'center center',
+                clearProps: 'xPercent'
+            });
+        });
+        cardsWrapper.style.height = 'auto';
+
+        if (!prefersReducedMotion()) {
+            gsap.from(cards, {
+                scrollTrigger: {
+                    trigger: cardsWrapper,
+                    start: 'top 80%',
+                    once: true,
+                },
+                opacity: 0,
+                y: 40,
+                duration: 0.7,
+                stagger: 0.1,
+                ease: 'power3.out',
+            });
+        }
     } else {
         // Tablet (768-1199): the pinned mobile stacked scroll reveal
         const scrollPerCard = window.innerHeight * 0.7;

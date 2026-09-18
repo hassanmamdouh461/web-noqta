@@ -175,9 +175,10 @@
     color: #ffffff;
 }
 
+.card-mint-light,
 .card-pink {
-    background-color: #F0BEFA;
-    color: #12141d;
+    background-color: var(--color-mint-light);
+    color: #07080f;
 }
 
 /* ─── Phone / tablet: the deck is driven by GSAP (see ServiceCards.jsx) ───
@@ -233,30 +234,13 @@
     }
 }
 
-/* ─── Phones (≤767px) ─────────────────────────────────────────────────────
-   The 768-1199 pinned-stack works on tablet but on phones it leaves 4 of 5
-   cards off-screen with no swipe affordance. Class added by ServiceCards.jsx
-   on the phone branch: cards become a vertical, scrollable column where every
-   card is in normal flow and visible without interaction. */
-@media (max-width: 767px) {
-    .service-cards-wrapper-inner {
-        padding: clamp(50px, 8vh, 80px) 12px clamp(40px, 6vh, 60px);
-    }
-
-    .title-container {
-        margin: 0 auto 28px;
-    }
-
-    .service-header-pill {
-        font-size: 0.78rem;
-        padding: 5px 14px;
-        margin-bottom: 10px;
-    }
-
-    .main-title {
-        font-size: clamp(1.7rem, 8.5vw, 2.3rem);
-    }
-
+/* ─── Phones & tablets (≤1199px) ─────────────────────────────────────────
+   Both breakpoints now use the same vertical-stack treatment (see
+   ServiceCards.jsx): the pinned-scroll-reveal used to send cards sliding
+   under the fixed navbar, and the section heading scrolled out of view by
+   the time cards 2-5 entered. Cards become a vertical, scrollable column
+   where every card is in normal flow and visible without interaction. */
+@media (max-width: 1199px) {
     .cards-wrapper.mobile-readable {
         display: flex;
         flex-direction: column;
@@ -271,10 +255,10 @@
         left: auto;
         top: auto;
         width: 100%;
-        max-width: 380px;
+        max-width: 420px;
         min-height: 0;
-        /* Tame the rotations on phones, where each card is the only one on
-           screen and a 6° tilt looks like a bug instead of a flourish. */
+        /* Tame the rotations on small screens, where each card is the only one
+           on screen and a 6° tilt looks like a bug instead of a flourish. */
         transform: none;
     }
 }
@@ -316,6 +300,7 @@
         transform: rotate(-7deg);
         z-index: 4;
     }
+    .card-mint-light,
     .card-pink {
         left: calc(50% + 310px);
         top: 65px;
