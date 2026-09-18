@@ -65,7 +65,7 @@ export default function DoubleMarquee() {
     }, []);
 
     return (
-        <section className="Double-marquee Double-marquee--static-grid" id="tools">
+        <section className="Double-marquee" id="tools">
             <div className="Double-marquee__container">
                 {/* Right Column in RTL: Title & Animated Graphics */}
                 <div className="marquee-left" dir="rtl">
