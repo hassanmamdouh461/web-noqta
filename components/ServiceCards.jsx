@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CARDS_DATA } from '@/lib/data';
+import { prefersReducedMotion } from '@/lib/motion';
 
 export default function ServiceCards() {
     useEffect(() => {
@@ -139,6 +140,9 @@ function initCardAnimations() {
     ];
 
     const isMobile = window.matchMedia('(max-width: 1199px)').matches;
+    const isPhone = window.matchMedia('(max-width: 767px)').matches;
+    const cardsWrapper = document.querySelector('.cards-wrapper');
+    if (!cardsWrapper) return () => {};
     let leaveTimeout = null;
 
     if (!isMobile) {
@@ -202,10 +206,44 @@ function initCardAnimations() {
                 card.removeEventListener('mouseleave', onLeave);
             });
         });
+    } else if (isPhone) {
+        // Phones (≤767px): stack all 5 cards vertically so the visitor sees
+        // every card's content without scrolling horizontally. Mirrors the
+        // MotionCards mobile fix — the pinned-reveal layout worked on tablet
+        // but on phones it left 4 of 5 cards permanently off-screen.
+        cardsWrapper.classList.add('mobile-readable');
+
+        cards.forEach((card, i) => {
+            gsap.set(card, {
+                position: 'relative',
+                left: 'auto',
+                top: 'auto',
+                xPercent: 0,
+                y: 0,
+                rotation: 0,
+                zIndex: 'auto',
+                transformOrigin: 'center center',
+                clearProps: 'xPercent'
+            });
+        });
+        cardsWrapper.style.height = 'auto';
+
+        if (!prefersReducedMotion()) {
+            gsap.from(cards, {
+                scrollTrigger: {
+                    trigger: cardsWrapper,
+                    start: 'top 80%',
+                    once: true,
+                },
+                opacity: 0,
+                y: 40,
+                duration: 0.7,
+                stagger: 0.1,
+                ease: 'power3.out',
+            });
+        }
     } else {
-        // Mobile stacked scroll reveal
-        const cardsWrapper = document.querySelector('.cards-wrapper');
-        if (!cardsWrapper) return;
+        // Tablet (768-1199): the pinned mobile stacked scroll reveal
         const scrollPerCard = window.innerHeight * 0.7;
         const navH = 65;
         const mobileRotations = [-4, 4, -6, 5, -3];

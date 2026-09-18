@@ -2,6 +2,11 @@
 .main-header {
     width: 100%;
     position: relative;
+    /* The hero canvas inside paints the gradient, but until it draws (or if it
+       fails entirely) the page bg would otherwise bleed through and look like
+       an empty cream screen on top of a dark site. Use the hero's fallback bg
+       so the header is always dark, matching the brand frame. */
+    background-color: var(--bg-dark);
 }
 
 .navbar {
