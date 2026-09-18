@@ -416,6 +416,17 @@ body {
         top: 50%;
         transform: translate(-50%, -50%);
         height: 100%;
+        /* footer.css clips this wrapper, but from 768px up the 120-130px
+           stickers sitting at `bottom: 0-55%` stand 35-81px taller than the
+           band, and the sticker SVGs have no transparent padding (measured:
+           alpha reaches the very edge of every image), so the clip was
+           slicing real artwork off the top — at 768px it ate 77px of the
+           141px smiley and 81px of the 135px "100", i.e. more than half of
+           each sticker. Let them render in full instead: the band already
+           sits inside the footer's own 70px top margin, so the tallest one
+           only reaches ~11px past it at the tightest width. .footer-top has
+           z-index 5 and the stickers none, so nothing there gets covered. */
+        overflow: visible;
     }
 
     .footer-logo__svg {
@@ -684,6 +695,109 @@ body {
     .vimeo-hero {
         height: calc(100vh - 24px);
         height: calc(100svh - 24px);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Footer stickers — tablet / small laptop (768–1279px)
+   ═══════════════════════════════════════════════════════════════════════════
+   The wide single-row collage further down only has room from 1280px up.
+   Between 768 and 1279 the band is 101–166px tall while the stickers are
+   120px, so the old layout piled the right-hand four on top of each other —
+   measured at 768: heart/hands 54×64, heart/100 26×90, hands/100 99×40,
+   100/camera 30×89 of overlap. Same 3-column x 2-row arrangement used on
+   phones, scaled up.
+
+   The band is grown to `100% + 130px` with `top: -60px` so it spans from 60px
+   above .footer-bottom to the bottom of the overflowing wordmark (.footer-big-
+   text is 70px taller than .footer-bottom thanks to its -70px margin), which
+   is the headroom the top row needs. `overflow: visible` above lets it sit in
+   that margin without being sliced.
+
+   The `bottom` offsets are px, not %, on purpose: .footer-bottom-row is
+   absolutely pinned to the bottom and its Credits pill is a constant 45px
+   tall, so "123px above the band bottom" clears the pill at every width in
+   this range, while a percentage would drift with the band's height. */
+@media (min-width: 768px) and (max-width: 1279px) {
+    .footer-stickers {
+        top: -60px;
+        transform: translateX(-50%);
+        height: calc(100% + 130px);
+    }
+
+    /* hands / 100 / camera are declared as double-class selectors further up
+       (.footer-sticker.sticker-hands …), so the width override has to match
+       that specificity — a plain .footer-sticker rule silently loses and they
+       keep the old 120px while their row-mates shrink. */
+    .footer-sticker,
+    .footer-sticker.sticker-hands,
+    .footer-sticker.sticker-100,
+    .footer-sticker.sticker-camera,
+    .sticker-boom {
+        width: 112px;
+    }
+
+    .sticker-smiley {
+        left: 6%;
+        right: auto;
+        bottom: 218px;
+    }
+
+    .footer-sticker.sticker-hands {
+        left: 6%;
+        right: auto;
+        bottom: 123px;
+    }
+
+    .footer-sticker.sticker-100 {
+        left: 40%;
+        right: auto;
+        bottom: 237px;
+    }
+
+    .sticker-heart {
+        left: 40%;
+        right: auto;
+        bottom: 123px;
+    }
+
+    .sticker-boom {
+        left: 73%;
+        right: auto;
+        bottom: 251px;
+    }
+
+    .footer-sticker.sticker-camera {
+        left: 73%;
+        right: auto;
+        bottom: 123px;
+    }
+}
+
+/* 768-1023px is the tightest range: the free gap above .footer-bottom shrinks
+   to 104px at 900px wide, so both rows shrink and the stack tightens, keeping
+   clear of .footer-top above and the Credits pill below. The row gap has to
+   shrink with the stickers, which is why the top row's offsets come down too
+   (a taller sticker needs a bigger offset to clear the one beneath it). */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .footer-sticker,
+    .footer-sticker.sticker-hands,
+    .footer-sticker.sticker-100,
+    .footer-sticker.sticker-camera,
+    .sticker-boom {
+        width: 80px;
+    }
+
+    .sticker-smiley {
+        bottom: 195px;
+    }
+
+    .footer-sticker.sticker-100 {
+        bottom: 210px;
+    }
+
+    .sticker-boom {
+        bottom: 218px;
     }
 }
 
