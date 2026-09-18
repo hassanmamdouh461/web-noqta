@@ -374,6 +374,10 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
+    /* On phones the absolute-positioned stickers (e.g. `right: 8%`) bled past
+       the viewport edge. Clipping to the wrapper bounds keeps them inside
+       the footer. */
+    overflow: hidden;
 }
 
 .footer-sticker {
