@@ -68,19 +68,21 @@
 }
 
 .horizontal-words__sticker-cursor {
-    display: none;
+    display: block;
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 2.6em;
     transform: translate(-50%, 10%);
     z-index: 10;
 }
 
 .horizontal-words__sticker-phone {
-    display: none;
+    display: block;
     position: absolute;
     top: 50%;
     left: 79%;
+    width: 2.8em;
     transform: translate(-50%, -100%);
     z-index: 10;
 }
@@ -94,10 +96,11 @@
 }
 
 .horizontal-words__sticker-watch {
-    display: none;
+    display: block;
     position: absolute;
     top: 50%;
     left: 17.5%;
+    width: 2.4em;
     transform: translate(-50%, -110%);
     z-index: 10;
 }
@@ -122,7 +125,37 @@
     white-space: nowrap;
 }
 
-/* ─── Responsive Adjustments for Different Screen Sizes ─── */
+/* Emojis (thumbs-up, lightning bolt, hands-up) flank the pinned headline
+   across every viewport. Earlier the base rule was `display: none` and the
+   `min-width: 480px` block restored them — that hid all three decorations
+   on a ~440px-wide window (the user screenshot case). Making them visible
+   by default with a tight base width keeps the small-phone layout honest;
+   the 480/640/1024 media queries only widen them. */
+
+@media (min-width: 480px) {
+    .horizontal-words__sticker-watch,
+    .horizontal-words__sticker-cursor,
+    .horizontal-words__sticker-phone {
+        display: block;
+    }
+
+    .horizontal-words__sticker-watch {
+        width: 3.5em;
+    }
+
+    .horizontal-words__sticker-cursor {
+        width: 3.8em;
+    }
+
+    .horizontal-words__sticker-phone {
+        width: 4em;
+    }
+
+    .horizontal-words__arrow-svg {
+        width: 14em;
+    }
+}
+
 @media (min-width: 640px) {
     .horizontal-words__h2 {
         font-size: clamp(2.8rem, 11vw, 5.5rem);
@@ -133,23 +166,56 @@
     }
 
     .horizontal-words__sticker-watch {
-        display: block;
         width: 4.5em;
     }
 
     .horizontal-words__sticker-cursor {
-        display: block;
         width: 5em;
     }
 
     .horizontal-words__sticker-phone {
-        display: block;
         width: 5.5em;
     }
 
     .horizontal-words__bottom-text-l {
         font-size: 0.95rem;
         line-height: 1.45;
+    }
+}
+
+@media (min-width: 1024px) {
+    .horizontal-words__h2 {
+        font-size: clamp(3.5rem, 8.5vw, 9.5rem);
+    }
+
+    .horizontal-words__arrow-svg {
+        width: 23.75em;
+    }
+
+    .horizontal-words__sticker-watch {
+        width: 6em;
+    }
+
+    .horizontal-words__sticker-cursor {
+        width: 7.5em;
+    }
+
+    .horizontal-words__sticker-phone {
+        width: 8em;
+    }
+
+    .horizontal-words__arrow-end-svg {
+        width: 8.4375em;
+    }
+
+    .horizontal-words__bottom-text {
+        bottom: clamp(24px, 7vh, 60px);
+        width: 90%;
+    }
+
+    .horizontal-words__bottom-text-l {
+        font-size: clamp(0.95rem, 1.5vw, 1.35rem);
+        line-height: 1.5;
     }
 }
 
