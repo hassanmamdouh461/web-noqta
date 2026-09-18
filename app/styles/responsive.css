@@ -104,7 +104,8 @@ body {
 }
 
 .marquee-badge-label {
-    font-size: 0.7rem;
+    /* 0.7rem (11.2px) is below the practical floor for Arabic on a phone. */
+    font-size: 0.75rem;
 }
 
 .marquee-badge-cat {

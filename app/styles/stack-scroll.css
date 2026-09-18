@@ -393,8 +393,10 @@
         border-radius: 12px;
     }
 
+    /* 0.7rem (11.2px) was too small — Arabic at that size is genuinely hard to
+       read on a phone. Kept at >= 12px for every piece of on-card text. */
     .stack-card__badge-tag {
-        font-size: 0.7rem;
+        font-size: 0.78rem;
         padding: 0.3rem 0.7rem;
     }
 
@@ -408,7 +410,7 @@
     }
 
     .stack-card__tag-pill {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         padding: 0.25rem 0.65rem;
     }
 

@@ -196,8 +196,9 @@
         font-size: clamp(1.3rem, 5.2vw, 1.6rem);
     }
 
+    /* Was 0.66rem (10.6px) — too small for Arabic on a phone. 0.78rem = 12.5px. */
     .card-division-badge {
-        font-size: 0.66rem;
+        font-size: 0.78rem;
         padding: 3px 9px;
     }
 
