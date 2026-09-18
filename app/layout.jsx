@@ -50,58 +50,52 @@ export const viewport = {
     themeColor: '#0B0C16',
 };
 
-const GOOGLE_FONTS_HREF =
-    'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900' +
-    '&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400' +
-    '&family=Instrument+Serif:ital@0;1' +
-    '&family=Plus+Jakarta+Sans:wght@400;600;700;800' +
-    '&display=swap';
+/**
+ * Faces used by above-the-fold Arabic text, preloaded so the hero headline
+ * paints in Cairo rather than swapping in from the fallback.
+ *
+ * The list is generated (lib/font-preload.js) by
+ * .workbuddy-ai/tools/selfhost-fonts.mjs — never hand-write these paths. The
+ * filenames embed Google's content hash, and a hand-copied one already shipped
+ * as a 404 preload once.
+ */
+import { PRELOAD_FONTS } from '@/lib/font-preload';
 
 export default function RootLayout({ children }) {
     return (
         <html lang="ar" dir="rtl">
             <head>
                 {/*
-                  PERF: the font stylesheet used to be an `@import` at the top of
-                  base.css. That made the font request invisible to the browser
-                  until base.css itself had downloaded and parsed — an extra
-                  blocking round trip that pushed FCP to ~2.9s on a throttled
-                  phone. Declaring it here lets the preconnects warm up in
-                  parallel with the CSS instead of behind it.
-                */}
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                {/*
-                  The stylesheet is fetched at high priority but applied without
-                  blocking the first paint: media="print" keeps it out of the
-                  critical path, and swapping to "all" on load activates it.
-                  `display=swap` in the URL means text renders in the fallback
-                  face immediately instead of waiting for the webfont.
-                  NOTE: the onload swap needs 'unsafe-inline' in script-src,
-                  which the CSP in public/_headers already allows.
-                */}
-                {/*
-                  Kept deliberately render-blocking. Three variants were measured
-                  on throttled mobile (4x CPU, Slow 4G):
-                    @import in base.css ................. FCP 2892ms  fonts ok
-                    preconnect + blocking <link> ........ FCP 2672ms  fonts ok
-                    media="print" + onload swap ......... FCP 2176ms  fonts BROKEN
-                    JS-injected <link> .................. FCP 5444ms  fonts ok
+                  Fonts are self-hosted (app/styles/fonts.css), not pulled from
+                  fonts.googleapis.com.
 
-                  The "2176ms" win was fake: React does not emit `onLoad` as an
-                  HTML attribute, so with a static export the handler is attached
-                  during hydration — after the sheet already loaded — and the
-                  stylesheet stays at media="print" forever. Arabic silently fell
-                  back to the system font.
+                  History, so this is not re-litigated. The font stylesheet was
+                  first an @import in base.css (FCP 2892ms), then a blocking
+                  link to Google (FCP 2672ms) — both paid a render-blocking
+                  round trip to a third-party origin. A media="print" + onload
+                  swap looked like a win at 2176ms but was fake: React does not
+                  emit onLoad as an HTML attribute, so with output: 'export' the
+                  handler attaches during hydration — after the sheet loaded —
+                  leaving it at media="print" forever with Arabic silently
+                  falling back to the system font. A JS-injected link was
+                  correct but regressed FCP to 5444ms.
 
-                  The JS-injected variant fixes correctness but is slower than
-                  blocking, because the request no longer starts until the 200 KB
-                  JS bundle has been fetched and executed.
-
-                  So: preconnect (warms DNS/TLS in parallel) + a normal blocking
-                  link. Correct and measurably the fastest of the working options.
+                  Self-hosting removes the third-party hop entirely: the
+                  @font-face rules are inlined into our own CSS bundle and the
+                  two critical faces below are preloaded. The unicode-range
+                  subsets are preserved, so a browser still only downloads the
+                  Arabic vs Latin faces it actually renders.
                 */}
-                <link rel="stylesheet" href={GOOGLE_FONTS_HREF} />
+                {PRELOAD_FONTS.map((href) => (
+                    <link
+                        key={href}
+                        rel="preload"
+                        href={href}
+                        as="font"
+                        type="font/woff2"
+                        crossOrigin="anonymous"
+                    />
+                ))}
             </head>
             <body>
                 {children}

@@ -6,7 +6,14 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
-  Strict-Transport-Security: max-age=31536000
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+  # Origin isolation. COOP same-origin severs window.opener for anything this
+  # page opens, which is what Lighthouse asks for under "proper origin
+  # isolation". The outbound links here (WhatsApp, mailto, socials) are plain
+  # navigations that never read back through window.opener, so nothing breaks.
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
 
   # Content-Security-Policy: same-origin everything except the bits the site
   # actually needs.
@@ -14,9 +21,11 @@
   #     hydration bootstrap (the __next_f.push calls) and GSAP writes inline
   #     styles via element.style. Nonces would require moving away from
   #     `output: 'export'`, which is out of scope.
-  #   - style-src 'unsafe-inline' + fonts.googleapis.com: base.css imports
-  #     Google Fonts; GSAP and React both write inline styles.
-  #   - font-src gstatic.com + data: for the woff2 payload and any inlined glyphs.
+  #   - style-src 'unsafe-inline': GSAP and React both write inline styles.
+  #     No fonts.googleapis.com entry is needed any more — the webfonts are
+  #     self-hosted under /assets/fonts/ (see app/styles/fonts.css).
+  #   - font-src 'self' + data: for the self-hosted woff2 payload and any
+  #     inlined glyphs. fonts.gstatic.com is no longer required.
   #   - img-src data:: used by SVG-in-img fallbacks; otherwise everything is
   #     local /assets/*.
   #   - frame-ancestors 'none' replaces X-Frame-Options (kept removed to avoid
@@ -24,7 +33,7 @@
   #   - upgrade-insecure-requests is a no-op for an HTTPS-only site but keeps
   #     any future mixed-content link safe.
   #   - 'unsafe-eval' is NOT needed (no eval, no Function constructor).
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
 
 # /_next/static/* filenames are content-hashed by Next.js, so they can be
 # cached indefinitely. Everything else keeps Cloudflare's default
@@ -32,6 +41,9 @@
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Brand/media artwork is not fingerprinted -> shorter, but still useful TTL.
+# Brand/media artwork is not fingerprinted, so it gets a long-but-not-immutable
+# TTL plus stale-while-revalidate: repeat visits are served instantly from cache
+# while the browser refreshes in the background, and a replaced asset is picked
+# up within a day rather than a week.
 /assets/*
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
