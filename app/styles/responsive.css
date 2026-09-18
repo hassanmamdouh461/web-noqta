@@ -168,10 +168,21 @@ body {
 }
 
 .marquee-svg-item:nth-child(2) {
-    /* Hidden on phones — the path-underline scribble tangled with the hand
-       and produced a confusing swirl. The desktop keeps it; the phone gets
-       the cleaner heart-on-hand only. */
-    display: none;
+    /* The curved swooping scribble arrow — kept on phones per the visitor's
+       screenshot. Scaled down and placed beside (not over) the hand so the
+       two decorations don't tangle. */
+    position: relative;
+    inset: auto;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    width: 90px;
+    height: auto;
+    color: var(--color-dark);
+    transform: scaleX(-1);
+    transform-origin: center center;
+    opacity: 0.95;
+    margin-inline-start: 4px;
 }
 
 /* ── Marquee text (mobile) ─── */
