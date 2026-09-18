@@ -36,7 +36,11 @@ export default function ProjectStackScroll() {
             // amount of type/media trimming made it fit on a 320×568 screen.
             // So on phones the deck becomes a plain vertical list: every
             // project fully visible, no inner scrolling.
-            if (window.matchMedia('(max-width: 767px)').matches) {
+            // `(max-height: 560px)` catches landscape phones: an iPhone in
+            // landscape is ~844x390, so it is *wider* than 767px but only
+            // 390px tall — the pinned stage squeezed the cards down to
+            // 113-134px with 279px of content hidden inside each one.
+            if (window.matchMedia('(max-width: 767px), (max-height: 560px)').matches) {
                 deck.classList.add('stack__deck--flat');
                 gsap.set(cards, { clearProps: 'all' });
                 if (!prefersReducedMotion()) {

@@ -476,8 +476,13 @@
    126px on a 320x568 screen — so on phones the deck becomes a plain
    vertical list. `ProjectStackScroll.jsx` adds `.stack__deck--flat` and
    skips the pinned timeline on the same breakpoint. Tablets (768-1023)
-   keep the pinned deck, which fits there. */
-@media (max-width: 767px) {
+   keep the pinned deck, which fits there.
+
+   `max-height: 560px` is in the list for landscape phones — they are
+   ~844x390, i.e. wider than 767px, so a width-only query left them with
+   the pinned deck inside a 390px stage. Keep this in sync with the
+   matchMedia() call in ProjectStackScroll.jsx. */
+@media (max-width: 767px), (max-height: 560px) {
     .stack__deck--flat {
         position: relative;
         height: auto;
