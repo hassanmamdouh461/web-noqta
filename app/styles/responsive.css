@@ -851,4 +851,22 @@ body {
     .stack-card__cta {
         min-height: 44px;
     }
+
+    /* The navbar's centre logo lockup is only 26px tall (30px on tablet) —
+       well under the 44px touch minimum, and the one interactive element left
+       that fails it. Grow the hit area with a centred pseudo-element rather
+       than min-height, so .nav-center keeps its height and the wiggle
+       animation on the inner .logo-noqta-flex is unaffected. */
+    .logo-noqta-wrap {
+        position: relative;
+    }
+
+    .logo-noqta-wrap::after {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        top: 50%;
+        height: 44px;
+        transform: translateY(-50%);
+    }
 }
