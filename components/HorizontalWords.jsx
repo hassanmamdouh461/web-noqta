@@ -30,29 +30,44 @@ const HorizontalWords = () => {
             // that the querySelectorAll will find nothing and the animation will gracefully skip.
             const arrows = container.querySelectorAll('.horizontal-words__arrow-svg path, .horizontal-words__arrow-end-svg path');
 
+            const reduced = prefersReducedMotion();
+            const isSmall = window.matchMedia('(max-width: 767px)').matches;
+
+            // How far off-screen the text waits before and after its trip.
+            // Phones trim this: with a ~730px line on a ~390px screen, 150px of
+            // void on each side meant ~300px of the journey showed nothing.
+            const VOID = isSmall ? 40 : 150;
+
+            // How much scroll the pinned stretch reserves. It used to be a flat
+            // 2400px, then a flat 1100px on phones — a lot of scrolling held
+            // hostage by a single line of text. Phones now reserve ~45% of the
+            // actual travel instead (~450-570px depending on width), which —
+            // together with the trimmed void — buys the same animation for
+            // roughly half the scrolling at a still-readable pace. Desktops keep
+            // their original 1800px.
+            const pinLength = () => {
+                if (!isSmall) return 1800;
+                const travel = window.innerWidth + VOID * 2 + textRef.offsetWidth;
+                return Math.max(450, Math.round(travel * 0.45));
+            };
+
             // ─── Set initial state: completely off-screen in the void (right) ───
             gsap.set(textRef, {
-                x: () => window.innerWidth + 150,
+                x: () => window.innerWidth + VOID,
                 yPercent: -50,
                 top: '50%'
             });
 
-            const reduced = prefersReducedMotion();
-            const isSmall = window.matchMedia('(max-width: 767px)').matches;
-
             // ─── ScrollTween: starts in the void (right) and exits into the void (left) ───
-            // The travel distance is derived from the actual text width so short
-            // viewports don't get a needlessly long pinned section (mobile used to
-            // reserve a flat 2400px of scroll for a single line of text).
             const scrollTween = gsap.fromTo(textRef, {
-                x: () => window.innerWidth + 150
+                x: () => window.innerWidth + VOID
             }, {
-                x: () => -(textRef.offsetWidth + 150),
+                x: () => -(textRef.offsetWidth + VOID),
                 ease: 'none',
                 scrollTrigger: {
                     trigger: container,
                     start: "top top",
-                    end: () => `+=${Math.max(isSmall ? 1100 : 1800, textRef.offsetWidth * 0.85)}`,
+                    end: () => `+=${pinLength()}`,
                     scrub: 1,
                     pin: true,
                     anticipatePin: 1,
