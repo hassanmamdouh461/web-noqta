@@ -45,6 +45,10 @@ export default function ProjectStackScroll() {
                     y: startOffset + i * PEEK,
                     scale: stackPose(i).scale * 0.92,
                     rotate: 0,
+                    // On phones, only the front card is visible — the rest sit
+                    // invisibly behind it so their text never bleeds through.
+                    // On desktop the deck-of-cards peek stays.
+                    opacity: isMobile ? (i === 0 ? 1 : 0) : 1,
                     transformOrigin: "50% 0%",
                 });
             });
@@ -87,7 +91,11 @@ export default function ProjectStackScroll() {
                         y: () => -window.innerHeight * 1.12,
                         rotate: -22,
                         scale: 0.94,
-                        opacity: 0.85,
+                        // Fade fully to 0 so the flying card never sits *in front
+                        // of* the next card during scrub — at 0.85 the previous
+                        // card's text was still bleeding through the new top
+                        // card on phones.
+                        opacity: 0,
                         ease: "power1.inOut",
                         duration: 1.1,
                     },
@@ -100,6 +108,9 @@ export default function ProjectStackScroll() {
                     {
                         y: (index) => stackPose(index).y,
                         scale: (index) => stackPose(index).scale,
+                        // On phones, fade only the *next* top card in; the rest
+                        // stay hidden so the deck stays out of the way.
+                        opacity: (index) => isMobile ? (index === 0 ? 1 : 0) : 1,
                         ease: "power1.out",
                         duration: 1.1,
                     },

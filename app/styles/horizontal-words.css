@@ -1,5 +1,13 @@
 /* Styles for HorizontalWords section */
 
+/* Mobile-first: hide on phones. The pinned horizontal-scroll effect is
+   designed for ≥768px (tablet+). Below that it leaves ~700px of empty
+   whitespace and the headline gets clipped to a single word. */
+.horizontal-words-section {
+    display: none;
+}
+
+@media (min-width: 768px) {
 .horizontal-words-section {
     position: relative;
     width: 100%;
@@ -12,6 +20,8 @@
     overflow: hidden;
     /* Removed flex to control absolute positioning manually */
     direction: ltr;
+    display: block;
+}
 }
 
 /* User provided CSS */
