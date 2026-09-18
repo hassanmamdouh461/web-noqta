@@ -64,22 +64,6 @@ export default function DoubleMarquee() {
         };
     }, []);
 
-    /* The static-grid variant on ≥1024px shows 6 brands in a 2×3 grid drawn
-       from the curated STATIC_GRID_BRANDS list below — the second marquee
-       track is hidden by CSS. The colors cycle through the brand palette
-       starting at different offsets per row so the 2×3 doesn't repeat. */
-    const STATIC_GRID_BRANDS = brands.slice(0, 6).map((brand, i) => {
-        // Use a different starting offset per column so the two columns
-        // share the palette but never repeat an adjacent row.
-        const colorIdx = (i + Math.floor(i / 2)) % MARQUEE_BG_COLORS.length;
-        const color = MARQUEE_BG_COLORS[colorIdx];
-        return {
-            brand,
-            color,
-            isDark: DARK_COLORS.includes(color)
-        };
-    });
-
     return (
         <section className="Double-marquee Double-marquee--static-grid" id="tools">
             <div className="Double-marquee__container">
@@ -120,18 +104,22 @@ export default function DoubleMarquee() {
                     </div>
                 </div>
 
-                {/* Right column in RTL: the 6-card static grid on ≥1024px and
-                   the two vertical scrolling marquee columns on phones. The
-                   static-grid CSS uses `display: contents` on the column /
-                   track wrappers to flatten the DOM, so the engine places
-                   the 6 visible items across the 2×3 grid; the second
-                   column is hidden via `.Double-marquee--static-grid
-                   .marquee-column--1 { display: none }`. On phones the
-                   responsive rules restore `display: block` on the columns
-                   and `display: flex` on the tracks, so the marquee
-                   columns animate as before. */}
+                {/* Right column in RTL: on ≥1024px this renders as a static
+                   2×3 grid of square cards (the older "تقنيات حديثة" look the
+                   designer asked to bring back); on phones it stays the two
+                   vertical scrolling marquee columns.
+
+                   The markup is IDENTICAL for both — all 12 brands, twice
+                   per track, are always in the DOM. The desktop layout is
+                   pure CSS: marquee.css hides the second column and hides
+                   every item past the 6th of the first track, then lays the
+                   remaining 6 out with `display: grid` on `.marquee-track`.
+                   Keeping the data untouched is what protects the phone
+                   marquee — a previous attempt swapped the track contents
+                   for a 6-brand list, which silently de-duplicated the
+                   phone scroll down to 6 unique brands. */}
                 <div className="marquee-right" dir="ltr">
-                    {[STATIC_GRID_BRANDS, STATIC_GRID_BRANDS].map((trackItems, colIndex) => (
+                    {MARQUEE_TRACKS.map((trackItems, colIndex) => (
                         <div key={colIndex} className={`marquee-column marquee-column--${colIndex}`}>
                             <div className="marquee-track">
                                 {trackItems.map((item, i) => (

@@ -309,49 +309,57 @@
         flex: 1;
         width: auto;
         max-width: 540px;
-        /* `aspect-ratio: 1 / 1` on each cell is the simplest way to keep
-           the 2×3 cards square regardless of how much content the badge +
-           name + label stack produces. Without it, the cell collapses to
-           its `min-content` height (~104px) instead of filling the row
-           track, producing wide, flat rectangles. Cells: 263×263, grid
-           total height ≈ 3 × 263 + 2 × 14 gap = 817px. */
         height: auto;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        /* `grid-auto-flow: row` is the default but worth stating — it
-           tells the engine to fill row by row (item1 → row1col1,
-           item2 → row1col2, item3 → row2col1, ...) instead of column by
-           column, which `grid-auto-flow: dense` could otherwise do. */
-        grid-auto-flow: row;
-        gap: 14px;
+        /* The grid lives on `.marquee-track`, NOT here. Putting it on
+           `.marquee-right` looked right in DevTools (`grid-template-columns`
+           really did read `263px 263px`) but the only visible child of
+           `.marquee-right` is a single `.marquee-column`, so the engine had
+           exactly one grid item to place and every card stacked in that one
+           cell. This wrapper is a plain block that just sizes the grid. */
+        display: block;
         overflow: visible;
     }
 
     .Double-marquee--static-grid .marquee-column {
         flex: none;
-        display: contents;       /* let the children participate in the parent grid */
+        display: block;
+        width: 100%;
+        overflow: visible;
     }
 
-    .Double-marquee--static-grid .marquee-track {
-        display: contents;       /* flatten the duplicated track so grid sees the real items */
+    /* Kill the top/bottom fade masks. They exist to make the scrolling
+       marquee look endless; over a finite 2×3 grid they just wash out the
+       first and last row of cards with a 120px gradient to the page bg. */
+    .Double-marquee--static-grid .marquee-column::before,
+    .Double-marquee--static-grid .marquee-column::after {
+        display: none;
     }
 
     /* Hide the second track entirely — the static grid is 2×3 with cells
-       coming from the first track only. Hiding the whole `column--1`
-       wrapper means its 6 items don't compete for grid slots. (Filtering
-       with `:nth-child(n+7)` didn't work because each track only contains
-       6 items, so the rule never matched.) */
+       coming from the first track only. */
     .Double-marquee--static-grid .marquee-column--1 {
+        display: none;
+    }
+
+    /* Keep only the first 6 of the first track's 24 cards. The count must
+       be filtered with `nth-child(n + 7)` on the ITEMS (not by shortening
+       the data in JSX) so the phone marquee still gets all 12 brands.
+       Four-class specificity is deliberate: responsive.css re-shows
+       `.marquee-track > .marquee-item:nth-child(n + 13)` at (0,3,0) for
+       the desktop scrolling marquee, and responsive.css is imported
+       last — a two-class rule here would lose that tie and leak 18 extra
+       cards into the grid. */
+    .Double-marquee--static-grid .marquee-column--0 .marquee-track > .marquee-item:nth-child(n + 7) {
         display: none;
     }
 
     .Double-marquee--static-grid .marquee-item {
         width: 100%;
         height: auto;
-        /* Square cells — width comes from the column (1fr = ~263px), so
-           `aspect-ratio: 1 / 1` makes each cell 263×263. `aspect-ratio`
-           beats the row track sizing; the grid row becomes auto-sized to
-           the cell's intrinsic square height. */
+        /* Square cells — width comes from the grid column (1fr ≈ 263px),
+           so `aspect-ratio: 1 / 1` makes each cell 263×263. Without it the
+           cell collapses to its `min-content` height (~104px) and produces
+           wide, flat rectangles instead of the tiles in the design. */
         aspect-ratio: 1 / 1;
         padding: 24px 18px;
         border-radius: 14px;
@@ -370,8 +378,16 @@
         font-size: 0.78rem;
     }
 
-    /* Stop the vertical scrolling animation inside the static variant. */
+    /* The track IS the grid: 2 columns × 3 rows of square cards.
+       `display: grid !important` is required because responsive.css sets
+       `.marquee-column:nth-child(1) .marquee-track { display: flex; ... }`
+       at specificity (0,3,0), which beats a plain two-class selector. */
     .Double-marquee--static-grid .marquee-track {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-flow: row;
+        gap: 14px;
+        /* Stop the vertical scrolling animation inside the static variant. */
         animation: none !important;
         transform: none !important;
     }
