@@ -92,16 +92,21 @@ const TransitionScribble = forwardRef(function TransitionScribble(
         const scaleVal = config.scale ?? DEFAULT_INTRO_CONFIG.scale;
         const wiggleRot = config.wiggleIntensity ?? DEFAULT_INTRO_CONFIG.wiggleIntensity;
         const wiggleSpd = config.wiggleSpeed ?? DEFAULT_INTRO_CONFIG.wiggleSpeed;
+        const startCovered = config.startCovered ?? DEFAULT_INTRO_CONFIG.startCovered;
+        const coveredHold = config.startCoveredHold ?? DEFAULT_INTRO_CONFIG.startCoveredHold ?? 0.9;
 
-        // Reset elements
+        // Reset elements. In `startCovered` mode we paint the path and logo to
+        // their peak-coverage state immediately — the visitor's first frame is
+        // the fully-covered brand mark, and only then does the scribble wipe
+        // away.
         gsap.set(svg, { scale: scaleVal, opacity: 1, x: 0, y: 0, rotation: 0 });
         gsap.set(path, {
             strokeDasharray: l,
-            strokeDashoffset: l,
-            strokeWidth: strokeStart,
+            strokeDashoffset: startCovered ? 0 : l,
+            strokeWidth: startCovered ? strokeMax : strokeStart,
             opacity: 1
         });
-        gsap.set(logoWrapper, { opacity: 0, scale: 1 });
+        gsap.set(logoWrapper, { opacity: startCovered ? 1 : 0, scale: 1 });
         if (logoInner) gsap.set(logoInner, { rotation: 0 });
 
         document.body.classList.add('is-transitioning');
@@ -150,46 +155,73 @@ const TransitionScribble = forwardRef(function TransitionScribble(
         });
         currentTimelineRef.current = tl;
 
-        // 1. Draw scribble in (covers the entire screen edge-to-edge)
-        tl.to(path, {
-            strokeDashoffset: 0,
-            duration: durIn,
-            ease: 'power1.inOut'
-        }, 0);
+        // 1. Draw-in phase. Skipped in startCovered mode — the screen is
+        // already painted over from t=0.
+        const undrawStart = startCovered ? coveredHold : (durIn + delayPause);
 
-        tl.to(path, {
-            strokeWidth: strokeMax,
-            duration: durIn,
-            ease: 'power2.inOut'
-        }, 0);
+        if (!startCovered) {
+            tl.to(path, {
+                strokeDashoffset: 0,
+                duration: durIn,
+                ease: 'power1.inOut'
+            }, 0);
 
-        // Scroll to top during coverage if requested
-        if (shouldScrollToTop) {
-            tl.call(() => {
-                const lenis = window.__lenis;
-                if (lenis) lenis.scrollTo(0, { immediate: true });
-                else window.scrollTo(0, 0);
-            }, null, durIn * 0.7);
-        }
+            tl.to(path, {
+                strokeWidth: strokeMax,
+                duration: durIn,
+                ease: 'power2.inOut'
+            }, 0);
 
-        // 2. Fade in logo & start signature wiggle halfway through draw-in
-        tl.to(logoWrapper, {
-            opacity: 1,
-            duration: durIn * 0.45,
-            ease: 'power2.out',
-            onStart: () => {
-                if (logoInner) {
-                    gsap.to(logoInner, {
-                        rotation: wiggleRot,
-                        duration: wiggleSpd,
-                        repeat: -1,
-                        yoyo: true,
-                        ease: 'steps(1)',
-                        overwrite: 'auto'
-                    });
-                }
+            // Scroll to top during coverage if requested
+            if (shouldScrollToTop) {
+                tl.call(() => {
+                    const lenis = window.__lenis;
+                    if (lenis) lenis.scrollTo(0, { immediate: true });
+                    else window.scrollTo(0, 0);
+                }, null, durIn * 0.7);
             }
-        }, durIn * 0.48);
+
+            // 2. Fade in logo & start signature wiggle halfway through draw-in
+            tl.to(logoWrapper, {
+                opacity: 1,
+                duration: durIn * 0.45,
+                ease: 'power2.out',
+                onStart: () => {
+                    if (logoInner) {
+                        gsap.to(logoInner, {
+                            rotation: wiggleRot,
+                            duration: wiggleSpd,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: 'steps(1)',
+                            overwrite: 'auto'
+                        });
+                    }
+                }
+            }, durIn * 0.48);
+        } else {
+            // startCovered: the logo is already visible from t=0, so kick off
+            // the wiggle immediately so the brand mark animates during the hold.
+            if (logoInner) {
+                gsap.to(logoInner, {
+                    rotation: wiggleRot,
+                    duration: wiggleSpd,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'steps(1)',
+                    overwrite: 'auto'
+                });
+            }
+            // Scroll to top right away so the page is already there when the
+            // wipe finishes revealing content.
+            if (shouldScrollToTop) {
+                tl.call(() => {
+                    const lenis = window.__lenis;
+                    if (lenis) lenis.scrollTo(0, { immediate: true });
+                    else window.scrollTo(0, 0);
+                }, null, 0);
+            }
+        }
 
         // 3. Hide logo as scribble begins wiping away
         tl.to(logoWrapper, {
@@ -202,20 +234,20 @@ const TransitionScribble = forwardRef(function TransitionScribble(
                     gsap.set(logoInner, { rotation: 0 });
                 }
             }
-        }, durIn + delayPause + (durOut * 0.2));
+        }, undrawStart + (durOut * 0.2));
 
         // 4. Undraw scribble away (reveals page content)
         tl.to(path, {
             strokeDashoffset: -l,
             duration: durOut,
             ease: 'power2.inOut'
-        }, durIn + delayPause);
+        }, undrawStart);
 
         tl.to(path, {
             strokeWidth: strokeStart,
             duration: durOut,
             ease: 'power2.inOut'
-        }, durIn + delayPause);
+        }, undrawStart);
 
         return tl;
     }, [config, onStart, onComplete]);

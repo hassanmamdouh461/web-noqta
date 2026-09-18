@@ -4,10 +4,27 @@
 
 /*
   X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Strict-Transport-Security: max-age=31536000
+
+  # Content-Security-Policy: same-origin everything except the bits the site
+  # actually needs.
+  #   - script-src needs 'unsafe-inline': Next.js' static export inlines the
+  #     hydration bootstrap (the __next_f.push calls) and GSAP writes inline
+  #     styles via element.style. Nonces would require moving away from
+  #     `output: 'export'`, which is out of scope.
+  #   - style-src 'unsafe-inline' + fonts.googleapis.com: base.css imports
+  #     Google Fonts; GSAP and React both write inline styles.
+  #   - font-src gstatic.com + data: for the woff2 payload and any inlined glyphs.
+  #   - img-src data:: used by SVG-in-img fallbacks; otherwise everything is
+  #     local /assets/*.
+  #   - frame-ancestors 'none' replaces X-Frame-Options (kept removed to avoid
+  #     the duplicate-header nag in newer browsers).
+  #   - upgrade-insecure-requests is a no-op for an HTTPS-only site but keeps
+  #     any future mixed-content link safe.
+  #   - 'unsafe-eval' is NOT needed (no eval, no Function constructor).
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
 
 # /_next/static/* filenames are content-hashed by Next.js, so they can be
 # cached indefinitely. Everything else keeps Cloudflare's default
@@ -18,10 +35,3 @@
 # Brand/media artwork is not fingerprinted -> shorter, but still useful TTL.
 /assets/*
   Cache-Control: public, max-age=604800
-
-# TODO: add a Content-Security-Policy once it has been verified in a browser.
-# The site needs at least:
-#   style-src  'self' 'unsafe-inline' https://fonts.googleapis.com
-#   font-src   'self' https://fonts.gstatic.com
-#   script-src 'self' 'unsafe-inline'   (Next.js static export inlines bootstrap scripts)
-# so it is deliberately left out here rather than risk breaking the live site.
