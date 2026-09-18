@@ -110,8 +110,10 @@ body {
 }
 
 .marquee-badge-cat {
-    font-size: 0.62rem;
-    padding: 3px 8px;
+    /* 0.62rem rendered at 9.9px — under any readable floor, even for the
+       Latin "⚡ CODE" / "🎨 MEDIA" labels. */
+    font-size: 0.72rem;
+    padding: 4px 9px;
 }
 
 /* Each marquee track is duplicated (2 × 12) so the keyframes can translate by
@@ -676,5 +678,29 @@ body {
     .cursor-bubble,
     .vimeo-mute-bubble {
         display: none !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOUCH TARGETS (pointer: coarse — phones AND tablets)
+   The footer contact links and the project CTA were 26-39px tall, which is
+   under the 44px comfortable tap size. Only vertical padding is added, so
+   the visual design is unchanged.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (pointer: coarse) {
+    .footer-email,
+    .footer-phone-item,
+    .footer-whatsapp {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+    }
+
+    .footer-phones-wrap {
+        gap: 2px;
+    }
+
+    .stack-card__cta {
+        min-height: 44px;
     }
 }
