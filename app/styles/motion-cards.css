@@ -303,6 +303,9 @@
 /* ─── Responsive ─── */
 /* Phones & small tablets: the fan becomes a horizontal, swipeable deck. */
 @media (max-width: 1023px) {
+    /* The page root is dir="rtl", which flips flex ordering in the deck - cards
+       2/3/4 ended up to the LEFT of card 1 (off-screen, negative x) and the
+       user couldn't scroll to them. Force LTR so the deck reads left-to-right. */
     .motion-card__cards-area {
         min-height: 240px;
         margin: 20px auto 40px;
@@ -315,6 +318,7 @@
         -webkit-overflow-scrolling: touch;
         overscroll-behavior-x: contain;
         scrollbar-width: none;
+        direction: ltr;
         /* One card per swipe instead of a free-floating scroll. */
         scroll-snap-type: x proximity;
         scroll-padding-inline: 24px;
@@ -324,6 +328,7 @@
     }
     .motion-card__cards {
         width: max-content;
+        direction: ltr;
         padding: 10px 24px;
         gap: 0;
     }

@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TRACK_RECORD } from "@/lib/data";
 import WebpImage from './WebpImage';
+import { prefersReducedMotion } from '@/lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -193,6 +194,26 @@ export default function MotionCards() {
                     start: "top 85%"
                 }
             });
+
+            // ─── Card entrance animation (the entry choreography this section
+            // used to have). Each card rises and fades in with a stagger when
+            // the section enters the viewport. Skipped under prefers-reduced-
+            // motion so the site still respects the user setting.
+            if (!prefersReducedMotion()) {
+                gsap.from(root.querySelectorAll(".motion-card__card"), {
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: "top 78%",
+                        once: true,
+                    },
+                    opacity: 0,
+                    y: 60,
+                    scale: 0.92,
+                    duration: 0.9,
+                    stagger: 0.12,
+                    ease: "power3.out",
+                });
+            }
 
         }, sectionRef);
 
