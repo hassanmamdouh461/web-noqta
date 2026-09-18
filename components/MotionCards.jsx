@@ -189,19 +189,28 @@ export default function MotionCards() {
             }
 
             // Metric Counters Animation
+            // `gsap.from` renders its start state immediately, so this sets the
+            // metrics to opacity 0 the moment the script runs and only restores
+            // them when the trigger fires. Under prefers-reduced-motion that
+            // tween never ran, leaving "+25 / +100,000 / +40 / +30" permanently
+            // transparent — measured at opacity 0 on both 390px and 1280px, i.e.
+            // four real numbers lost for those visitors. Skip the tween entirely
+            // when motion is reduced so the metrics simply render as authored.
             const statNumbers = root.querySelectorAll(".motion-card__stat-num");
-            gsap.from(statNumbers, {
-                scale: 0.8,
-                opacity: 0,
-                y: 20,
-                duration: 0.8,
-                stagger: 0.15,
-                ease: "back.out(1.7)",
-                scrollTrigger: {
-                    trigger: ".motion-card__stats-grid",
-                    start: "top 85%"
-                }
-            });
+            if (!prefersReducedMotion()) {
+                gsap.from(statNumbers, {
+                    scale: 0.8,
+                    opacity: 0,
+                    y: 20,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: "back.out(1.7)",
+                    scrollTrigger: {
+                        trigger: ".motion-card__stats-grid",
+                        start: "top 85%"
+                    }
+                });
+            }
 
             // ─── Card entrance animation (the entry choreography this section
             // used to have). Each card rises and fades in with a stagger when
