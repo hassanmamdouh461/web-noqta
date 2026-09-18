@@ -51,23 +51,25 @@ body {
     pointer-events: none;
 }
 
-/* ── Marquee: vertical columns become a swipeable horizontal grid ─── */
+/* ── Marquee: keep the two vertical-scrolling columns but turn each column
+   into a horizontally-snapping carousel item on phone widths (the old grid
+   layout left every item static with no scroll affordance and no animation).
+   The desktop (`@media (min-width: 1024px)`) block below restores the actual
+   vertical infinite-marquee. */
 .marquee-right {
-    display: grid;
-    grid-template-rows: 130px 130px;
-    grid-auto-flow: column;
-    grid-auto-columns: 130px;
-    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
     width: 100%;
     max-width: 100%;
-    height: auto;
+    height: 380px;
     margin-inline-end: 0;
-    padding: 20px 20px 32px;
+    padding: 16px 20px 24px;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
+    scroll-snap-type: x mandatory;
     scroll-padding-inline: 20px;
     scrollbar-width: none;
 }
@@ -77,55 +79,134 @@ body {
 }
 
 .marquee-column {
-    display: contents;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 70vw;
+    position: relative;
+    overflow: hidden;
+    scroll-snap-align: center;
+    min-width: 0;
+    border-radius: 14px;
 }
 
 .marquee-column::before,
 .marquee-column::after {
-    display: none;
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    height: 60px;
+    z-index: 3;
+    pointer-events: none;
 }
 
-.marquee-column:nth-child(1) .marquee-track,
+.marquee-column::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--bg-color) 0%, transparent 100%);
+}
+
+.marquee-column::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
+}
+
+.marquee-column .marquee-track {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.marquee-column:nth-child(1) .marquee-track {
+    animation: marqueeUp 22s linear infinite;
+}
+
 .marquee-column:nth-child(2) .marquee-track {
-    display: contents;
-    animation: none;
+    animation: marqueeDown 22s linear infinite;
 }
 
 .marquee-item {
-    width: 130px;
-    height: 130px;
+    width: 100%;
     flex-shrink: 0;
-    padding: 12px 10px;
+    height: 170px;
+    padding: 16px 14px;
     scroll-snap-align: center;
 }
 
 .marquee-badge-name {
-    font-size: 1.05rem;
+    font-size: 1.25rem;
 }
 
 .marquee-badge-label {
     /* 0.7rem (11.2px) is below the practical floor for Arabic on a phone. */
-    font-size: 0.75rem;
+    font-size: 0.78rem;
 }
 
 .marquee-badge-cat {
-    font-size: 0.62rem;
+    font-size: 0.68rem;
     padding: 3px 8px;
 }
 
+/* Show the decorative blob + scribbles on mobile (the desktop has them for a
+   reason — they fill the empty half of the section). On phones the blob sits
+   above the marquee, and the heart/hand stay scaled to fit. */
+.marquee-blob-container {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    height: 110px;
+    margin: 4px auto 6px;
+    display: block;
+}
+
+.marquee-blob {
+    width: 100%;
+    height: 100%;
+    opacity: 0.35;
+}
+
+.marquee-svg-item:nth-child(1) {
+    /* The hand-drawn scribble hand */
+    top: 8%;
+    left: auto;
+    inset-inline-start: 60%;
+    width: 56px;
+    transform: scale(0) rotate(-15deg);
+    opacity: 0;
+}
+
+.marquee-svg-item:nth-child(2) {
+    /* The path-underline scribble that draws in on scroll */
+    bottom: -6px;
+    left: -10px;
+    width: 180px;
+    color: var(--color-dark);
+    transform: scaleX(-1);
+    transform-origin: center center;
+}
+
+.marquee-svg-item:nth-child(2) path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+}
+
 /* Each marquee track is duplicated (2 × 12) so the desktop CSS animation can
-   translate by -50% and loop seamlessly. On mobile the columns become a single
-   horizontal grid, so only the first copy is shown (12 = brands.length). */
+   translate by -50% and loop seamlessly. On mobile both columns now scroll
+   vertically with CSS keyframes (same as desktop), so keep BOTH copies — the
+   keyframes are written for 50% translate and won't loop with one copy. */
 .marquee-track > .marquee-item:nth-child(n + 13) {
+    /* On phones, only one copy per column — each column is one snap page and
+       it cycles via the keyframes animation, not by being duplicated.
+       Hide the duplicate half so it doesn't grow the column past 70vw. */
     display: none;
 }
 
 /* ── Marquee text (mobile) ─── */
 .marquee-left h2 {
-    font-size: clamp(1.75rem, 9.5vw, 2.6rem);
+    font-size: clamp(1.85rem, 8.5vw, 2.4rem);
     letter-spacing: -1px;
-    margin-bottom: 0;
-    margin-inline-end: 0;
+    margin-bottom: 8px;
 }
 
 .marquee-underline {
@@ -137,8 +218,8 @@ body {
 }
 
 .marquee-left-subtext {
-    font-size: 1rem;
-    margin-bottom: 8px;
+    font-size: 0.96rem;
+    margin-bottom: 0;
 }
 
 /* ── Footer (mobile) ─────────────────────────────────────────────────────
@@ -287,17 +368,22 @@ body {
         height: 30px;
     }
 
-    /* ── Marquee: give the grid more breathing room ─── */
+    /* ── Marquee: give the columns more breathing room on tablet ─── */
     .marquee-right {
-        grid-template-rows: 160px 160px;
-        grid-auto-columns: 160px;
-        gap: 12px;
-        padding: 28px 32px 40px;
+        height: 500px;
+        padding: 24px 28px 36px;
+    }
+
+    .marquee-column {
+        flex: 0 0 42vw;
     }
 
     .marquee-item {
-        width: 160px;
-        height: 160px;
+        height: 200px;
+    }
+
+    .marquee-badge-name {
+        font-size: 1.45rem;
     }
 
     /* ── Footer ─── */
