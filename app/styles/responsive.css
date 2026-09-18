@@ -214,6 +214,18 @@ body {
     margin-top: 120px;
 }
 
+/* `.footer-big-text` (the wordmark) carries a -70px bottom margin, which drags
+   the credits row 70px back UP into the wordmark's box. The row does flow
+   underneath the wordmark, but that pull put the hashtag 44px inside the
+   sticker band: measured on device, the heart sat 47-60% on top of the
+   hashtag text, and at 320px four more stickers grazed it. Easing the pull to
+   -14px leaves the row overlapping the wordmark's box by only 14px, so the
+   row's own 26px top padding lifts the hashtag clear of the band (verified:
+   12px of clear air below the lowest sticker at 320-428px). */
+.footer-big-text {
+    margin-bottom: -14px;
+}
+
 .footer-bottom-row {
     position: relative;
     bottom: auto;
@@ -223,15 +235,17 @@ body {
 
 .footer-stickers {
     top: 0;
+    /* Anchor the band to the credits row instead of sizing it off
+       `.footer-bottom`'s height. The old `height: calc(100% - 43px)` baked in
+       the -70px margin, so easing the margin made the band silently grow back
+       down into the row and the heart's overlap got WORSE (47% -> 70%). The
+       row measures 113px at every phone width, so `113 - 14 = 99px` makes the
+       band exactly "everything above the credits row" and self-corrects if
+       either number changes. Height must stay auto — setting it alongside
+       `top` and `bottom` would over-constrain the box. */
+    bottom: 99px;
+    height: auto;
     transform: translateX(-50%);
-    /* Confine the stickers to the wordmark. footer-bottom's height is
-       `big-text height - 70px (big-text's negative margin) + row height`, and
-       the row measures 113px on phones, so `100% - 43px` resolves to exactly
-       the wordmark's height — the band the stickers are meant to float over.
-       Capped so it stays sane on wide-but-short viewports (landscape phones,
-       narrow desktop windows). Going taller would drop stickers onto the
-       Credits pill at the bottom of .footer-bottom-row. */
-    height: min(calc(100% - 43px), 116px);
 }
 
 .footer-logo__svg {
@@ -412,8 +426,17 @@ body {
         align-items: flex-end;
     }
 
+    /* Restore the tight wordmark/row lockup: the phone rule eases this to
+       -14px to get the hashtag out of the sticker band, but from 768px up the
+       row is absolutely positioned again and the tablet/desktop collage below
+       is tuned against the original -70px. */
+    .footer-big-text {
+        margin-bottom: -70px;
+    }
+
     .footer-stickers {
         top: 50%;
+        bottom: auto;
         transform: translate(-50%, -50%);
         height: 100%;
         /* footer.css clips this wrapper, but from 768px up the 120-130px
