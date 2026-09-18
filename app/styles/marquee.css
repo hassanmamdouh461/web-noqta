@@ -318,6 +318,11 @@
         height: auto;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
+        /* `grid-auto-flow: row` is the default but worth stating — it
+           tells the engine to fill row by row (item1 → row1col1,
+           item2 → row1col2, item3 → row2col1, ...) instead of column by
+           column, which `grid-auto-flow: dense` could otherwise do. */
+        grid-auto-flow: row;
         gap: 14px;
         overflow: visible;
     }

@@ -120,20 +120,21 @@ export default function DoubleMarquee() {
                     </div>
                 </div>
 
-                {/* Left Column in RTL: Static 2×3 grid on ≥1024px, two vertical
-                   marquee columns on phones (the CSS at the @media boundary
-                   swaps the layout — see app/styles/marquee.css and the
-                   phone-specific override in app/styles/responsive.css). */}
+                {/* Right column in RTL: the 6-card static grid on ≥1024px and
+                   the two vertical scrolling marquee columns on phones. The
+                   static-grid CSS uses `display: contents` on the column /
+                   track wrappers to flatten the DOM, so the engine places
+                   the 6 visible items across the 2×3 grid; the second
+                   column is hidden via `.Double-marquee--static-grid
+                   .marquee-column--1 { display: none }`. On phones the
+                   responsive rules restore `display: block` on the columns
+                   and `display: flex` on the tracks, so the marquee
+                   columns animate as before. */}
                 <div className="marquee-right" dir="ltr">
-                    {MARQUEE_TRACKS.map((trackItems, colIndex) => (
+                    {[STATIC_GRID_BRANDS, STATIC_GRID_BRANDS].map((trackItems, colIndex) => (
                         <div key={colIndex} className={`marquee-column marquee-column--${colIndex}`}>
                             <div className="marquee-track">
-                                {/* Static grid shows the curated 6; marquee
-                                   columns show the looping 24. The CSS on
-                                   ≥1024px picks the static data via the
-                                   `.Double-marquee--static-grid .marquee-track
-                                   > .marquee-item:nth-child(n+7)` rule. */}
-                                {[STATIC_GRID_BRANDS, []][colIndex].map((item, i) => (
+                                {trackItems.map((item, i) => (
                                     <div
                                         key={i}
                                         className="marquee-item"
