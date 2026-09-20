@@ -474,6 +474,26 @@
 }
 
 @media (min-width: 1024px) {
+    /* ── Breathing room after the pinned HorizontalWords section ───────────
+       HorizontalWords is pinned by ScrollTrigger. On ≥1024px GSAP reserves
+       pinLength (1800px) plus the section's own 100svh, so the pin spacer
+       eats ~2700px of scroll and ends only ~54px before MotionCards starts
+       entering the viewport. 54px is too short to read as a hand-off: the
+       pinned headline is still sliding off the top while the MotionCards
+       heading is already rising, so both sections look like one block
+       scrolling together.
+
+       Pushing this section down on ≥1024px turns that 54px into ~460px of
+       scroll on a 900px-tall viewport (pin ends ~2700 → first entry ~3159),
+       so the first section visibly finishes before the second starts.
+
+       Phones are deliberately untouched: there pinLength is ~470-570px
+       instead of 1800, the spacer is far shorter, and the gap is already
+       ~2250px — a margin there would only add dead air. */
+    .motion-cards-wrapper {
+        margin-top: clamp(320px, 45vh, 640px);
+    }
+
     .motion-card-section {
         padding: 110px 40px 90px;
     }
