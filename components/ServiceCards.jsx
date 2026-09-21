@@ -143,7 +143,6 @@ function initCardAnimations() {
     // Everything created below is registered here so the effect can dispose of
     // it on unmount (React 19 StrictMode double-invokes effects in dev).
     const disposers = [];
-    const triggers = [];
 
     const originalData = [
         { rotation: 4 },
@@ -154,7 +153,6 @@ function initCardAnimations() {
     ];
 
     const isMobile = window.matchMedia('(max-width: 1199px)').matches;
-    const isPhone = window.matchMedia('(max-width: 767px)').matches;
     const cardsWrapper = document.querySelector('.cards-wrapper');
     if (!cardsWrapper) return () => {};
     let leaveTimeout = null;
@@ -220,133 +218,47 @@ function initCardAnimations() {
                 card.removeEventListener('mouseleave', onLeave);
             });
         });
-    } else if (isPhone) {
-        // Phones (≤767px): stack all 5 cards vertically so the visitor sees
-        // every card's content without scrolling horizontally. Mirrors the
-        // MotionCards mobile fix — the pinned-reveal layout worked on tablet
-        // but on phones it left 4 of 5 cards permanently off-screen.
-        cardsWrapper.classList.add('mobile-readable');
-
-        cards.forEach((card, i) => {
-            gsap.set(card, {
-                position: 'relative',
-                left: 'auto',
-                top: 'auto',
-                xPercent: 0,
-                y: 0,
-                rotation: 0,
-                zIndex: 'auto',
-                transformOrigin: 'center center',
-                clearProps: 'xPercent'
-            });
-        });
-        cardsWrapper.style.height = 'auto';
-
-        if (!prefersReducedMotion()) {
-            gsap.from(cards, {
-                scrollTrigger: {
-                    trigger: cardsWrapper,
-                    start: 'top 80%',
-                    once: true,
-                },
-                opacity: 0,
-                y: 40,
-                duration: 0.7,
-                stagger: 0.1,
-                ease: 'power3.out',
-            });
-        }
-    } else if (window.matchMedia('(max-width: 1199px)').matches) {
-        // Tablets (768-1199px): same vertical-stack treatment as phones. The
-        // pinned-scroll-reveal left cards sliding under the fixed navbar and
-        // the section heading ended up scrolled away from the cards (probe
-        // showed `titleTop: -347` while card-1 was at y=55). Stacking reads
-        // better on a tablet too — the JSX card content is what people came
-        // for, not the scroll choreography.
-        cardsWrapper.classList.add('mobile-readable');
-
-        cards.forEach((card, i) => {
-            gsap.set(card, {
-                position: 'relative',
-                left: 'auto',
-                top: 'auto',
-                xPercent: 0,
-                y: 0,
-                rotation: 0,
-                zIndex: 'auto',
-                transformOrigin: 'center center',
-                clearProps: 'xPercent'
-            });
-        });
-        cardsWrapper.style.height = 'auto';
-
-        if (!prefersReducedMotion()) {
-            gsap.from(cards, {
-                scrollTrigger: {
-                    trigger: cardsWrapper,
-                    start: 'top 80%',
-                    once: true,
-                },
-                opacity: 0,
-                y: 40,
-                duration: 0.7,
-                stagger: 0.1,
-                ease: 'power3.out',
-            });
-        }
     } else {
-        // Tablet (768-1199): the pinned mobile stacked scroll reveal
-        const scrollPerCard = window.innerHeight * 0.7;
-        const navH = 65;
-        const mobileRotations = [-4, 4, -6, 5, -3];
+        // Phones and tablets (≤1199px): stack all 5 cards vertically so the
+        // visitor sees every card's content without scrolling horizontally.
+        // The pinned-scroll-reveal layout left 4 of 5 cards permanently
+        // off-screen on phones, and on tablets it slid cards under the fixed
+        // navbar while the section heading scrolled away from them.
+        cardsWrapper.classList.add('mobile-readable');
 
         cards.forEach((card, i) => {
             gsap.set(card, {
-                position: 'absolute',
-                left: '50%',
-                top: '0',
-                xPercent: -50,
-                y: i === 0 ? 0 : window.innerHeight * 1.1,
-                rotation: mobileRotations[i % mobileRotations.length],
-                zIndex: i + 1,
-                transformOrigin: 'center center'
+                position: 'relative',
+                left: 'auto',
+                top: 'auto',
+                xPercent: 0,
+                y: 0,
+                rotation: 0,
+                zIndex: 'auto',
+                transformOrigin: 'center center',
+                clearProps: 'xPercent'
             });
         });
+        cardsWrapper.style.height = 'auto';
 
-        const wrapperH = window.innerHeight * 0.7 + scrollPerCard * (cards.length - 1);
-        gsap.set(cardsWrapper, { height: wrapperH });
-
-        triggers.push(ScrollTrigger.create({
-            trigger: cardsWrapper,
-            start: `top ${navH}px`,
-            end: `+=${scrollPerCard * (cards.length - 1)}`,
-            pin: true,
-            pinSpacing: true,
-            id: 'mobile-cards-pin'
-        }));
-
-        cards.forEach((card, i) => {
-            if (i === 0) return;
-            const tween = gsap.fromTo(card,
-                { y: window.innerHeight * 1.1 },
-                {
-                    y: 0,
-                    ease: 'power3.out',
-                    scrollTrigger: {
-                        trigger: cardsWrapper,
-                        start: `top+=${(i - 1) * scrollPerCard} ${navH}px`,
-                        end: `top+=${i * scrollPerCard} ${navH}px`,
-                        scrub: 0.4
-                    }
-                }
-            );
-            triggers.push(tween.scrollTrigger);
-        });
+        if (!prefersReducedMotion()) {
+            gsap.from(cards, {
+                scrollTrigger: {
+                    trigger: cardsWrapper,
+                    start: 'top 80%',
+                    once: true,
+                },
+                opacity: 0,
+                y: 40,
+                duration: 0.7,
+                stagger: 0.1,
+                ease: 'power3.out',
+            });
+        }
     }
 
     return () => {
         if (leaveTimeout) { clearTimeout(leaveTimeout); leaveTimeout = null; }
         disposers.forEach((fn) => fn());
-        triggers.forEach((t) => { if (t) t.kill(); });
     };
 }

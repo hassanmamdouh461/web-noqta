@@ -25,7 +25,8 @@ export const metadata = {
     },
     icons: {
         icon: '/assets/noqta/noqta-icon.svg',
-        apple: '/assets/noqta/noqta-icon.svg',
+        // iOS ignores SVG apple-touch-icons; it needs a PNG.
+        apple: '/assets/noqta/noqta-logo-square.png',
     },
     keywords: [
         'نقطة', 'Noqta', 'Noqta Creative Solutions', 'Software Development',
