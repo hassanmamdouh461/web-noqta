@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { NOQTA_INFO, WIGGLE_CONFIG } from '@/lib/data';
-import { prefersReducedMotion, isCoarsePointer } from '@/lib/motion';
+import { prefersReducedMotion, isCoarsePointer, hasHover } from '@/lib/motion';
 
 function initWiggle(element, intensity) {
     if (!element) return () => {};
@@ -97,12 +97,23 @@ export default function Footer() {
 
                 let creditsOpen = false;
 
-                creditsWrapper.addEventListener('mouseenter', onEnter);
-                creditsWrapper.addEventListener('mouseleave', onLeave);
-                cleanups.push(() => {
-                    creditsWrapper.removeEventListener('mouseenter', onEnter);
-                    creditsWrapper.removeEventListener('mouseleave', onLeave);
-                });
+                // Touch has no real hover — the browser synthesizes a
+                // mouseenter for the tap before dispatching the click, so the
+                // box would open early and, below 768px, its upward tween
+                // transiently covers the pill and swallows that click (leaving
+                // creditsOpen false while the box is open, which also breaks
+                // the tap-outside dismissal below). Gate the hover open/close
+                // to real hover devices; on touch the click handler is the
+                // sole toggle, matching the Navbar pattern.
+                const canHover = hasHover();
+                if (canHover) {
+                    creditsWrapper.addEventListener('mouseenter', onEnter);
+                    creditsWrapper.addEventListener('mouseleave', onLeave);
+                    cleanups.push(() => {
+                        creditsWrapper.removeEventListener('mouseenter', onEnter);
+                        creditsWrapper.removeEventListener('mouseleave', onLeave);
+                    });
+                }
 
                 // MOBILE / A11Y FIX — two problems lived here:
                 //  1. `.footer-bottom-row` sets `pointer-events: none`, which is
