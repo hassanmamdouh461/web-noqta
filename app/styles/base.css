@@ -162,6 +162,37 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+/* Desktop pointers get a thin scrollbar back: the page is ~14k px tall and
+   hiding it removed the only scroll affordance/drag path for mouse users.
+   Touch devices keep the clean look — their scrollbars overlay anyway. */
+@media (pointer: fine) {
+    html {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(18, 20, 29, 0.4) transparent;
+        -ms-overflow-style: auto;
+    }
+
+    html::-webkit-scrollbar {
+        display: block;
+        width: 9px;
+    }
+
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
+    html::-webkit-scrollbar-thumb {
+        background: rgba(18, 20, 29, 0.4);
+        border-radius: 9999px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+    }
+
+    html::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
 /* ─── Responsive Media Defaults ──────────────────────────────────────── */
 img, video, iframe, canvas {
     max-width: 100%;

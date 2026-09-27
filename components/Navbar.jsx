@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { WIGGLE_CONFIG, NOQTA_INFO } from '@/lib/data';
 import { hasHover } from '@/lib/motion';
 import WebpImage from './WebpImage';
@@ -29,85 +28,31 @@ function initWiggle(element, intensity) {
 export default function Navbar() {
     useEffect(() => {
         const navbar = document.querySelector('.navbar');
-        const footerEl = document.querySelector('.main-footer');
 
-        // Declared up-front: several registrations below (navbar-colour
-        // invalidation, wiggle, popouts, scroll, keydown) append their disposers
-        // to this list.
+        // Declared up-front: several registrations below (wiggle, popouts,
+        // scroll, keydown) append their disposers to this list.
         const cleanups = [];
 
         // Start white on dark (hero is dark)
         if (navbar) { navbar.classList.add('on-dark'); navbar.classList.remove('on-light'); }
 
-        // PERF: the previous version ran querySelectorAll + getBoundingClientRect
-        // for every section on EVERY scroll frame — a selector query plus a
-        // forced layout, 60x/second. We now resolve the elements once and cache
-        // their document offsets, and only re-measure when the layout can
-        // actually change (resize, fonts loading, ScrollTrigger refresh).
-        let lightSections = [];
-        let stackRange = null;
-        let footerTop = Infinity;
-        let measured = false;
-
-        const measureSections = () => {
-            const offsetOf = (el) => {
-                const rect = el.getBoundingClientRect();
-                const top = rect.top + window.scrollY;
-                return { top, bottom: top + rect.height };
-            };
-            lightSections = Array.from(
-                document.querySelectorAll('.content-section, .Double-marquee, .light-section')
-            ).map(offsetOf);
-
-            const stackSection = document.querySelector('#stack-section');
-            stackRange = stackSection ? offsetOf(stackSection) : null;
-
-            footerTop = footerEl ? offsetOf(footerEl).top : Infinity;
-            measured = true;
-        };
-
-        const invalidateSections = () => { measured = false; };
-        window.addEventListener('resize', invalidateSections);
-        cleanups.push(() => window.removeEventListener('resize', invalidateSections));
-
-        if (typeof document !== 'undefined' && document.fonts) {
-            document.fonts.ready.then(invalidateSections);
-        }
-        // Pinned sections (ProjectStackScroll) inject a pin-spacer and change the
-        // document height, so any ScrollTrigger refresh invalidates our offsets.
-        ScrollTrigger.addEventListener('refresh', invalidateSections);
-        cleanups.push(() => ScrollTrigger.removeEventListener('refresh', invalidateSections));
-
+        // Navbar colour is read live from the element under the bar instead of
+        // cached document offsets: pinned sections are position:fixed while
+        // pinned, so their cached rect.top+scrollY drifts from the visual
+        // position and the bar stayed white over the cream HorizontalWords
+        // section for ~800-1300px of scroll. elementFromPoint hit-tests the
+        // painted layout, so pins, spacers and resizes are all correct for free.
         const updateNavbarColor = () => {
             if (!navbar) return;
-            if (!measured) measureSections();
-
-            const scrollPos = window.scrollY + navbar.offsetHeight / 2;
-            let isOverLight = false;
-
-            for (let i = 0; i < lightSections.length; i++) {
-                const { top, bottom } = lightSections[i];
-                if (scrollPos >= top && scrollPos <= bottom) {
-                    isOverLight = true;
-                    break;
-                }
-            }
-
-            if (stackRange && scrollPos >= stackRange.top && scrollPos <= stackRange.bottom) {
-                isOverLight = false;
-            }
-
-            if (scrollPos >= footerTop) {
-                isOverLight = false;
-            }
-
-            if (isOverLight) {
-                navbar.classList.add('on-light');
-                navbar.classList.remove('on-dark');
-            } else {
-                navbar.classList.add('on-dark');
-                navbar.classList.remove('on-light');
-            }
+            // Hit-test just below the bar's bottom edge — sampling inside the
+            // bar itself would return the navbar's own children.
+            const el = document.elementFromPoint(
+                window.innerWidth / 2,
+                navbar.getBoundingClientRect().bottom + 1
+            );
+            const isOverLight = el ? el.closest('.content-section, .Double-marquee, .light-section') !== null : false;
+            navbar.classList.toggle('on-light', isOverLight);
+            navbar.classList.toggle('on-dark', !isOverLight);
         };
 
         // NOTE: the scroll listener is registered once below (merged + rAF-throttled).
